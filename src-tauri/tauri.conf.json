@@ -35,6 +35,13 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": {
+      "../data/rhema.db": "rhema.db",
+      "../embeddings/kjv-qwen3-0.6b.bin": "embeddings/kjv-qwen3-0.6b.bin",
+      "../embeddings/kjv-qwen3-0.6b-ids.bin": "embeddings/kjv-qwen3-0.6b-ids.bin",
+      "../models/qwen3-embedding-0.6b/tokenizer.json": "models/qwen3-embedding-0.6b/tokenizer.json",
+      "../models/qwen3-embedding-0.6b-int8/model_quantized.onnx": "models/qwen3-embedding-0.6b-int8/model_quantized.onnx"
+    }
   }
 }

@@ -172,7 +172,10 @@ export function SearchPanel() {
             .getElementById(`verse-${target.id}`)
             ?.scrollIntoView({ behavior: "smooth", block: "center" })
         }
-        panelRef.current?.focus()
+        // Don't steal focus from the quick-nav input while the user is typing
+        if (document.activeElement !== quickInputRef.current) {
+          panelRef.current?.focus()
+        }
       }).catch(console.error).finally(() => {
         useBibleStore.getState().setPendingNavigation(null)
       })
@@ -296,23 +299,21 @@ export function SearchPanel() {
   )
   const quickSuggestion = autocompleteResult.suggestion
 
-  // Side effects only: navigation + verse loading
+  // Side effects only: navigation + verse loading (not while still typing the book name)
   useEffect(() => {
     const result = autocompleteResult
 
-    if (result.matchedBook && result.chapter && result.verse) {
-      useBibleStore.getState().setPendingNavigation({
-        bookNumber: result.matchedBook.book_number,
-        chapter: result.chapter,
-        verse: result.verse
-      })
+    const shouldAutoNavigate =
+      result.matchedBook &&
+      result.chapter &&
+      result.verse &&
+      result.stage !== "book"
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (quickInputRef.current && document.activeElement !== quickInputRef.current) {
-            quickInputRef.current.focus()
-          }
-        })
+    if (shouldAutoNavigate) {
+      useBibleStore.getState().setPendingNavigation({
+        bookNumber: result.matchedBook!.book_number,
+        chapter: result.chapter!,
+        verse: result.verse!,
       })
     }
 

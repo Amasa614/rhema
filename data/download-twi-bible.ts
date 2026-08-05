@@ -113,13 +113,55 @@ interface ScrollmapperJSON {
   }>
 }
 
+/** Strip leading poetry/paragraph markers from a USFM line. */
+function stripLeadingUsfmMarkers(line: string): string {
+  return line
+    .replace(/^\\(q\d+|p|m|pi\d+|mi|nb|li\d+|pc|pr|ph\d?)\s*/i, "")
+    .trim()
+}
+
+/**
+ * Remove USFM inline markers (e.g. \\nd … \\nd* for divine name, footnotes).
+ * Keeps the human-readable Twi text only.
+ */
+function cleanUsfmText(raw: string): string {
+  let text = raw
+  text = text.replace(/\\f\s[\s\S]*?\\f\*/g, " ")
+  // Paired character markers (divine name, added text, …)
+  text = text.replace(/\\nd\s*([\s\S]*?)\\nd\*/gi, "$1")
+  text = text.replace(/\\add\s*([\s\S]*?)\\add\*/gi, "$1")
+  text = text.replace(/\\wj\s*([\s\S]*?)\\wj\*/gi, "$1")
+  text = text.replace(/\\\+[a-z0-9]+\s*([\s\S]*?)\\\+[a-z0-9]+\*/gi, "$1")
+  text = text.replace(/\\[a-z0-9]+\*?/gi, " ")
+  text = text.replace(/\s+/g, " ").trim()
+  return text
+}
+
 function parseUsfm(content: string, fallbackBook: string): ScrollmapperJSON["books"][0] | null {
   let bookName = fallbackBook
   let chapter = 0
   const chapters = new Map<number, Array<{ verse: number; text: string }>>()
 
+  let currentVerse: number | null = null
+  const verseParts: string[] = []
+
+  const flushVerse = () => {
+    if (currentVerse == null || chapter < 1 || verseParts.length === 0) {
+      verseParts.length = 0
+      return
+    }
+    const text = cleanUsfmText(verseParts.join(" "))
+    verseParts.length = 0
+    if (!text) return
+    if (!chapters.has(chapter)) chapters.set(chapter, [])
+    chapters.get(chapter)!.push({ verse: currentVerse, text })
+    currentVerse = null
+  }
+
   for (const rawLine of content.split(/\r?\n/)) {
     const line = rawLine.trim()
+    if (!line) continue
+
     if (line.startsWith("\\id ")) {
       const code = line.slice(4).trim().split(/\s+/)[0]?.toUpperCase()
       if (code && OSIS_BOOK_NAMES[code]) {
@@ -128,22 +170,33 @@ function parseUsfm(content: string, fallbackBook: string): ScrollmapperJSON["boo
       continue
     }
     if (line.startsWith("\\c ")) {
+      flushVerse()
       chapter = Number.parseInt(line.slice(3).trim(), 10)
       continue
     }
+    // Section / break markers — not part of verse text
+    if (/^\\(s\d+|b|r|d|sp|cl|h|toc\d|mt\d?|imt\d?|io\d?|ip|ipq|iq|ili|iot|iex|imte|ie|iqt)\b/i.test(line)) {
+      continue
+    }
     if (line.startsWith("\\v ")) {
+      flushVerse()
       const rest = line.slice(3).trim()
-      const space = rest.indexOf(" ")
-      if (space === -1 || chapter < 1) continue
-      const verseNum = Number.parseInt(rest.slice(0, space), 10)
-      let text = rest.slice(space + 1)
-      text = text.replace(/\\[a-z0-9]+(\s\*|\s|$)/gi, " ")
-      text = text.replace(/\s+/g, " ").trim()
-      if (!Number.isFinite(verseNum) || !text) continue
-      if (!chapters.has(chapter)) chapters.set(chapter, [])
-      chapters.get(chapter)!.push({ verse: verseNum, text })
+      const match = /^(\d+)\s+(.*)$/.exec(rest)
+      if (!match || chapter < 1) continue
+      currentVerse = Number.parseInt(match[1], 10)
+      const first = stripLeadingUsfmMarkers(match[2])
+      if (first) verseParts.push(first)
+      continue
+    }
+    if (
+      currentVerse != null &&
+      /^\\(q\d+|p|m|pi\d+|mi|nb|li\d+|pc|pr|ph\d?)\b/i.test(line)
+    ) {
+      const part = stripLeadingUsfmMarkers(line)
+      if (part) verseParts.push(part)
     }
   }
+  flushVerse()
 
   if (chapters.size === 0) return null
 
@@ -176,12 +229,32 @@ async function main() {
   await rm(STAGING, { recursive: true, force: true })
   await mkdir(STAGING, { recursive: true })
 
-  const proc = Bun.spawn(["unzip", "-o", zipPath, "-d", STAGING], {
-    stdout: "inherit",
-    stderr: "inherit",
-  })
-  if ((await proc.exited) !== 0) {
-    throw new Error("unzip failed — install GnuWin32 UnZip or add unzip to PATH")
+  let extracted = false
+  try {
+    const proc = Bun.spawn(["unzip", "-o", zipPath, "-d", STAGING], {
+      stdout: "inherit",
+      stderr: "inherit",
+    })
+    extracted = (await proc.exited) === 0
+  } catch {
+    extracted = false
+  }
+
+  if (!extracted) {
+    const ps = Bun.spawn(
+      [
+        "powershell",
+        "-NoProfile",
+        "-Command",
+        `Expand-Archive -LiteralPath '${zipPath.replace(/'/g, "''")}' -DestinationPath '${STAGING.replace(/'/g, "''")}' -Force`,
+      ],
+      { stdout: "inherit", stderr: "inherit" }
+    )
+    if ((await ps.exited) !== 0) {
+      throw new Error(
+        "Could not extract zip — install GnuWin32 UnZip or use PowerShell Expand-Archive"
+      )
+    }
   }
 
   const books: ScrollmapperJSON["books"] = []

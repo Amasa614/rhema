@@ -12,6 +12,77 @@ pub enum Continuation {
     VerseOnly(i32),
 }
 
+/// Common STT spellings for "chapter" (full word and abbreviations).
+pub(crate) fn is_chapter_word(w: &str) -> bool {
+    matches!(w, "chapter" | "chapters" | "chapt" | "chap")
+}
+
+/// True when text immediately after a book name is an explicit chapter (not book-only).
+pub(crate) fn has_explicit_chapter_after_book(after_trimmed: &str) -> bool {
+    let trimmed = after_trimmed.trim_start();
+    if trimmed.starts_with(|c: char| c.is_ascii_digit()) {
+        return true;
+    }
+    matches!(
+        tokenize(trimmed).first(),
+        Some(Token::Word(w)) if is_chapter_word(w)
+    )
+}
+
+/// True when the book name is likely a navigation cue (switch books), not mid-sentence.
+pub(crate) fn is_book_navigation_mention(full_text: &str, book_match: &BookMatch) -> bool {
+    let after = full_text[book_match.end..].trim();
+    if !after.is_empty()
+        && !after
+            .chars()
+            .all(|c| c.is_ascii_punctuation() || c.is_whitespace())
+    {
+        return false;
+    }
+
+    let before = full_text[..book_match.start].trim();
+    if before.is_empty() {
+        return true;
+    }
+
+    let before_lower = before.to_lowercase();
+    if before_lower.contains('.') || before_lower.contains('?') {
+        return false;
+    }
+    if before_lower.ends_with("read") || before_lower.ends_with("reading") {
+        return false;
+    }
+
+    const ALLOWED_PREFIX_ENDINGS: &[&str] = &[
+        "in the",
+        "in",
+        "the",
+        "to",
+        "to the",
+        "now in",
+        "and in",
+        "from",
+        "from the",
+        "open",
+        "open to",
+        "turn to",
+        "let's turn to",
+        "let us turn to",
+        "go to",
+        "look at",
+        "see",
+        "in our",
+    ];
+    if ALLOWED_PREFIX_ENDINGS
+        .iter()
+        .any(|ending| before_lower.ends_with(ending))
+    {
+        return true;
+    }
+
+    before.len() <= 20
+}
+
 /// Parse a Bible reference from text given a book match position.
 ///
 /// Looks ahead from the end of the book match for chapter:verse patterns.
@@ -216,7 +287,7 @@ fn try_correction_pattern(tokens: &[Token], book_match: &BookMatch) -> Option<Ve
     // Look for chapter/verse before correction
     for i in 0..correction_idx {
         if let Token::Word(w) = &tokens[i] {
-            if w == "chapter" {
+            if is_chapter_word(w) {
                 if let Some((ch, _)) = consume_number(tokens, i + 1) {
                     initial_chapter = Some(ch);
                 }
@@ -235,7 +306,7 @@ fn try_correction_pattern(tokens: &[Token], book_match: &BookMatch) -> Option<Ve
     // Look for chapter/verse after correction
     for i in (correction_idx + 1)..tokens.len() {
         if let Token::Word(w) = &tokens[i] {
-            if w == "chapter" {
+            if is_chapter_word(w) {
                 if let Some((ch, _)) = consume_number(tokens, i + 1) {
                     corrected_chapter = Some(ch);
                 }
@@ -274,7 +345,7 @@ fn try_correction_pattern(tokens: &[Token], book_match: &BookMatch) -> Option<Ve
 fn try_chapter_verse_spoken(tokens: &[Token], book_match: &BookMatch) -> Option<VerseRef> {
     for i in 0..tokens.len() {
         if let Token::Word(w) = &tokens[i] {
-            if w == "chapter" {
+            if is_chapter_word(w) {
                 // Next token(s) should be a number (digit or spoken)
                 if let Some((chapter, next_idx)) = consume_number(tokens, i + 1) {
                     // Scan forward (up to 15 tokens) looking for "verse" keyword.
@@ -377,7 +448,7 @@ fn try_verse_only_pattern(tokens: &[Token], book_match: &BookMatch) -> Option<Ve
                     tokens[0..i].iter().any(|t| {
                         match t {
                             Token::Number(_) => true,
-                            Token::Word(w) => w == "chapter" || parse_spoken_number(w).is_some(),
+                            Token::Word(w) => is_chapter_word(w) || parse_spoken_number(w).is_some(),
                             _ => false,
                         }
                     })
@@ -672,7 +743,7 @@ pub fn try_extract_continuation(text: &str, is_book_only: bool) -> Option<Contin
     // Pattern 1: "chapter N [... verse M]"
     for i in 0..tokens.len() {
         if let Token::Word(w) = &tokens[i] {
-            if w == "chapter" {
+            if is_chapter_word(w) {
                 if let Some((chapter, next_idx)) = consume_number(&tokens, i + 1) {
                     if chapter <= 0 {
                         continue;
@@ -904,6 +975,16 @@ mod tests {
         assert_eq!(result.chapter, 3);
         assert_eq!(result.verse_start, 0); // chapter-only
         assert_eq!(result.verse_end, None);
+    }
+
+    #[test]
+    fn test_book_chapt_abbreviation_is_chapter_only() {
+        let bm = make_book_match("Genesis", 1, 7);
+        let text = "example Genesis chapt 3";
+        let result = parse_reference(text, &bm).unwrap();
+        assert_eq!(result.chapter, 3);
+        assert_eq!(result.verse_start, 0);
+        assert!(has_explicit_chapter_after_book(" chapt 3"));
     }
 
     #[test]

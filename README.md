@@ -181,6 +181,14 @@ bun run tauri dev
 ### Build for production
 
 ```bash
+bun run setup:all          # once: Bible DB, models, embeddings
+bun run build:bible        # if you added Twi or changed sources
+bun run build:desktop      # stages assets + NSIS/MSI installer
+```
+
+Installers are written under `src-tauri/target/release/bundle/` (Windows: `.exe` / `.msi`). See **[documentation/BUILD-DESKTOP.md](documentation/BUILD-DESKTOP.md)** for details, size, and Deepgram vs Whisper.
+
+```bash
 bun run tauri build
 ```
 

@@ -1,6 +1,7 @@
 mod commands;
 mod events;
 mod memstats;
+mod paths;
 mod state;
 
 use std::sync::Mutex;
@@ -70,16 +71,8 @@ pub fn run() {
             memstats::spawn();
 
             // Try resource dir first (production), then dev fallback
-            let db_path = app
-                .path()
-                .resource_dir()
-                .map(|p| p.join("rhema.db"))
-                .ok()
-                .filter(|p| p.exists())
-                .unwrap_or_else(|| {
-                    std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                        .join("../data/rhema.db")
-                });
+            let data_root = paths::content_root(app.handle());
+            let db_path = paths::bible_db_path(app.handle());
 
             if db_path.exists() {
                 let bible_db = rhema_bible::BibleDb::open(&db_path)
@@ -96,9 +89,10 @@ pub fn run() {
 
             // Try to load ONNX embedding model and pre-computed verse index
             // Prefer INT8 quantized model (~571MB) over FP32 (~2.4GB)
-            let base_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..");
+            let base_dir = data_root.clone();
             let model_path = {
-                let int8 = base_dir.join("models/qwen3-embedding-0.6b-int8/model_quantized.onnx");
+                let int8 = base_dir
+                    .join("models/qwen3-embedding-0.6b-int8/model_quantized.onnx");
                 let fp32 = base_dir.join("models/qwen3-embedding-0.6b/model.onnx");
                 if int8.exists() {
                     log::info!("Using INT8 quantized ONNX model");

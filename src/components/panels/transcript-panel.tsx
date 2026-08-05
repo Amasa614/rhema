@@ -79,9 +79,10 @@ export function TranscriptPanel() {
     useDetectionStore.getState().addDetections(detections)
 
     // Auto-navigate book search + select verse for preview/live
-    const directHit = detections.find(
-      (d) => d.source === "direct" && !d.is_chapter_only
-    )
+    const directOnly = detections.filter((d) => d.source === "direct")
+    const directHit =
+      [...directOnly].reverse().find((d) => !d.is_chapter_only) ??
+      directOnly.at(-1)
     if (directHit && directHit.book_number > 0) {
       // Select verse immediately so preview/live panels update
       bibleActions.selectVerse({

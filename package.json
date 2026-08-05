@@ -23,6 +23,8 @@
     "precompute:embeddings": "cd src-tauri && cargo run -p rhema-detection --features precompute-bin --release --bin precompute -- --model ../models/qwen3-embedding-0.6b/model.onnx --tokenizer ../models/qwen3-embedding-0.6b/tokenizer.json --verses ../data/verses-for-embedding.json --output-embeddings ../embeddings/kjv-qwen3-0.6b.bin --output-ids ../embeddings/kjv-qwen3-0.6b-ids.bin",
     "download:whisper": "bun run data/download-whisper-model.ts",
     "download:ndi-sdk": "bun run data/download-ndi-sdk.ts",
+    "prepare:bundle": "bun run scripts/prepare-bundle.ts",
+    "build:desktop": "bun run prepare:bundle && bun run tauri build",
     "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/setup-windows.ps1",
     "setup:all": "bun run data/prepare-embeddings.ts",
     "web:dev": "cd web && bun run dev",

@@ -325,6 +325,7 @@ const FILLER_PHRASES: &[&str] = &[
     "let us turn to",
     "let's turn to",
     "go to the book of",
+    "in the book of",
     "the book of",
     "book of",
     "if you turn to",
@@ -532,10 +533,26 @@ impl DirectDetector {
 
         // Step 0c: Check if there's a pending incomplete reference.
         // Try to complete it with chapter/verse continuation, or expire on timeout.
-        if let Some(ref incomplete) = self.incomplete.clone() {
+        if let Some(incomplete) = self.incomplete.clone() {
             let elapsed = incomplete.timestamp.elapsed().as_millis();
             if elapsed > INCOMPLETE_REF_TIMEOUT_MS {
-                // Timeout: clean up pending state (EDGE-02).
+                // Timeout: if we had an explicit chapter, anchor at verse 1.
+                if incomplete.verse_ref.chapter > 0 && !incomplete.chapter_is_default {
+                    let mut anchored = incomplete.verse_ref.clone();
+                    anchored.verse_start = 1;
+                    if is_valid_reference(anchored.book_number, anchored.chapter) {
+                        detections.push(self.make_direct_detection(
+                            &anchored,
+                            compute_chapter_anchor_confidence(&anchored),
+                            text,
+                            0,
+                            text.len(),
+                            true,
+                        ));
+                        self.push_recent(&anchored);
+                        self.context.update(&anchored);
+                    }
+                }
                 self.incomplete = None;
             } else if let Some(cont) =
                 parser::try_extract_continuation(text, incomplete.chapter_is_default)
@@ -552,6 +569,7 @@ impl DirectDetector {
                                 text,
                                 0,
                                 text.len(),
+                                false,
                             ));
                             self.push_recent(&completed);
                             self.context.update(&completed);
@@ -569,6 +587,7 @@ impl DirectDetector {
                                 text,
                                 0,
                                 text.len(),
+                                false,
                             ));
                             self.push_recent(&completed);
                             self.context.update(&completed);
@@ -629,21 +648,52 @@ impl DirectDetector {
                     continue;
                 }
 
-                // Chapter-only: hold for refinement, don't emit yet.
-                // The full reference (with verse) will arrive when the user
-                // finishes speaking and will be emitted then.
+                // Chapter-only: hold for a follow-up verse ("… verse 16"), but when the
+                // chapter was spoken explicitly ("Genesis chapter 3"), anchor at verse 1
+                // immediately so the congregation sees the chapter start.
                 if resolved.verse_start == 0 {
-                    // Detect if chapter was explicitly spoken or defaulted.
                     let after_book = text[book_match.end..].trim();
-                    let has_explicit_chapter =
-                        after_book.starts_with(|c: char| c.is_ascii_digit())
-                            || after_book.to_lowercase().starts_with("chapter");
+                    let chapter_is_default = !parser::has_explicit_chapter_after_book(after_book);
                     self.incomplete = Some(IncompleteRef {
                         verse_ref: resolved.clone(),
                         timestamp: Instant::now(),
-                        chapter_is_default: !has_explicit_chapter,
+                        chapter_is_default,
                     });
                     self.context.update(&resolved);
+
+                    if !chapter_is_default
+                        && resolved.chapter > 0
+                        && is_valid_reference(resolved.book_number, resolved.chapter)
+                    {
+                        let mut anchored = resolved.clone();
+                        anchored.verse_start = 1;
+                        detections.push(self.make_direct_detection(
+                            &anchored,
+                            compute_chapter_anchor_confidence(&anchored),
+                            text,
+                            book_match.start,
+                            text.len(),
+                            true,
+                        ));
+                        self.push_recent(&anchored);
+                        self.context.update(&anchored);
+                    } else if chapter_is_default
+                        && parser::is_book_navigation_mention(text, book_match)
+                        && is_valid_reference(resolved.book_number, resolved.chapter)
+                    {
+                        let mut anchored = resolved.clone();
+                        anchored.verse_start = 1;
+                        detections.push(self.make_direct_detection(
+                            &anchored,
+                            compute_chapter_anchor_confidence(&anchored),
+                            text,
+                            book_match.start,
+                            text.len(),
+                            true,
+                        ));
+                        self.push_recent(&anchored);
+                        self.context.update(&anchored);
+                    }
                     continue;
                 }
 
@@ -732,6 +782,7 @@ impl DirectDetector {
         text: &str,
         start: usize,
         end: usize,
+        is_chapter_only: bool,
     ) -> Detection {
         let snippet = extract_snippet(text, start, end.min(text.len()));
         #[expect(clippy::cast_possible_truncation, reason = "timestamp millis won't exceed u64 for centuries")]
@@ -746,7 +797,7 @@ impl DirectDetector {
             source: DetectionSource::DirectReference,
             transcript_snippet: snippet,
             detected_at: now,
-            is_chapter_only: false,
+            is_chapter_only,
         }
     }
 }
@@ -780,6 +831,11 @@ fn compute_confidence(_resolved: &VerseRef, original: &VerseRef) -> f64 {
     }
 
     confidence.min(1.0_f64)
+}
+
+/// Chapter-only anchor (verse 1): book + chapter spoken, no verse yet.
+fn compute_chapter_anchor_confidence(_resolved: &VerseRef) -> f64 {
+    0.93
 }
 
 /// Extract a snippet of text around the reference for context.
@@ -855,12 +911,14 @@ mod tests {
     }
 
     #[test]
-    fn test_chapter_only_held_as_incomplete() {
-        // Chapter-only references are NOT emitted — just held as incomplete for refinement
+    fn test_chapter_only_emits_anchor_and_keeps_incomplete() {
         let mut detector = DirectDetector::new();
         let results = detector.detect("Genesis 3 is about the fall of man");
-        assert!(results.is_empty()); // No emission
-        assert!(detector.incomplete.is_some()); // Held for refinement
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].verse_ref.chapter, 3);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
+        assert!(detector.incomplete.is_some());
         let inc = detector.incomplete.as_ref().unwrap();
         assert_eq!(inc.verse_ref.book_name, "Genesis");
         assert_eq!(inc.verse_ref.chapter, 3);
@@ -868,28 +926,25 @@ mod tests {
 
     #[test]
     fn test_chapter_only_no_duplicate_on_repeat() {
-        // Same book+chapter in a subsequent call — still held, no emission
         let mut detector = DirectDetector::new();
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty());
+        assert_eq!(results.len(), 1);
         assert!(detector.incomplete.is_some());
 
-        // Same text again — still held
+        // Same text again — still held, may re-emit anchor
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty());
+        assert_eq!(results.len(), 1);
         assert!(detector.incomplete.is_some());
     }
 
     #[test]
     fn test_incomplete_ref_completed_by_verse() {
-        // Chapter-only held, then refined by verse continuation
         let mut detector = DirectDetector::new();
-        // First: chapter-only — held as incomplete, not emitted
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty());
+        assert_eq!(results.len(), 1);
+        assert!(results[0].is_chapter_only);
         assert!(detector.incomplete.is_some());
 
-        // Second: verse continuation — refines the detection
         let results = detector.detect("verse 15");
         assert_eq!(results.len(), 1);
         assert_eq!(results[0].verse_ref.book_name, "Genesis");
@@ -901,38 +956,36 @@ mod tests {
 
     #[test]
     fn test_new_book_supersedes_incomplete() {
-        // EDGE-01: a new book/chapter replaces the pending incomplete cleanly
         let mut detector = DirectDetector::new();
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty()); // chapter-only, not emitted
+        assert_eq!(results.len(), 1);
         assert!(detector.incomplete.is_some());
 
-        // Different book — supersedes Genesis 3
         let results = detector.detect("let's look at John 1");
-        assert!(results.is_empty()); // also chapter-only, not emitted
-        // Incomplete now tracks John 1, not Genesis 3
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].verse_ref.book_name, "John");
         let inc = detector.incomplete.as_ref().unwrap();
         assert_eq!(inc.verse_ref.book_name, "John");
     }
 
     #[test]
-    fn test_abandoned_partial_no_stale_state() {
-        // EDGE-02: after timeout, incomplete is cleaned up without re-emission
+    fn test_abandoned_partial_emits_on_timeout() {
         let mut detector = DirectDetector::new();
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty()); // chapter-only, not emitted
+        assert_eq!(results.len(), 1);
         assert!(detector.incomplete.is_some());
 
-        // Simulate timeout by replacing with an expired timestamp (exceeds 15s)
         detector.incomplete = Some(IncompleteRef {
             verse_ref: detector.incomplete.as_ref().unwrap().verse_ref.clone(),
             timestamp: Instant::now() - std::time::Duration::from_secs(20),
             chapter_is_default: detector.incomplete.as_ref().unwrap().chapter_is_default,
         });
 
-        // Next detect call should clean up without emitting
         let results = detector.detect("something unrelated");
-        assert!(results.is_empty());
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].verse_ref.chapter, 3);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
         assert!(detector.incomplete.is_none());
     }
 
@@ -1287,7 +1340,9 @@ mod tests {
         let mut detector = DirectDetector::new();
 
         let results = detector.detect("turn to Acts");
-        assert!(results.is_empty());
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].verse_ref.book_name, "Acts");
+        assert_eq!(results[0].verse_ref.verse_start, 1);
         assert!(detector.incomplete.as_ref().unwrap().chapter_is_default);
 
         // Bare "3" = chapter (because book-only)
@@ -1304,12 +1359,61 @@ mod tests {
     }
 
     #[test]
+    fn test_explicit_chapter_only_emits_verse_one() {
+        let mut detector = DirectDetector::new();
+        let results = detector.detect("turn with me to Genesis chapter 3");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].verse_ref.book_name, "Genesis");
+        assert_eq!(results[0].verse_ref.chapter, 3);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
+    }
+
+    #[test]
+    fn test_chapt_abbreviation_emits_chapter_anchor() {
+        let mut detector = DirectDetector::new();
+        let results = detector.detect("example Genesis chapt 3");
+        assert!(!results.is_empty(), "expected detection for Genesis chapt 3");
+        assert_eq!(results[0].verse_ref.book_name, "Genesis");
+        assert_eq!(results[0].verse_ref.chapter, 3);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
+    }
+
+    #[test]
+    fn test_book_of_judges_switches_book() {
+        let mut detector = DirectDetector::new();
+        let results = detector.detect("the book of Judges");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].verse_ref.book_name, "Judges");
+        assert_eq!(results[0].verse_ref.chapter, 1);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
+    }
+
+    #[test]
+    fn test_in_the_book_of_phrase_switches_book() {
+        let mut detector = DirectDetector::new();
+        let results = detector.detect("now in the book of Exodus");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].verse_ref.book_name, "Exodus");
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+
+        let results = detector.detect("turn to the book of Judges");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].verse_ref.book_name, "Judges");
+    }
+
+    #[test]
     fn test_verse_keyword_anywhere_in_text() {
-        // "Genesis 3" → "and I'm reading from verse 15"
+        // "Genesis 3" anchors at v1; later "verse 15" refines
         let mut detector = DirectDetector::new();
 
         let results = detector.detect("Genesis 3");
-        assert!(results.is_empty());
+        assert!(!results.is_empty());
+        assert_eq!(results[0].verse_ref.chapter, 3);
+        assert_eq!(results[0].verse_ref.verse_start, 1);
+        assert!(results[0].is_chapter_only);
 
         let results = detector.detect("and I'm reading from verse 15");
         assert!(!results.is_empty());
