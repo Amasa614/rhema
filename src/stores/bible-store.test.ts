@@ -125,8 +125,10 @@ describe("bible store persistence", () => {
       useBibleStore.getState().setActiveTranslation(4)
       await vi.advanceTimersByTimeAsync(500)
 
-      expect(mockSet).toHaveBeenCalledTimes(1)
+      expect(mockSet).toHaveBeenCalledTimes(3)
       expect(mockSet).toHaveBeenCalledWith("activeTranslationId", 4)
+      expect(mockSet).toHaveBeenCalledWith("companionTranslationId", null)
+      expect(mockSet).toHaveBeenCalledWith("onScreenLanguageMode", "primary")
       vi.useRealTimers()
     })
 

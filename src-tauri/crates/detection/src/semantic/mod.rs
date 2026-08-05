@@ -5,6 +5,7 @@ pub mod cache;
 pub mod detector;
 pub mod synonyms;
 pub mod ensemble;
+pub mod thematic;
 
 #[cfg(feature = "onnx")]
 pub mod onnx_embedder;

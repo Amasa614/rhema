@@ -163,6 +163,67 @@ impl DetectionPipeline {
         self.merger.merge(vec![], vector_detections)
     }
 
+    /// Topic-based detection when the sermon discusses themes (humility, giving, …)
+    /// without citing chapter and verse. Uses lower similarity thresholds.
+    pub fn process_thematic(&mut self, text: &str) -> Vec<MergedDetection> {
+        use crate::semantic::thematic::{
+            active_themes, thematic_queries, THEMATIC_MAX_CONFIDENCE, THEMATIC_MIN_SIMILARITY,
+        };
+
+        if !self.has_semantic() || text.split_whitespace().count() < 4 {
+            return vec![];
+        }
+
+        let theme_ids = active_themes(text);
+        if theme_ids.is_empty() {
+            return vec![];
+        }
+
+        let queries = thematic_queries(text, &theme_ids);
+        #[expect(clippy::cast_possible_truncation, reason = "timestamp millis fit in u64")]
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis() as u64;
+
+        let snippet = text.to_string();
+        let mut detections: Vec<Detection> = Vec::new();
+        let mut seen = std::collections::HashSet::new();
+
+        for query in queries {
+            for (verse_id, similarity) in self.semantic_search(&query, 8) {
+                if similarity < THEMATIC_MIN_SIMILARITY || !seen.insert(verse_id) {
+                    continue;
+                }
+                let confidence = similarity.min(THEMATIC_MAX_CONFIDENCE);
+                detections.push(Detection {
+                    verse_ref: VerseRef {
+                        book_number: 0,
+                        book_name: String::new(),
+                        chapter: 0,
+                        verse_start: 0,
+                        verse_end: None,
+                    },
+                    verse_id: Some(verse_id),
+                    confidence,
+                    source: DetectionSource::Thematic { similarity },
+                    transcript_snippet: snippet.clone(),
+                    detected_at: now,
+                    is_chapter_only: false,
+                });
+            }
+        }
+
+        detections.sort_by(|a, b| {
+            b.confidence
+                .partial_cmp(&a.confidence)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        detections.truncate(4);
+
+        self.merger.merge(vec![], detections)
+    }
+
     /// Run a standalone semantic search query (for the search UI).
     pub fn semantic_search(&mut self, query: &str, k: usize) -> Vec<(i64, f64)> {
         self.semantic.search_query(query, k)

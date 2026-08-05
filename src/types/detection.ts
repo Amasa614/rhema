@@ -6,7 +6,7 @@ export interface DetectionResult {
   chapter: number
   verse: number
   confidence: number
-  source: "direct" | "semantic"
+  source: "direct" | "semantic" | "thematic"
   auto_queued: boolean
   transcript_snippet: string
   /** True when detected from a chapter-only reference (verse defaults to 1, may be refined). */

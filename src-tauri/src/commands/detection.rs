@@ -40,6 +40,7 @@ fn source_to_string(source: &rhema_detection::DetectionSource) -> String {
     match source {
         rhema_detection::DetectionSource::DirectReference => "direct".to_string(),
         rhema_detection::DetectionSource::Semantic { .. } => "semantic".to_string(),
+        rhema_detection::DetectionSource::Thematic { .. } => "thematic".to_string(),
     }
 }
 

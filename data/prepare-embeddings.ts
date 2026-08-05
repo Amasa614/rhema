@@ -22,6 +22,7 @@ import {
   ensurePythonEnv,
   getVenvBin,
   PROJECT_ROOT,
+  SETUP_PIP_PACKAGES,
 } from "./lib/python-env"
 
 // ── Paths ────────────────────────────────────────────────────────────
@@ -83,15 +84,7 @@ async function main() {
 
   // ── Phase 1: Python environment ────────────────────────────────
   console.log("\n━━━ Phase 1/7: Python environment ━━━")
-  await ensurePythonEnv([
-    "optimum-onnx[onnxruntime]",
-    "sentence-transformers",
-    "accelerate",
-    "tokenizers",
-    "numpy",
-    "torch",
-    "meaningless",
-  ])
+  await ensurePythonEnv([...SETUP_PIP_PACKAGES])
 
   // ── Phase 2: Bible source data (pre-built zip + cross-refs) ────
   console.log("\n━━━ Phase 2/7: Download Bible source data ━━━")

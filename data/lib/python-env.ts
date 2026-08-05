@@ -13,6 +13,19 @@ export const PROJECT_ROOT = join(import.meta.dir, "..", "..")
 export const VENV_DIR = join(PROJECT_ROOT, ".venv")
 export const MIN_PYTHON_VERSION: [number, number, number] = [3, 9, 0]
 
+/** Pin below 5.5 — optimum-cli ONNX export breaks on read-only SentenceTransformer.config (see huggingface/sentence-transformers#3830). */
+export const SENTENCE_TRANSFORMERS_PIP = "sentence-transformers==5.4.1"
+
+export const SETUP_PIP_PACKAGES = [
+  "optimum-onnx[onnxruntime]",
+  SENTENCE_TRANSFORMERS_PIP,
+  "accelerate",
+  "tokenizers",
+  "numpy",
+  "torch",
+  "meaningless",
+] as const
+
 export function getVenvBin(name: string): string {
   if (process.platform === "win32") {
     return join(VENV_DIR, "Scripts", `${name}.exe`)

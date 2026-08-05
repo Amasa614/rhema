@@ -81,6 +81,21 @@ impl SentenceBuffer {
         !self.buffer.is_empty()
     }
 
+    /// Word count in the current buffer (for minimum-length gates before detection).
+    pub fn word_count(&self) -> usize {
+        self.buffer.split_whitespace().count()
+    }
+
+    /// Current accumulated text without flushing (for utterance-boundary detection).
+    pub fn accumulated(&self) -> Option<String> {
+        let trimmed = self.buffer.trim();
+        if trimmed.is_empty() {
+            None
+        } else {
+            Some(trimmed.to_string())
+        }
+    }
+
     fn flush(&mut self) -> String {
         let text = self.buffer.trim().to_string();
         self.buffer.clear();

@@ -42,7 +42,8 @@ import {
   GraduationCapIcon,
   BrainCircuitIcon,
 } from "lucide-react"
-import { useSettingsStore } from "@/stores"
+import { useSettingsStore, useBibleStore } from "@/stores"
+import { suggestCompanionTranslationId } from "@/hooks/use-bible"
 import { useTutorialStore } from "@/stores/tutorial-store"
 import { useSettingsDialogStore } from "@/lib/settings-dialog"
 import type { DeviceInfo } from "@/types/audio"
@@ -456,6 +457,12 @@ function BibleSection() {
   const [translations, setTranslations] = useState<TranslationInfo[]>([])
   const [activeId, setActiveId] = useState<number>(1)
   const [loading, setLoading] = useState(true)
+  const companionId = useBibleStore((s) => s.companionTranslationId)
+  const screenMode = useBibleStore((s) => s.onScreenLanguageMode)
+  const setCompanionTranslationId = useBibleStore(
+    (s) => s.setCompanionTranslationId
+  )
+  const setOnScreenLanguageMode = useBibleStore((s) => s.setOnScreenLanguageMode)
 
   useEffect(() => {
     async function load() {
@@ -475,16 +482,47 @@ function BibleSection() {
     load()
   }, [])
 
+  useEffect(() => {
+    if (companionId == null && screenMode !== "primary") {
+      setOnScreenLanguageMode("primary")
+    }
+  }, [companionId, screenMode, setOnScreenLanguageMode])
+
   const handleChange = async (value: string) => {
     const id = parseInt(value)
     try {
       await invoke("set_active_translation", { translationId: id })
       setActiveId(id)
-      // Update frontend stores so all panels use the new translation
-      const { useBibleStore } = await import("@/stores")
       useBibleStore.getState().setActiveTranslation(id)
+      const companion = useBibleStore.getState().companionTranslationId
+      if (companion != null && companion === id) {
+        useBibleStore
+          .getState()
+          .setCompanionTranslationId(
+            suggestCompanionTranslationId(translations, id)
+          )
+      }
     } catch (e) {
       console.error("Failed to set translation:", e)
+    }
+  }
+
+  const companionOptions = translations.filter((t) => t.id !== activeId)
+  const companionLanguageOptions = companionOptions.filter(
+    (t) => t.language !== "en"
+  )
+  const companionEnglishOptions = companionOptions.filter(
+    (t) => t.language === "en"
+  )
+
+  const ensureCompanionForMode = (
+    mode: "primary" | "companion" | "both"
+  ) => {
+    if (mode === "primary") return
+    if (useBibleStore.getState().companionTranslationId != null) return
+    const suggested = suggestCompanionTranslationId(translations, activeId)
+    if (suggested != null) {
+      setCompanionTranslationId(suggested)
     }
   }
 
@@ -505,7 +543,7 @@ function BibleSection() {
           <SelectTrigger className="h-8 text-xs">
             <SelectValue placeholder={loading ? "Loading..." : "Select translation"} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="z-[200]">
             {englishTranslations.length > 0 && (
               <>
                 <div className="px-2 py-1 text-[0.5625rem] font-medium uppercase tracking-wider text-muted-foreground">
@@ -533,9 +571,105 @@ function BibleSection() {
           </SelectContent>
         </Select>
         <p className="text-[0.625rem] text-muted-foreground">
-          Detected verses will display in this translation.
+          Used for detection follow-up text, search, and as the English line when
+          showing both languages. Voice commands like “switch to NLT” change this.
           {translations.length > 0 && ` ${translations.length} translations available.`}
         </p>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Companion Translation
+        </label>
+        <Select
+          value={companionId != null ? String(companionId) : "none"}
+          onValueChange={(value) => {
+            const id = value === "none" ? null : parseInt(value, 10)
+            setCompanionTranslationId(id)
+          }}
+          disabled={loading}
+        >
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue placeholder="None" />
+          </SelectTrigger>
+          <SelectContent className="z-[200]">
+            <SelectItem value="none">None</SelectItem>
+            {companionLanguageOptions.length > 0 && (
+              <>
+                <div className="px-2 py-1 text-[0.5625rem] font-medium uppercase tracking-wider text-muted-foreground">
+                  Other languages (same verse reference)
+                </div>
+                {companionLanguageOptions.map((t) => (
+                  <SelectItem key={t.id} value={String(t.id)}>
+                    {t.abbreviation} — {t.title}
+                  </SelectItem>
+                ))}
+              </>
+            )}
+            {companionEnglishOptions.length > 0 && (
+              <>
+                <div className="mt-1 px-2 py-1 text-[0.5625rem] font-medium uppercase tracking-wider text-muted-foreground">
+                  Other English
+                </div>
+                {companionEnglishOptions.map((t) => (
+                  <SelectItem key={t.id} value={String(t.id)}>
+                    {t.abbreviation} — {t.title}
+                  </SelectItem>
+                ))}
+              </>
+            )}
+          </SelectContent>
+        </Select>
+        <p className="text-[0.625rem] text-muted-foreground">
+          Same book, chapter, and verse from your installed Bibles — not machine
+          translation. Pick TWI here for Asante Twi (after{" "}
+          <code className="text-[0.5625rem]">build:bible</code> includes it).
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          On-screen text
+        </label>
+        <RadioGroup
+          value={screenMode}
+          onValueChange={(v) => {
+            if (v === "primary" || v === "companion" || v === "both") {
+              ensureCompanionForMode(v)
+              setOnScreenLanguageMode(v)
+            }
+          }}
+          className="gap-2"
+        >
+          <label className="flex cursor-pointer items-start gap-2 text-xs">
+            <RadioGroupItem value="primary" className="mt-0.5" />
+            <span>Primary only (e.g. English NLT/NKJV)</span>
+          </label>
+          <label
+            className={`flex cursor-pointer items-start gap-2 text-xs ${
+              companionId == null ? "opacity-50" : ""
+            }`}
+          >
+            <RadioGroupItem
+              value="companion"
+              className="mt-0.5"
+              disabled={companionId == null}
+            />
+            <span>Companion only (e.g. Twi)</span>
+          </label>
+          <label
+            className={`flex cursor-pointer items-start gap-2 text-xs ${
+              companionId == null ? "opacity-50" : ""
+            }`}
+          >
+            <RadioGroupItem
+              value="both"
+              className="mt-0.5"
+              disabled={companionId == null}
+            />
+            <span>Both — primary on top, companion below</span>
+          </label>
+        </RadioGroup>
       </div>
     </div>
   )

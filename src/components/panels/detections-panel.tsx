@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button"
 import { PlayIcon, PlusIcon } from "lucide-react"
 import { useDetection, detectionActions } from "@/hooks/use-detection"
 import { bibleActions } from "@/hooks/use-bible"
-import { useQueueStore, useBroadcastStore, useBibleStore } from "@/stores"
-import { toVerseRenderData } from "@/hooks/use-broadcast"
+import { useQueueStore, useBibleStore } from "@/stores"
+import { presentVerseOnBroadcast } from "@/hooks/use-broadcast"
 import type { DetectionResult } from "@/types"
 
 const SOURCE_COLORS: Record<string, { bg: string; text: string; label: string }> = {
   direct: { bg: "bg-green-500/15", text: "text-green-600", label: "Direct" },
-  semantic: { bg: "bg-indigo-500/15", text: "text-indigo-300", label: "Semantic" },
+  semantic: { bg: "bg-indigo-500/15", text: "text-indigo-300", label: "Quote" },
+  thematic: { bg: "bg-amber-500/15", text: "text-amber-700", label: "Topic" },
 }
 
 function SourceBadge({ source }: { source: string }) {
@@ -24,8 +25,7 @@ function SourceBadge({ source }: { source: string }) {
 
 function DetectionCard({ detection }: { detection: DetectionResult }) {
   const handlePresent = () => {
-    // Select this verse for preview
-    bibleActions.selectVerse({
+    const verse = {
       id: 0,
       translation_id: useBibleStore.getState().activeTranslationId,
       book_number: detection.book_number,
@@ -34,8 +34,8 @@ function DetectionCard({ detection }: { detection: DetectionResult }) {
       chapter: detection.chapter,
       verse: detection.verse,
       text: detection.verse_text,
-    })
-    // Navigate book search panel to this verse
+    }
+    bibleActions.selectVerse(verse)
     if (detection.book_number > 0) {
       bibleActions.navigateToVerse(
         detection.book_number,
@@ -43,17 +43,7 @@ function DetectionCard({ detection }: { detection: DetectionResult }) {
         detection.verse
       )
     }
-    // Set broadcast live verse
-    const translation = useBibleStore.getState().translations
-      .find(t => t.id === useBibleStore.getState().activeTranslationId)?.abbreviation ?? "KJV"
-    useBroadcastStore.getState().setLiveVerse(
-      toVerseRenderData({
-        id: 0, translation_id: useBibleStore.getState().activeTranslationId,
-        book_number: detection.book_number, book_name: detection.book_name,
-        book_abbreviation: "", chapter: detection.chapter,
-        verse: detection.verse, text: detection.verse_text,
-      }, translation)
-    )
+    void presentVerseOnBroadcast(verse)
   }
 
   return (
@@ -96,7 +86,12 @@ function DetectionCard({ detection }: { detection: DetectionResult }) {
               },
               reference: detection.verse_ref,
               confidence: detection.confidence,
-              source: detection.source === "direct" ? "ai-direct" : "ai-semantic",
+              source:
+                detection.source === "direct"
+                  ? "ai-direct"
+                  : detection.source === "thematic"
+                    ? "ai-semantic"
+                    : "ai-semantic",
               added_at: Date.now(),
             })
           }}

@@ -15,6 +15,8 @@ pub struct VerseRef {
 pub enum DetectionSource {
     DirectReference,
     Semantic { similarity: f64 },
+    /// Sermon topic / theme (humility, giving, etc.) — related verses, not exact quotes.
+    Thematic { similarity: f64 },
 }
 
 /// A single detected Bible reference in transcript text.

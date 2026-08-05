@@ -6,6 +6,8 @@ export interface VerseSegment {
 export interface VerseRenderData {
   reference: string
   segments: VerseSegment[]
+  /** Second language block (e.g. Twi under English) when on-screen mode is "both". */
+  companionSegments?: VerseSegment[]
 }
 
 export interface RenderOptions {

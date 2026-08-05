@@ -18,6 +18,7 @@ import {
   ensurePythonEnv,
   getVenvBin,
   PROJECT_ROOT,
+  SETUP_PIP_PACKAGES,
 } from "./lib/python-env"
 
 const MODELS_DIR = join(PROJECT_ROOT, "models", "qwen3-embedding-0.6b")
@@ -30,9 +31,7 @@ const MODELS_DIR_INT8 = join(
 async function main() {
   // --- Phase 1: Python environment setup ---
   await ensurePythonEnv([
-    "optimum-onnx[onnxruntime]",
-    "sentence-transformers",
-    "accelerate",
+    ...SETUP_PIP_PACKAGES.filter((p) => p !== "meaningless"),
   ])
 
   // --- Phase 2: Export model ---

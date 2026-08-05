@@ -9,7 +9,36 @@ import type { SemanticSearchResult } from "@/types/detection"
 async function loadTranslations() {
   const translations = await invoke<Translation[]>("list_translations")
   useBibleStore.getState().setTranslations(translations)
+  const { activeTranslationId, companionTranslationId } =
+    useBibleStore.getState()
+  if (
+    companionTranslationId != null &&
+    companionTranslationId === activeTranslationId
+  ) {
+    useBibleStore
+      .getState()
+      .setCompanionTranslationId(
+        suggestCompanionTranslationId(translations, activeTranslationId)
+      )
+  }
   return translations
+}
+
+/** Prefer Asante Twi for bilingual church use; never same as primary. */
+export function suggestCompanionTranslationId(
+  translations: Translation[],
+  primaryId: number
+): number | null {
+  const twi = translations.find(
+    (t) =>
+      t.id !== primaryId &&
+      (t.abbreviation.toUpperCase() === "TWI" || t.language === "tw")
+  )
+  if (twi) return twi.id
+  return (
+    translations.find((t) => t.id !== primaryId && t.language !== "en")?.id ??
+    null
+  )
 }
 
 async function loadBooks(translationId?: number) {

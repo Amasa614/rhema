@@ -5,7 +5,7 @@
  */
 
 import { Database } from "bun:sqlite"
-import { readFileSync } from "node:fs"
+import { readFileSync, unlinkSync, existsSync } from "node:fs"
 import { join } from "node:path"
 
 const DATA_DIR = import.meta.dir
@@ -80,13 +80,23 @@ const TRANSLATIONS_META: Array<{
   { file: "SpaRV.json", abbreviation: "SpaRV", title: "Reina-Valera 1909", language: "es", license: "Public Domain" },
   { file: "FreJND.json", abbreviation: "FreJND", title: "J.N. Darby French 1885", language: "fr", license: "Public Domain" },
   { file: "PorBLivre.json", abbreviation: "PorBLivre", title: "Biblia Livre", language: "pt", license: "Public Domain" },
+  { file: "TwiAsante.json", abbreviation: "TWI", title: "Asante Twi Nkwa Asɛm (eBible.org)", language: "tw", license: "CC BY-SA 4.0 — Source: Biblica, Inc. via https://ebible.org/twiasante/ ; original at https://www.biblica.com and https://open.bible" },
 ]
 
 function main() {
   console.log("\n🔨 Building rhema.db...\n")
 
-  // Remove existing DB
-  try { require("node:fs").unlinkSync(DB_PATH) } catch {}
+  // Remove existing DB (including WAL sidecars)
+  for (const p of [DB_PATH, `${DB_PATH}-wal`, `${DB_PATH}-shm`]) {
+    if (existsSync(p)) {
+      try {
+        unlinkSync(p)
+      } catch {
+        console.error(`  ❌ Could not delete ${p} — close Rhema (tauri dev) and retry.`)
+        process.exit(1)
+      }
+    }
+  }
 
   const db = new Database(DB_PATH, { create: true })
 

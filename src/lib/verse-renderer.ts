@@ -414,6 +414,21 @@ function drawReference(
   return ref.fontSize * 1.5
 }
 
+function segmentsToPlainText(
+  segments: VerseRenderData["segments"],
+  vn: BroadcastTheme["verseNumbers"],
+  showVerseNumbers: boolean
+): string {
+  let fullText = ""
+  for (const segment of segments) {
+    if (showVerseNumbers && vn.visible && segment.verseNumber !== undefined) {
+      fullText += `${segment.verseNumber} `
+    }
+    fullText += segment.text + " "
+  }
+  return fullText.trim()
+}
+
 function drawVerseText(
   ctx: CanvasRenderingContext2D,
   theme: BroadcastTheme,
@@ -449,15 +464,8 @@ function drawVerseText(
   }
 
   // Build full text with verse numbers inline
-  let fullText = ""
-  for (const segment of verse.segments) {
-    if (vn.visible && segment.verseNumber !== undefined) {
-      fullText += `${segment.verseNumber} `
-    }
-    fullText += segment.text + " "
-  }
-  fullText = applyTextTransform(
-    fullText.trim(),
+  const fullText = applyTextTransform(
+    segmentsToPlainText(verse.segments, vn, true),
     resolveTextTransform(vt.textTransform)
   )
 
@@ -545,6 +553,44 @@ function drawVerseText(
       )
     }
     currentY += lineHeightPx
+  }
+
+  if (verse.companionSegments?.length) {
+    const companionSize = actualFontSize * 0.92
+    const companionLineHeight = companionSize * vt.lineHeight
+    currentY += lineHeightPx * 0.35
+    ctx.font = `${vt.fontWeight} ${companionSize}px "${vt.fontFamily}", serif`
+    const companionText = applyTextTransform(
+      segmentsToPlainText(verse.companionSegments, vn, false),
+      resolveTextTransform(vt.textTransform)
+    )
+    const companionLines = wrapText(ctx, companionText, textRectWidth)
+    for (const [index, line] of companionLines.entries()) {
+      const isJustifiedLine =
+        verseAlign === "justify" &&
+        index < companionLines.length - 1 &&
+        /\s+/.test(line)
+      if (isJustifiedLine) {
+        const words = line.trim().split(/\s+/).filter(Boolean)
+        if (words.length > 1) {
+          const wordsWidth = words.reduce(
+            (sum, word) => sum + ctx.measureText(word).width,
+            0
+          )
+          const gap = (textRectWidth - wordsWidth) / (words.length - 1)
+          let cursorX = textRectX
+          for (const word of words) {
+            drawStyledLine(word, cursorX, currentY)
+            cursorX += ctx.measureText(word).width + gap
+          }
+        } else {
+          drawStyledLine(line, textRectX, currentY)
+        }
+      } else {
+        drawStyledLine(line, x, currentY)
+      }
+      currentY += companionLineHeight
+    }
   }
 
   ctx.restore()
@@ -717,14 +763,9 @@ function measureVerseHeight(
       /* unsupported in some WebViews */
     }
   }
-  let fullText = ""
-  for (const segment of verse.segments) {
-    if (vn.visible && segment.verseNumber !== undefined)
-      fullText += `${segment.verseNumber} `
-    fullText += `${segment.text} `
-  }
+  let fullText = segmentsToPlainText(verse.segments, vn, true)
   const transformed = applyTextTransform(
-    fullText.trim(),
+    fullText,
     resolveTextTransform(vt.textTransform)
   )
   const lines = wrapText(ctx, transformed, textRectWidth)
@@ -735,9 +776,32 @@ function measureVerseHeight(
     const width = isJustifiedLine ? textRectWidth : ctx.measureText(line).width
     if (width > maxLineWidth) maxLineWidth = width
   }
+  let height = Math.max(lineHeightPx, lines.length * lineHeightPx)
+
+  if (verse.companionSegments?.length) {
+    const companionSize = vt.fontSize * 0.92
+    const companionLineHeight = companionSize * vt.lineHeight
+    const companionPlain = segmentsToPlainText(
+      verse.companionSegments,
+      vn,
+      false
+    )
+    const companionTransformed = applyTextTransform(
+      companionPlain,
+      resolveTextTransform(vt.textTransform)
+    )
+    ctx.font = `${vt.fontWeight} ${companionSize}px "${vt.fontFamily}", serif`
+    const companionLines = wrapText(ctx, companionTransformed, textRectWidth)
+    height += lineHeightPx * 0.35
+    height += Math.max(
+      companionLineHeight,
+      companionLines.length * companionLineHeight
+    )
+  }
+
   ctx.restore()
   return {
-    height: Math.max(lineHeightPx, lines.length * lineHeightPx),
+    height,
     maxLineWidth: Math.max(1, maxLineWidth),
   }
 }

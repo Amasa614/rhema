@@ -30,7 +30,18 @@ fn truncate_safe(s: &str, max_bytes: usize) -> &str {
     &s[..end]
 }
 use rhema_audio::{AudioConfig, AudioFrame};
+use rhema_detection::{DetectionPipeline, SentenceBuffer};
 use rhema_stt::{DeepgramClient, SttConfig, SttProvider, TranscriptEvent};
+
+/// Minimum accumulated words before running quote/semantic detection on a buffer snapshot.
+const SEMANTIC_MIN_WORDS: usize = 5;
+
+/// Payload for the background semantic detection worker.
+struct SemanticChunk {
+    text: String,
+    /// Deepgram `speech_final` / utterance boundary — flush accumulated fragments.
+    utterance_end: bool,
+}
 
 /// Start the full audio-capture-to-transcription pipeline.
 ///
@@ -318,7 +329,7 @@ pub async fn start_transcription(
     let event_app = app.clone();
 
     // Background semantic detection channel — non-blocking, drops if busy
-    let (semantic_tx, mut semantic_rx) = tokio::sync::mpsc::channel::<String>(4);
+    let (semantic_tx, mut semantic_rx) = tokio::sync::mpsc::channel::<SemanticChunk>(16);
 
     // Background detection channel — direct + reading mode, non-blocking
     let (detect_tx, mut detect_rx) = tokio::sync::mpsc::channel::<String>(16);
@@ -336,12 +347,46 @@ pub async fn start_transcription(
     // (WebSocket readers, event emitters, etc.).
     let sem_app = app.clone();
     tauri::async_runtime::spawn(async move {
-        while let Some(text) = semantic_rx.recv().await {
-            let app_clone = sem_app.clone();
-            let _ = tokio::task::spawn_blocking(move || {
-                run_semantic_detection(&app_clone, &text);
-            })
-            .await;
+        let mut sentence_buffer = SentenceBuffer::new();
+        let mut timeout_tick = tokio::time::interval(Duration::from_millis(500));
+
+        loop {
+            tokio::select! {
+                msg = semantic_rx.recv() => {
+                    let Some(chunk) = msg else { break };
+                    let mut texts = Vec::new();
+
+                    if let Some(sentence) = sentence_buffer.append(&chunk.text) {
+                        texts.push(sentence);
+                    }
+                    if chunk.utterance_end {
+                        if let Some(sentence) = sentence_buffer.force_flush() {
+                            texts.push(sentence);
+                        } else if sentence_buffer.word_count() >= SEMANTIC_MIN_WORDS {
+                            if let Some(sentence) = sentence_buffer.accumulated() {
+                                texts.push(sentence);
+                            }
+                        }
+                    }
+
+                    for text in texts {
+                        let app_clone = sem_app.clone();
+                        let _ = tokio::task::spawn_blocking(move || {
+                            run_semantic_detection(&app_clone, &text);
+                        })
+                        .await;
+                    }
+                }
+                _ = timeout_tick.tick() => {
+                    if let Some(sentence) = sentence_buffer.check_timeout() {
+                        let app_clone = sem_app.clone();
+                        let _ = tokio::task::spawn_blocking(move || {
+                            run_semantic_detection(&app_clone, &sentence);
+                        })
+                        .await;
+                    }
+                }
+            }
         }
     });
 
@@ -393,7 +438,7 @@ pub async fn start_transcription(
                 TranscriptEvent::Final {
                     transcript,
                     confidence,
-                    speech_final: _,
+                    speech_final,
                     ..
                 } => {
                     if !transcript.is_empty() {
@@ -435,10 +480,12 @@ pub async fn start_transcription(
                             }
                         }
 
-                        // Send every is_final fragment to FTS5 immediately.
-                        // No sentence buffer — FTS5 is fast enough (~20-50ms)
-                        // to run on every fragment without waiting for pauses.
-                        match semantic_tx.try_send(transcript.clone()) {
+                        // Quote / semantic detection: accumulate fragments in the
+                        // semantic worker (sentence buffer + hybrid vector + FTS5).
+                        match semantic_tx.try_send(SemanticChunk {
+                            text: transcript.clone(),
+                            utterance_end: speech_final,
+                        }) {
                             Ok(()) => {
                                 let n = semantic_sent_evt.fetch_add(1, Ordering::Relaxed) + 1;
                                 if n % 25 == 0 {
@@ -583,92 +630,87 @@ fn run_direct_detection(app: &AppHandle, transcript: &str) -> bool {
     has_high_confidence
 }
 
-/// Run FTS5-only detection. ONNX/vector pipeline is skipped for speed.
-/// FTS5 phrase match finds exact scripture quotes; direct detection handles
-/// verse references; ONNX can be re-enabled later with parallelized vector search.
+/// Hybrid quote detection + thematic (topic) surfacing during live STT.
 fn run_semantic_detection(app: &AppHandle, transcript: &str) {
     let t0 = std::time::Instant::now();
+    if transcript.split_whitespace().count() < SEMANTIC_MIN_WORDS {
+        return;
+    }
     log::info!("[DET-SEMANTIC] Running on: {:?}", truncate_safe(transcript, 80));
 
-    // FTS5 BM25 phrase search (~5ms)
     let fts_results = {
         let managed: State<'_, Mutex<AppState>> = app.state();
         let Ok(app_state) = managed.lock() else {
             log::error!("Failed to lock AppState for FTS5");
             return;
         };
-        app_state.bible_db.as_ref().and_then(|db| {
-            db.search_verses_bm25(transcript, 10).ok()
-        })
+        app_state
+            .bible_db
+            .as_ref()
+            .and_then(|db| db.search_verses_bm25(transcript, 15).ok())
+            .unwrap_or_default()
     };
 
-    let Some(fts) = fts_results else {
-        log::info!("[DET-SEMANTIC] No FTS5 results");
-        return;
+    let mut merged = {
+        let pipeline_state: State<'_, Mutex<DetectionPipeline>> = app.state();
+        let Ok(mut pipeline) = pipeline_state.lock() else {
+            log::error!("Failed to lock DetectionPipeline for hybrid detection");
+            return;
+        };
+        let mut all = Vec::new();
+        if !fts_results.is_empty() || pipeline.has_semantic() {
+            all.extend(pipeline.process_hybrid_with_fts(transcript, &fts_results));
+        }
+        all.extend(pipeline.process_thematic(transcript));
+        all
     };
-    if fts.is_empty() {
-        log::info!("[DET-SEMANTIC] No FTS5 results");
+
+    if merged.is_empty() {
+        log::info!("[DET-SEMANTIC] No detections");
         return;
     }
 
-    // Build results directly from FTS5 hits — no ONNX, no vector search.
-    // Resolve verse text from DB for each FTS5 hit.
+    // Dedup same verse (hybrid + thematic may overlap)
+    merged.sort_by(|a, b| {
+        b.detection
+            .confidence
+            .partial_cmp(&a.detection.confidence)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
+    let mut seen = std::collections::HashSet::new();
+    merged.retain(|m| {
+        let d = &m.detection;
+        let key = if let Some(vid) = d.verse_id {
+            (0, 0, 0, vid)
+        } else {
+            (
+                d.verse_ref.book_number,
+                d.verse_ref.chapter,
+                d.verse_ref.verse_start,
+                0,
+            )
+        };
+        seen.insert(key)
+    });
+
     let managed: State<'_, Mutex<AppState>> = app.state();
     let Ok(app_state) = managed.lock() else {
         log::error!("Failed to lock AppState for verse resolution");
         return;
     };
 
-    use super::detection::{FTS5_RANK0_CONFIDENCE, FTS5_CONFIDENCE_DECAY, FTS5_MIN_CONFIDENCE};
-
-    let results: Vec<super::detection::DetectionResult> = fts
+    let results: Vec<super::detection::DetectionResult> = merged
         .iter()
-        .enumerate()
-        .filter_map(|(rank, hit)| {
-            #[expect(clippy::cast_precision_loss, reason = "rank is small")]
-            let confidence = FTS5_RANK0_CONFIDENCE - (rank as f64 * FTS5_CONFIDENCE_DECAY);
-            if confidence < FTS5_MIN_CONFIDENCE {
-                return None;
-            }
-
-            // Resolve verse text from active translation
-            let verse_text = app_state.bible_db.as_ref()
-                .and_then(|db| {
-                    db.get_verse(
-                        app_state.active_translation_id,
-                        hit.book_number,
-                        hit.chapter,
-                        hit.verse,
-                    ).ok().flatten()
-                })
-                .map(|v| v.text)
-                .unwrap_or_default();
-
-            Some(super::detection::DetectionResult {
-                verse_ref: format!("{} {}:{}", hit.book_name, hit.chapter, hit.verse),
-                verse_text,
-                book_name: hit.book_name.clone(),
-                book_number: hit.book_number,
-                chapter: hit.chapter,
-                verse: hit.verse,
-                confidence,
-                source: "semantic".to_string(),
-                auto_queued: false,
-                transcript_snippet: truncate_safe(transcript, 100).to_string(),
-                is_chapter_only: false,
-            })
-        })
+        .map(|m| super::detection::to_result(&app_state, m))
         .collect();
-
-    if results.is_empty() {
-        log::info!("[DET-SEMANTIC] No detections");
-        return;
-    }
 
     for r in &results {
         log::info!(
             "[DET-SEMANTIC] Found: {} ({:.0}% {}) auto_q={}",
-            r.verse_ref, r.confidence * 100.0, r.source, r.auto_queued
+            r.verse_ref,
+            r.confidence * 100.0,
+            r.source,
+            r.auto_queued
         );
     }
     drop(app_state);
