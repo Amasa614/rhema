@@ -33,7 +33,53 @@ export function getVenvBin(name: string): string {
   return join(VENV_DIR, "bin", name)
 }
 
+async function probePython(args: string[]): Promise<boolean> {
+  try {
+    const proc = Bun.spawn(args, {
+      stdout: "pipe",
+      stderr: "pipe",
+    })
+    const stdout = await new Response(proc.stdout).text()
+    const stderr = await new Response(proc.stderr).text()
+    const exitCode = await proc.exited
+    const output = `${stdout}${stderr}`
+    return exitCode === 0 && output.includes("Python")
+  } catch {
+    return false
+  }
+}
+
+async function resolvePythonExecutable(
+  versionArgs: string[]
+): Promise<string | null> {
+  if (!(await probePython(versionArgs))) {
+    return null
+  }
+  const base = versionArgs.slice(0, -1)
+  if (base.length === 0) {
+    return null
+  }
+  try {
+    const proc = Bun.spawn([...base, "-c", "import sys; print(sys.executable)"], {
+      stdout: "pipe",
+      stderr: "pipe",
+    })
+    const stdout = (await new Response(proc.stdout).text()).trim()
+    const exitCode = await proc.exited
+    if (exitCode === 0 && stdout.length > 0) {
+      return stdout
+    }
+  } catch {
+    // fall through
+  }
+  return base.length === 1 ? base[0]! : null
+}
+
 export async function findPython(): Promise<string> {
+  const attempts: string[][] = []
+  if (process.platform === "win32") {
+    attempts.push(["py", "-3", "--version"])
+  }
   for (const candidate of [
     "python3.12",
     "python3.11",
@@ -41,18 +87,13 @@ export async function findPython(): Promise<string> {
     "python3",
     "python",
   ]) {
-    try {
-      const proc = Bun.spawn([candidate, "--version"], {
-        stdout: "pipe",
-        stderr: "pipe",
-      })
-      const output = await new Response(proc.stdout).text()
-      const exitCode = await proc.exited
-      if (exitCode === 0 && output.includes("Python")) {
-        return candidate
-      }
-    } catch {
-      // Binary not found, try next candidate
+    attempts.push([candidate, "--version"])
+  }
+
+  for (const versionArgs of attempts) {
+    const resolved = await resolvePythonExecutable(versionArgs)
+    if (resolved) {
+      return resolved
     }
   }
 
@@ -137,8 +178,10 @@ export async function ensurePythonEnv(
     stdout: "pipe",
     stderr: "pipe",
   })
-  const versionOutput = await new Response(versionProc.stdout).text()
+  const versionStdout = await new Response(versionProc.stdout).text()
+  const versionStderr = await new Response(versionProc.stderr).text()
   await versionProc.exited
+  const versionOutput = `${versionStdout}${versionStderr}`
   const version = parsePythonVersion(versionOutput)
   console.log(`  Found ${pythonCmd} version ${version.join(".")}`)
 

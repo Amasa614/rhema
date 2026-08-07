@@ -18,6 +18,7 @@ import {
   ArrowRightIcon,
   CheckIcon,
   PlusIcon,
+  Music2Icon,
 } from "lucide-react"
 import {
   Tooltip,
@@ -30,8 +31,10 @@ import { useBibleStore, useQueueStore } from "@/stores"
 import type { Book, Verse, SemanticSearchResult } from "@/types"
 import { Input } from "@/components/ui/input"
 import { searchContextWithFuse } from "@/lib/context-search"
+import { clampChapter, getMaxChapter } from "@/lib/book-chapters"
+import { HymnSearch } from "@/components/panels/hymn-search"
 
-type SearchTab = "book" | "context" 
+type SearchTab = "book" | "context" | "hymns"
 
 /** Highlights words from the query that appear in the text. */
 function HighlightedText({ text, query }: { text: string; query: string }) {
@@ -67,6 +70,7 @@ export function SearchPanel() {
   const [chapter, setChapter] = useState(1)
   const [selectedVerseId, setSelectedVerseId] = useState<number | null>(null)
   const [contextQuery, setContextQuery] = useState("")
+  const [hymnQuery, setHymnQuery] = useState("")
 
   // EasyWorship-style autocomplete
   const [quickInput, setQuickInput] = useState("")
@@ -93,6 +97,9 @@ export function SearchPanel() {
   }, [queueItems])
 
   const selectedBookNumber = selectedBook?.book_number
+  const maxChapter = selectedBookNumber
+    ? getMaxChapter(selectedBookNumber)
+    : 1
 
   // Load initial data and default to Genesis 1:1
   useEffect(() => {
@@ -105,6 +112,14 @@ export function SearchPanel() {
       })
     }).catch(console.error)
   }, [])
+
+  useEffect(() => {
+    if (!selectedBookNumber) return
+    if (chapter > maxChapter) {
+      setChapter(maxChapter)
+      setSelectedVerseId(null)
+    }
+  }, [selectedBookNumber, chapter, maxChapter])
 
   // Load chapter when book + chapter are set
   useEffect(() => {
@@ -136,7 +151,7 @@ export function SearchPanel() {
     (book: Book, navChapter: number) => {
       setActiveTab("book")
       setSelectedBook(book)
-      setChapter(navChapter)
+      setChapter(clampChapter(book.book_number, navChapter))
     },
     []
   )
@@ -200,8 +215,10 @@ export function SearchPanel() {
         }
       } else if (e.key === "ArrowRight") {
         e.preventDefault()
-        setChapter((c) => c + 1)
-        setSelectedVerseId(null)
+        if (selectedBookNumber && chapter < maxChapter) {
+          setChapter((c) => c + 1)
+          setSelectedVerseId(null)
+        }
       } else if (e.key === "ArrowDown") {
         e.preventDefault()
         if (currentChapter.length === 0) return
@@ -234,7 +251,7 @@ export function SearchPanel() {
         }
       }
     },
-    [chapter, currentChapter, effectiveSelectedVerseId]
+    [chapter, currentChapter, effectiveSelectedVerseId, maxChapter, selectedBookNumber]
   )
 
   // Context search — hybrid backend (vector + FTS5 BM25) as primary,
@@ -410,6 +427,18 @@ export function SearchPanel() {
             <SparklesIcon className={cn("size-3.5", activeTab === "context" ? "text-lime-400" : "text-muted-foreground")} />
             Context search
           </button>
+          <button
+            onClick={() => setActiveTab("hymns")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors",
+              activeTab === "hymns"
+                ? "border-lime-500/50 bg-lime-500/15"
+                : "border-border bg-background text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <Music2Icon className={cn("size-3.5", activeTab === "hymns" ? "text-lime-400" : "text-muted-foreground")} />
+            Songs &amp; hymns
+          </button>
         </div>
 
         {activeTab === "book" ? (
@@ -488,7 +517,7 @@ export function SearchPanel() {
               </SelectContent>
             </Select>
           </div>
-        ) : (
+        ) : activeTab === "context" ? (
           <div className="flex flex-1 items-center gap-2 pr-3">
             <Input
               placeholder="Search verse text..."
@@ -517,6 +546,15 @@ export function SearchPanel() {
                   ))}
                 </SelectContent>
               </Select>
+          </div>
+        ) : (
+          <div className="flex flex-1 items-center gap-2 pr-3">
+            <Input
+              placeholder="Search hymn number, title, author, or lyrics…"
+              value={hymnQuery}
+              onChange={(event) => setHymnQuery(event.target.value)}
+              className="h-7 flex-1 text-xs"
+            />
           </div>
         )}
       </div>
@@ -552,9 +590,12 @@ export function SearchPanel() {
                 variant="ghost"
                 size="icon-xs"
                 onClick={() => {
-                  setChapter((c) => c + 1)
-                            setSelectedVerseId(null)
+                  if (chapter < maxChapter) {
+                    setChapter((c) => c + 1)
+                    setSelectedVerseId(null)
+                  }
                 }}
+                disabled={chapter >= maxChapter}
               >
                 <ArrowRightIcon className="size-3" />
               </Button>
@@ -753,6 +794,7 @@ export function SearchPanel() {
           </div>
         </div>
       )}
+      {activeTab === "hymns" ? <HymnSearch query={hymnQuery} /> : null}
     </div>
   )
 }

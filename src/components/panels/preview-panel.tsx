@@ -4,6 +4,7 @@ import { CanvasVerse } from "@/components/ui/canvas-verse"
 import { useBibleStore, useBroadcastStore } from "@/stores"
 import { bibleActions } from "@/hooks/use-bible"
 import { useVerseRenderData } from "@/hooks/use-broadcast"
+import { useHymnSlide } from "@/hooks/use-hymn-slide"
 
 export function PreviewPanel() {
   const selectedVerse = useBibleStore((s) => s.selectedVerse)
@@ -25,7 +26,9 @@ export function PreviewPanel() {
   const activeThemeId = useBroadcastStore((s) => s.activeThemeId)
 
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0]
-  const verseData = useVerseRenderData(selectedVerse)
+  const renderedVerse = useVerseRenderData(selectedVerse)
+  const hymnSlide = useHymnSlide()
+  const verseData = hymnSlide ?? renderedVerse
 
   return (
     <div

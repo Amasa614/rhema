@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, type FormEvent } from "react"
 import { invoke } from "@tauri-apps/api/core"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -41,18 +42,22 @@ import {
   HelpCircleIcon,
   GraduationCapIcon,
   BrainCircuitIcon,
+  Music2Icon,
+  Trash2Icon,
 } from "lucide-react"
-import { useSettingsStore, useBibleStore } from "@/stores"
+import { useSettingsStore, useBibleStore, useHymnStore } from "@/stores"
 import { suggestCompanionTranslationId } from "@/hooks/use-bible"
 import { useTutorialStore } from "@/stores/tutorial-store"
 import { useSettingsDialogStore } from "@/lib/settings-dialog"
 import type { DeviceInfo } from "@/types/audio"
+import type { Translation } from "@/types"
+import { normalizeHymnText, parseHymnStanzas } from "@/lib/hymn-text"
 
 /* -------------------------------------------------------------------------- */
 /*  Nav definition                                                            */
 /* -------------------------------------------------------------------------- */
 
-type NavSection = "audio" | "speech" | "bible" | "display" | "api-keys" | "remote" | "help"
+type NavSection = "audio" | "speech" | "bible" | "hymns" | "display" | "api-keys" | "remote" | "help"
 
 const navItems: { name: string; id: NavSection; icon: React.ReactNode }[] = [
   {
@@ -69,6 +74,11 @@ const navItems: { name: string; id: NavSection; icon: React.ReactNode }[] = [
     name: "Bible",
     id: "bible",
     icon: <BookOpenIcon strokeWidth={2} />,
+  },
+  {
+    name: "Songs & Hymns",
+    id: "hymns",
+    icon: <Music2Icon strokeWidth={2} />,
   },
   {
     name: "Display Mode",
@@ -393,6 +403,170 @@ function DisplayModeSection() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Section: Songs & Hymns                                                    */
+/* -------------------------------------------------------------------------- */
+
+function HymnsSection() {
+  const customHymns = useHymnStore((state) => state.customHymns)
+  const [number, setNumber] = useState("")
+  const [title, setTitle] = useState("")
+  const [author, setAuthor] = useState("")
+  const [lyrics, setLyrics] = useState("")
+  const [message, setMessage] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    void useHymnStore.getState().loadHymns()
+  }, [])
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const cleanTitle = normalizeHymnText(title)
+    const stanzas = parseHymnStanzas(lyrics)
+    const parsedNumber = number ? Number.parseInt(number, 10) : undefined
+    if (!cleanTitle || stanzas.length === 0) {
+      setMessage("Enter a title and at least one stanza.")
+      return
+    }
+    if (parsedNumber !== undefined && (!Number.isFinite(parsedNumber) || parsedNumber < 1)) {
+      setMessage("Song number must be a positive whole number.")
+      return
+    }
+
+    setIsSaving(true)
+    setMessage(null)
+    try {
+      await useHymnStore.getState().addCustomHymn({
+        number: parsedNumber,
+        title: cleanTitle,
+        author: normalizeHymnText(author) || null,
+        stanzas,
+      })
+      setNumber("")
+      setTitle("")
+      setAuthor("")
+      setLyrics("")
+      setMessage(`Song saved with ${stanzas.length} stanza${stanzas.length === 1 ? "" : "s"}.`)
+    } catch {
+      setMessage("The song could not be saved.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <div>
+          <h3 className="text-sm font-medium">Add a song or hymn</h3>
+          <p className="mt-1 text-[0.625rem] text-muted-foreground">
+            Saved locally on this computer and available from Songs &amp; hymns search.
+            Bundled libraries are public-domain English texts from Hymnary.org (Methodist,
+            Catholic, and Presbyterian)—not the official Ghana Methodist Hymn Book numbering.
+          </p>
+        </div>
+        <div className="grid grid-cols-[90px_1fr_1fr] gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="hymn-number" className="text-xs font-medium">
+              Number
+            </label>
+            <Input
+              id="hymn-number"
+              type="number"
+              min={1}
+              value={number}
+              onChange={(event) => setNumber(event.target.value)}
+              placeholder="Auto"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="hymn-title" className="text-xs font-medium">
+              Title
+            </label>
+            <Input
+              id="hymn-title"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Amazing Grace"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="hymn-author" className="text-xs font-medium">
+              Author (optional)
+            </label>
+            <Input
+              id="hymn-author"
+              value={author}
+              onChange={(event) => setAuthor(event.target.value)}
+              placeholder="John Newton"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="hymn-lyrics" className="text-xs font-medium">
+            Lyrics
+          </label>
+          <Textarea
+            id="hymn-lyrics"
+            value={lyrics}
+            onChange={(event) => setLyrics(event.target.value)}
+            placeholder={"Verse 1\nEnter the first stanza here…\n\nVerse 2\nEnter the next stanza here…"}
+            className="min-h-40 resize-y text-xs leading-relaxed"
+          />
+          <p className="text-[0.625rem] text-muted-foreground">
+            Separate stanzas with a blank line, or use headings such as Verse 1,
+            Chorus, Refrain, or Bridge. HTML entities are corrected automatically.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button type="submit" size="sm" disabled={isSaving}>
+            {isSaving ? "Saving…" : "Add song"}
+          </Button>
+          {message ? <p className="text-xs text-muted-foreground">{message}</p> : null}
+        </div>
+      </form>
+
+      <div className="border-t border-border pt-4">
+        <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Manually added ({customHymns.length})
+        </h3>
+        {customHymns.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
+            No manually added songs yet.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {customHymns.map((hymn) => (
+              <div
+                key={hymn.id}
+                className="flex items-center justify-between rounded-lg border border-border px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-medium">{hymn.title}</p>
+                  <p className="truncate text-[0.625rem] text-muted-foreground">
+                    {hymn.author ?? "Unknown author"} · {hymn.stanzas.length} stanza
+                    {hymn.stanzas.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={`Delete ${hymn.title}`}
+                  onClick={() => void useHymnStore.getState().deleteCustomHymn(hymn.id)}
+                >
+                  <Trash2Icon className="text-destructive" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Section: API Keys                                                         */
 /* -------------------------------------------------------------------------- */
 
@@ -436,6 +610,7 @@ const sectionTitles: Record<NavSection, string> = {
   audio: "Audio",
   speech: "Speech Recognition",
   bible: "Bible Translation",
+  hymns: "Songs & Hymns",
   display: "Display Mode",
   remote: "Remote Control",
   "api-keys": "API Keys",
@@ -446,15 +621,8 @@ const sectionTitles: Record<NavSection, string> = {
 /*  Section: Bible Translation                                                */
 /* -------------------------------------------------------------------------- */
 
-interface TranslationInfo {
-  id: number
-  abbreviation: string
-  title: string
-  language: string
-}
-
 function BibleSection() {
-  const [translations, setTranslations] = useState<TranslationInfo[]>([])
+  const [translations, setTranslations] = useState<Translation[]>([])
   const [activeId, setActiveId] = useState<number>(1)
   const [loading, setLoading] = useState(true)
   const companionId = useBibleStore((s) => s.companionTranslationId)
@@ -468,7 +636,7 @@ function BibleSection() {
     async function load() {
       try {
         const [trans, active] = await Promise.all([
-          invoke<TranslationInfo[]>("list_translations"),
+          invoke<Translation[]>("list_translations"),
           invoke<number>("get_active_translation"),
         ])
         setTranslations(trans)
@@ -1000,6 +1168,7 @@ const sectionComponents: Record<NavSection, React.FC> = {
   audio: AudioSection,
   speech: SpeechSection,
   bible: BibleSection,
+  hymns: HymnsSection,
   display: DisplayModeSection,
   remote: RemoteControlSection,
   "api-keys": ApiKeysSection,

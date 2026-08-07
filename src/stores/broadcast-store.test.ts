@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-const emitToMock = vi.fn()
+const invokeMock = vi.fn()
 
-vi.mock("@tauri-apps/api/event", () => ({
-  emitTo: emitToMock,
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: invokeMock,
 }))
 
 describe("broadcast store sync", () => {
   beforeEach(async () => {
-    emitToMock.mockReset()
-    emitToMock.mockResolvedValue(undefined)
+    invokeMock.mockReset()
+    invokeMock.mockResolvedValue(1)
     vi.resetModules()
   })
 
@@ -24,25 +24,52 @@ describe("broadcast store sync", () => {
       },
     })
 
-    emitToMock.mockClear()
+    invokeMock.mockClear()
     useBroadcastStore.getState().syncBroadcastOutput()
 
-    expect(emitToMock).toHaveBeenCalledTimes(2)
-    expect(emitToMock).toHaveBeenCalledWith(
-      "broadcast",
-      "broadcast:verse-update",
+    expect(invokeMock).toHaveBeenCalledTimes(2)
+    expect(invokeMock).toHaveBeenCalledWith(
+      "set_broadcast_snapshot",
       expect.objectContaining({
-        theme: expect.objectContaining({ id: theme.id }),
-        verse: expect.objectContaining({ reference: "John 3:16" }),
+        outputId: "main",
+        payload: expect.objectContaining({
+          theme: expect.objectContaining({ id: theme.id }),
+          verse: expect.objectContaining({ reference: "John 3:16" }),
+        }),
       }),
     )
-    expect(emitToMock).toHaveBeenCalledWith(
-      "broadcast-alt",
-      "broadcast:verse-update",
+    expect(invokeMock).toHaveBeenCalledWith(
+      "set_broadcast_snapshot",
+      expect.objectContaining({ outputId: "alt" }),
+    )
+  })
+
+  it("setLiveVerse immediately sends the newly selected verse", async () => {
+    const { useBroadcastStore } = await import("./broadcast-store")
+    invokeMock.mockClear()
+
+    useBroadcastStore.getState().setLiveVerse({
+      reference: "Genesis 1:2",
+      segments: [{ text: "The earth was without form", verseNumber: 2 }],
+    })
+
+    expect(invokeMock).toHaveBeenCalledWith(
+      "set_broadcast_snapshot",
       expect.objectContaining({
-        theme: expect.objectContaining({ id: theme.id }),
-        verse: expect.objectContaining({ reference: "John 3:16" }),
+        outputId: "main",
+        payload: expect.objectContaining({
+          verse: expect.objectContaining({ reference: "Genesis 1:2" }),
+        }),
       }),
     )
+  })
+
+  it("syncBroadcastOutputFor does not update the other projector", async () => {
+    const { useBroadcastStore } = await import("./broadcast-store")
+    invokeMock.mockClear()
+
+    useBroadcastStore.getState().syncBroadcastOutputFor("main")
+
+    expect(invokeMock).toHaveBeenCalledTimes(1)
   })
 })

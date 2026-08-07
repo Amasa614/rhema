@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { emitTo, listen } from "@tauri-apps/api/event"
-import { availableMonitors, getAllWindows, type Monitor } from '@tauri-apps/api/window'
+import { availableMonitors, type Monitor } from '@tauri-apps/api/window'
 import {
   Dialog,
   DialogContent,
@@ -100,9 +100,6 @@ export function BroadcastSettings({
   const [altNdiAlphaMode, setAltNdiAlphaMode] = useState<NdiAlphaMode>("straightAlpha")
   const [altNdiActive, setAltNdiActive] = useState(false)
 
-  const syncBroadcastOutput = useCallback(() => {
-    useBroadcastStore.getState().syncBroadcastOutput()
-  }, [])
 
   const syncNdiConfigToOutput = useCallback(
     (
@@ -129,9 +126,11 @@ export function BroadcastSettings({
   )
 
   const reconcilePreviewState = useCallback(async (outputId: string = "main") => {
-    const label = outputId === "alt" ? "broadcast-alt" : "broadcast"
-    const windows = await getAllWindows()
-    return windows.some((w) => w.label === label)
+    try {
+      return await invoke<boolean>("is_broadcast_window_visible", { outputId })
+    } catch {
+      return false
+    }
   }, [])
 
   const fetchMonitors = useCallback(async () => {
@@ -154,6 +153,25 @@ export function BroadcastSettings({
     if (open) fetchMonitors()
   }, [open, fetchMonitors])
 
+  useEffect(() => {
+    if (!open) return
+    void reconcilePreviewState("main").then(setIsPreviewOpen)
+    void reconcilePreviewState("alt").then(setAltIsPreviewOpen)
+  }, [open, reconcilePreviewState])
+
+  useEffect(() => {
+    const unlistenPromise = listen<{ outputId: string }>(
+      "broadcast:preview-closed",
+      (event) => {
+        if (event.payload.outputId === "main") setIsPreviewOpen(false)
+        if (event.payload.outputId === "alt") setAltIsPreviewOpen(false)
+      },
+    )
+    return () => {
+      void unlistenPromise.then((unlisten) => unlisten())
+    }
+  }, [])
+
   // Sync theme selection with broadcast store
   useEffect(() => {
     setMainThemeId(activeThemeId)
@@ -163,12 +181,19 @@ export function BroadcastSettings({
     if (!open) return
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null
-    const unlistenPromise = listen("broadcast:output-ready", () => {
-      useBroadcastStore.getState().syncBroadcastOutput()
-      syncNdiConfigToOutput("main", ndiActive, ndiFrameRate, ndiResolution)
-      syncNdiConfigToOutput("alt", altNdiActive, altNdiFrameRate, altNdiResolution)
+    const unlistenPromise = listen<{ outputId: string }>("broadcast:output-ready", (event) => {
+      const outputId = event.payload.outputId
+      if (outputId === "main") {
+        syncNdiConfigToOutput("main", ndiActive, ndiFrameRate, ndiResolution)
+      } else {
+        syncNdiConfigToOutput("alt", altNdiActive, altNdiFrameRate, altNdiResolution)
+      }
       timeoutId = setTimeout(() => {
-        useBroadcastStore.getState().syncBroadcastOutput()
+        if (outputId === "main") {
+          syncNdiConfigToOutput("main", ndiActive, ndiFrameRate, ndiResolution)
+        } else {
+          syncNdiConfigToOutput("alt", altNdiActive, altNdiFrameRate, altNdiResolution)
+        }
       }, 150)
     })
 
@@ -178,28 +203,14 @@ export function BroadcastSettings({
     }
   }, [
     open,
-    isPreviewOpen,
     ndiActive,
     ndiFrameRate,
     ndiResolution,
     altNdiActive,
     altNdiFrameRate,
     altNdiResolution,
-    syncBroadcastOutput,
     syncNdiConfigToOutput,
   ])
-
-  useEffect(() => {
-    if (!open || !isPreviewOpen) return
-
-    const intervalId = setInterval(() => {
-      void reconcilePreviewState()
-    }, 750)
-
-    return () => {
-      clearInterval(intervalId)
-    }
-  }, [open, isPreviewOpen, reconcilePreviewState])
 
   const handleMainThemeChange = (id: string) => {
     setMainThemeId(id)
@@ -208,25 +219,29 @@ export function BroadcastSettings({
 
   const handleTogglePreview = async () => {
     try {
-      if (isPreviewOpen) {
-        await invoke("close_broadcast_window", { outputId: "main" })
+      const previewIsVisible =
+        isPreviewOpen || await reconcilePreviewState("main")
+      if (previewIsVisible) {
+        await invoke("close_broadcast_window", {
+          outputId: "main",
+          forceDestroy: false,
+        })
         setIsPreviewOpen(await reconcilePreviewState("main"))
       } else {
         await invoke("open_broadcast_window", {
           outputId: "main",
           monitorIndex: Number(selectedMonitor),
         })
-        const opened = await reconcilePreviewState("main")
-        setIsPreviewOpen(opened)
-        if (!opened) return
+        setIsPreviewOpen(true)
         useBroadcastStore.getState().syncBroadcastOutputFor("main")
         syncNdiConfigToOutput("main", ndiActive, ndiFrameRate, ndiResolution)
         setTimeout(() => {
           useBroadcastStore.getState().syncBroadcastOutputFor("main")
         }, 150)
+        onOpenChange(false)
       }
-    } catch {
-      // Command may not exist yet
+    } catch (error) {
+      console.warn("Failed to toggle main preview window", error)
     }
   }
 
@@ -237,7 +252,10 @@ export function BroadcastSettings({
         syncNdiConfigToOutput("main", false, ndiFrameRate, ndiResolution)
         setNdiActive(false)
         if (!isPreviewOpen) {
-          await invoke("close_broadcast_window", { outputId: "main" }).catch(() => {})
+          await invoke("close_broadcast_window", {
+            outputId: "main",
+            forceDestroy: true,
+          }).catch(() => {})
         }
       } else {
         await invoke("ensure_broadcast_window", { outputId: "main" })
@@ -271,7 +289,10 @@ export function BroadcastSettings({
     if (!enabled) {
       if (isPreviewOpen) {
         try {
-          await invoke("close_broadcast_window", { outputId: "main" })
+          await invoke("close_broadcast_window", {
+            outputId: "main",
+            forceDestroy: true,
+          })
         } catch {
           console.error("Failed to close broadcast window")
         }
@@ -298,22 +319,26 @@ export function BroadcastSettings({
 
   const handleAltTogglePreview = async () => {
     try {
-      if (altIsPreviewOpen) {
-        await invoke("close_broadcast_window", { outputId: "alt" })
+      const previewIsVisible =
+        altIsPreviewOpen || await reconcilePreviewState("alt")
+      if (previewIsVisible) {
+        await invoke("close_broadcast_window", {
+          outputId: "alt",
+          forceDestroy: false,
+        })
         setAltIsPreviewOpen(await reconcilePreviewState("alt"))
       } else {
         await invoke("open_broadcast_window", {
           outputId: "alt",
           monitorIndex: Number(altSelectedMonitor),
         })
-        const opened = await reconcilePreviewState("alt")
-        setAltIsPreviewOpen(opened)
-        if (!opened) return
+        setAltIsPreviewOpen(true)
         useBroadcastStore.getState().syncBroadcastOutputFor("alt")
         syncNdiConfigToOutput("alt", altNdiActive, altNdiFrameRate, altNdiResolution)
         setTimeout(() => {
           useBroadcastStore.getState().syncBroadcastOutputFor("alt")
         }, 150)
+        onOpenChange(false)
       }
     } catch (error) {
       console.warn("Failed to toggle alt preview window", error)
@@ -327,7 +352,10 @@ export function BroadcastSettings({
         syncNdiConfigToOutput("alt", false, altNdiFrameRate, altNdiResolution)
         setAltNdiActive(false)
         if (!altIsPreviewOpen) {
-          await invoke("close_broadcast_window", { outputId: "alt" }).catch(() => {})
+          await invoke("close_broadcast_window", {
+            outputId: "alt",
+            forceDestroy: true,
+          }).catch(() => {})
         }
       } else {
         await invoke("ensure_broadcast_window", { outputId: "alt" })
@@ -360,7 +388,10 @@ export function BroadcastSettings({
     setAltEnabled(enabled)
     if (!enabled) {
       if (altIsPreviewOpen) {
-        await invoke("close_broadcast_window", { outputId: "alt" }).catch(() => {})
+        await invoke("close_broadcast_window", {
+          outputId: "alt",
+          forceDestroy: true,
+        }).catch(() => {})
         setAltIsPreviewOpen(false)
       }
       if (altNdiActive) {

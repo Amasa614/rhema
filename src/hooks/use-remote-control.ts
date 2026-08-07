@@ -5,6 +5,7 @@ import { useBroadcastStore } from "@/stores/broadcast-store"
 import { useBibleStore } from "@/stores/bible-store"
 import { useQueueStore } from "@/stores/queue-store"
 import { useSettingsStore } from "@/stores/settings-store"
+import { useHymnStore } from "@/stores/hymn-store"
 import { presentVerseOnBroadcast } from "@/hooks/use-broadcast"
 import type { Verse } from "@/types"
 
@@ -170,6 +171,7 @@ async function presentQueueItem(index: number) {
 
     const verseToPresent = fullVerse ?? verse
 
+    useHymnStore.getState().clearSelection()
     useBibleStore.getState().selectVerse(verseToPresent)
     await presentVerseOnBroadcast(verseToPresent)
   } catch (e) {

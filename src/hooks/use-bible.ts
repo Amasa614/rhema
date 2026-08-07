@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
-import { useBibleStore } from "@/stores"
+import { useBibleStore, useHymnStore } from "@/stores"
 import type { Translation, Book, Verse, CrossReference } from "@/types"
 import type { SemanticSearchResult } from "@/types/detection"
 
@@ -129,8 +129,10 @@ export const bibleActions = {
     useBibleStore
       .getState()
       .setPendingNavigation({ bookNumber, chapter, verse }),
-  selectVerse: (verse: Verse | null) =>
-    useBibleStore.getState().selectVerse(verse),
+  selectVerse: (verse: Verse | null) => {
+    useHymnStore.getState().clearSelection()
+    useBibleStore.getState().selectVerse(verse)
+  },
 }
 
 // Hook for components that need reactive store data

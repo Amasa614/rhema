@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip.tsx"
 import { hydrateSettings } from "@/stores/settings-store"
 import { hydrateBibleStore, initBiblePersistence } from "@/stores/bible-store"
 import { hydrateBroadcastThemes } from "@/stores/broadcast-store"
+import { initBroadcastLifecycle } from "@/lib/broadcast-lifecycle"
 
 // Webview reloads do NOT restart the Rust backend, so any STT pipeline
 // left running from the previous webview session still has
@@ -21,6 +22,7 @@ invoke("stop_transcription")
   .then(() => Promise.all([hydrateSettings(), hydrateBibleStore(), hydrateBroadcastThemes()]))
   .then(() => initBiblePersistence())
   .finally(() => {
+    initBroadcastLifecycle()
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
         <ThemeProvider defaultTheme="dark">

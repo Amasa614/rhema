@@ -8,6 +8,19 @@ import { Database } from "bun:sqlite"
 import { readFileSync, unlinkSync, existsSync } from "node:fs"
 import { join } from "node:path"
 
+/** Read translation JSON as UTF-8; handle UTF-16 (Windows) and BOM. */
+function readSourceText(filePath: string): string {
+  const buf = readFileSync(filePath)
+  if (buf.length >= 2 && buf[0] === 0xff && buf[1] === 0xfe) {
+    return buf.subarray(2).toString("utf16le")
+  }
+  let text = buf.toString("utf-8")
+  if (text.charCodeAt(0) === 0xfeff) {
+    text = text.slice(1)
+  }
+  return text
+}
+
 const DATA_DIR = import.meta.dir
 const DB_PATH = join(DATA_DIR, "rhema.db")
 const SCHEMA_PATH = join(DATA_DIR, "schema.sql")
@@ -130,13 +143,22 @@ function main() {
 
     let raw: string
     try {
-      raw = readFileSync(filePath, "utf-8")
+      raw = readSourceText(filePath)
     } catch {
       console.log(`  ⏭ ${meta.file} not found, skipping`)
       continue
     }
 
-    const data: ScrollmapperJSON = JSON.parse(raw)
+    let data: ScrollmapperJSON
+    try {
+      data = JSON.parse(raw)
+    } catch (err) {
+      throw new Error(
+        `${meta.file} is not valid JSON (wrong encoding or corrupted copy). ` +
+          `Re-copy data/sources from a working PC, or copy data/rhema.db directly. ` +
+          `Original error: ${err instanceof Error ? err.message : String(err)}`
+      )
+    }
 
     db.exec("BEGIN TRANSACTION")
 

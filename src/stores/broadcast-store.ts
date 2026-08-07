@@ -1,10 +1,26 @@
 import { create } from "zustand"
-import { emitTo } from "@tauri-apps/api/event"
+import { invoke } from "@tauri-apps/api/core"
 import { load, type Store } from "@tauri-apps/plugin-store"
 import type { BroadcastTheme, VerseRenderData } from "@/types"
 import { BUILTIN_THEMES } from "@/lib/builtin-themes"
 
 type SelectedElement = "verse" | "reference" | null
+
+interface BroadcastPayload {
+  theme: BroadcastTheme
+  verse: VerseRenderData | null
+}
+
+function sendBroadcastSnapshot(
+  outputId: string,
+  payload: BroadcastPayload,
+): void {
+  void invoke<number>("set_broadcast_snapshot", { outputId, payload }).catch(
+    (error) => {
+      console.error(`[broadcast] Failed to sync ${outputId} output`, error)
+    },
+  )
+}
 
 interface BroadcastState {
   themes: BroadcastTheme[]
@@ -81,16 +97,16 @@ function emitDraftToBroadcast(state: BroadcastState): void {
   if (!state.draftTheme) return
   const id = state.editingThemeId
   if (id === state.activeThemeId) {
-    void emitTo("broadcast", "broadcast:verse-update", {
+    sendBroadcastSnapshot("main", {
       theme: state.draftTheme,
       verse: state.liveVerse,
-    }).catch(() => {})
+    })
   }
   if (id === state.altActiveThemeId) {
-    void emitTo("broadcast-alt", "broadcast:verse-update", {
+    sendBroadcastSnapshot("alt", {
       theme: state.draftTheme,
       verse: state.liveVerse,
-    }).catch(() => {})
+    })
   }
 }
 
@@ -169,14 +185,13 @@ export const useBroadcastStore = create<BroadcastState>((set, get) => ({
   syncBroadcastOutputFor: (outputId: string) => {
     const s = get()
     const themeId = outputId === "alt" ? s.altActiveThemeId : s.activeThemeId
-    const label = outputId === "alt" ? "broadcast-alt" : "broadcast"
     const theme = s.themes.find((t) => t.id === themeId) ?? s.themes[0]
     if (!theme) return
 
-    void emitTo(label, "broadcast:verse-update", {
+    sendBroadcastSnapshot(outputId, {
       theme,
       verse: s.liveVerse,
-    }).catch(() => {})
+    })
   },
   syncBroadcastOutput: () => {
     get().syncBroadcastOutputFor("main")
@@ -190,7 +205,10 @@ export const useBroadcastStore = create<BroadcastState>((set, get) => ({
     set({ altActiveThemeId })
     get().syncBroadcastOutputFor("alt")
   },
-  setLive: (isLive) => set({ isLive }),
+  setLive: (isLive) => {
+    set({ isLive })
+    get().syncBroadcastOutput()
+  },
   setLiveVerse: (liveVerse) => {
     set({ liveVerse })
     get().syncBroadcastOutput()

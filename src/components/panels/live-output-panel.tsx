@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
 import { useBroadcastStore, useBibleStore } from "@/stores"
 import { useVerseRenderData } from "@/hooks/use-broadcast"
+import { useHymnSlide } from "@/hooks/use-hymn-slide"
 
 export function LiveOutputPanel() {
   const isLive = useBroadcastStore((s) => s.isLive)
@@ -15,7 +16,8 @@ export function LiveOutputPanel() {
 
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0]
   const rendered = useVerseRenderData(selectedVerse)
-  const verseData = isLive ? rendered : null
+  const hymnSlide = useHymnSlide()
+  const verseData = isLive ? (hymnSlide ?? rendered) : null
 
   useEffect(() => {
     useBroadcastStore.getState().setLiveVerse(verseData)

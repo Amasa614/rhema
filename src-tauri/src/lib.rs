@@ -6,6 +6,34 @@ mod state;
 
 use std::sync::Mutex;
 
+use rhema_broadcast::ndi::NdiRuntime;
+use tauri::{Emitter, Manager};
+
+const BROADCAST_WINDOW_LABELS: [&str; 2] = ["broadcast", "broadcast-alt"];
+
+fn broadcast_output_id(label: &str) -> Option<&'static str> {
+    match label {
+        "broadcast" => Some("main"),
+        "broadcast-alt" => Some("alt"),
+        _ => None,
+    }
+}
+
+fn destroy_broadcast_outputs(app: &tauri::AppHandle) {
+    if let Some(runtime) = app.try_state::<Mutex<NdiRuntime>>() {
+        if let Ok(mut runtime) = runtime.lock() {
+            runtime.stop("main");
+            runtime.stop("alt");
+        }
+    }
+
+    for label in BROADCAST_WINDOW_LABELS {
+        if let Some(output) = app.get_webview_window(label) {
+            let _ = output.destroy();
+        }
+    }
+}
+
 #[expect(clippy::too_many_lines, reason = "app setup is inherently complex")]
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -25,6 +53,9 @@ pub fn run() {
         .manage(Mutex::new(state::AppState::new()))
         .manage(Mutex::new(rhema_detection::DetectionPipeline::new()))
         .manage(Mutex::new(rhema_broadcast::ndi::NdiRuntime::default()))
+        .manage(Mutex::new(
+            commands::broadcast::BroadcastSnapshotStore::default(),
+        ))
         .manage(Mutex::new(rhema_detection::DirectDetector::new()))
         .manage(Mutex::new(rhema_detection::DetectionMerger::new()))
         .manage(Mutex::new(rhema_detection::ReadingMode::new()))
@@ -53,6 +84,9 @@ pub fn run() {
             commands::broadcast::ensure_broadcast_window,
             commands::broadcast::open_broadcast_window,
             commands::broadcast::close_broadcast_window,
+            commands::broadcast::is_broadcast_window_visible,
+            commands::broadcast::set_broadcast_snapshot,
+            commands::broadcast::get_broadcast_snapshot,
             commands::broadcast::start_ndi,
             commands::broadcast::stop_ndi,
             commands::broadcast::get_ndi_status,
@@ -148,6 +182,69 @@ pub fn run() {
 
             Ok(())
         })
+        .on_window_event(|window, event| {
+            let label = window.label();
+
+            if label == "main" {
+                if matches!(event, tauri::WindowEvent::CloseRequested { .. }) {
+                    destroy_broadcast_outputs(window.app_handle());
+                }
+                return;
+            }
+
+            let Some(output_id) = broadcast_output_id(label) else {
+                return;
+            };
+            let app = window.app_handle();
+
+            match event {
+                tauri::WindowEvent::CloseRequested { api, .. } => {
+                    let ndi_active = app
+                        .try_state::<Mutex<NdiRuntime>>()
+                        .map(|rt| {
+                            rt.lock()
+                                .ok()
+                                .is_some_and(|guard| guard.is_active(output_id))
+                        })
+                        .unwrap_or(false);
+                    if ndi_active {
+                        api.prevent_close();
+                        let _ = window.hide();
+                        let _ = app.emit(
+                            "broadcast:preview-closed",
+                            serde_json::json!({ "outputId": output_id }),
+                        );
+                    }
+                }
+                tauri::WindowEvent::Destroyed => {
+                    let _ = app.emit(
+                        "broadcast:preview-closed",
+                        serde_json::json!({ "outputId": output_id }),
+                    );
+                }
+                _ => {}
+            }
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::broadcast_output_id;
+
+    #[test]
+    fn broadcast_output_id_should_identify_main_projector() {
+        assert_eq!(broadcast_output_id("broadcast"), Some("main"));
+    }
+
+    #[test]
+    fn broadcast_output_id_should_identify_alternate_projector() {
+        assert_eq!(broadcast_output_id("broadcast-alt"), Some("alt"));
+    }
+
+    #[test]
+    fn broadcast_output_id_should_ignore_application_window() {
+        assert_eq!(broadcast_output_id("main"), None);
+    }
 }

@@ -1,0 +1,1554 @@
+{
+  "attribution": "Public-domain hymn texts provided by Hymnary.org (Calvin University) via Open Christian Data (CC0-1.0). https://hymnary.org",
+  "source": "https://raw.githubusercontent.com/OpenChristianData/open-christian-data/main/data/hymns/hymnary-pd/collection.json",
+  "generatedAt": "2026-08-07T11:16:39.154Z",
+  "label": "Classic / popular",
+  "hymns": [
+    {
+      "id": "a-mighty-fortress",
+      "title": "\"A Mighty Fortress\"",
+      "author": "Luther, Martin, 1483-1546; Hedge, Frederic Henry, 1805-1890",
+      "stanzas": [
+        "A mighty fortress is our God,\nA bulwark never failing:\nOur Helper he, amid the flood\nOf mortal ills prevailing.\nFor still our ancient foe\nDoes seek to work his woe;\nHis craft and power are great,\nAnd armed with cruel hate,\nOn earth is not his equal.",
+        "Did we in our own strength confide,\nOur striving would be losing;\nWere not the right man on our side,\nThe man of God's own choosing.\nDost ask who that may be?\nChrist Jesus, it is he;\nLord Sabaoth is his name,\nFrom age to age the same,\nAnd he must win the battle.",
+        "And though this world, with devils filled,\nShould threaten to undo us;\nWe will not fear, for God has willed\nHis truth to triumph through us.\nLet goods and kindred go,\nThis mortal life also:\nThe body they may kill:\nGod's truth abideth still,\nHis kingdom is for ever."
+      ],
+      "sourceHymnal": "Laudes Domini: a selection of spiritual songs ancient and modern",
+      "sourceYear": 1884,
+      "number": 1,
+      "traditions": [
+        "presbyterian",
+        "classic"
+      ]
+    },
+    {
+      "id": "a-mighty-fortress-is-our-god",
+      "title": "A mighty fortress is our God",
+      "author": "Luther, Martin, 1483-1546",
+      "stanzas": [
+        "A mighty fortress is our God,\nA trusty shield and weapon;\nHe helps us free from every need\nThat hath us now o'ertaken.\nThe old bitter foe\nMeans us deadly woe:\nDeep guile and great might\nAre his dread arms in fight,\nOn earth is not his equal.",
+        "With might of ours can naught be done,\nSoon were our loss effected;\nBut for us fights the Valiant One\nWhom God himself elected.\nAsk ye, Who is this?--\nJesus Christ it is,\nLord of Sabaoth,\nThere is no other God,\nHe holds the field for ever.",
+        "Though devils all the world should fill,\nAll eager to devour us,\nWe tremble not, we fear no ill,\nThey cannot overpower us.\nThis world's prince may still\nScowl fierce as he will,\nHe can harm us none,\nHe's judged, the deed is done,\nOne little word o'erthrows him.",
+        "The word they still shall let remain,\nNor any thank have for it,\nThe Lord's with us upon the plain\nWith His good gifts and Spirit;\nTake they then our life,\nGoods, fame, child and wife,\nWhen their worst is done,\nThey yet have nothing won:\nThe Kingdom ours remaineth."
+      ],
+      "sourceHymnal": "Hymn Book: for the use of Evangelical Lutheran schools and congregations",
+      "sourceYear": 1884,
+      "number": 2,
+      "traditions": [
+        "presbyterian",
+        "classic"
+      ]
+    },
+    {
+      "id": "a-mighty-fortress-is-our-lord",
+      "title": "A Mighty Fortress Is Our Lord",
+      "author": "Luther, Martin, 1483-1546; Kretzmann, Paul E. (Paul Edward), 1883-1965",
+      "stanzas": [
+        "A mighty fortress is our Lord\nA sure defense to save us!\nHe frees us with His trusty sword\nWhen trouble would enslave us.\nThe foe of all mankind\nGreat evil has designed;\nHis cruel weapons still\nAre force and cunning skill;\nOn earth is not his equal.",
+        "With might of ours we cannot win,\nSoon were our loss effected;\nBut with us in the battle's din\nIs One whom God elected.\nAsk ye, Who may this be?\nThe Lord of hosts is He;\nChrist Jesus is His name,\nTrue God from Heav'n He came\nIn every strife to conquer.",
+        "Tho' devils all the world should fill,\nAll eager to devour us,\nWe tremble not, we fear no ill,\nThey shall not overpower us.\nThe prince of hell may still\nScowl fiercely as he will,\nNo harm to us is done,\nHe's judged, the fight is won;\nA single word o'erthrows him.",
+        "The word of God shall stand secure;\nThey cannot work their pleasure.\nThe Spirit, with His gifts so pure,\nWe have in fullest measure.\nWhat tho' they take this life,\nGoods, honor, child and wife?\nTheir hatred still is vain,\nThey have no lasting gain;\nWe still possess the kingdom."
+      ],
+      "sourceHymnal": "Hymnal for Church and Home",
+      "sourceYear": 1927,
+      "number": 3,
+      "traditions": [
+        "presbyterian",
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me",
+      "title": "Abide With Me",
+      "author": "Beery, Adaline Hohf, 1859-1929",
+      "stanzas": [
+        "Abide with me, my Savior dear,\nAnd soothe this troubled heart,\nIt makes me glad to have thee near,\nAnd feel how kind thou art.",
+        "Refrain:\nO Master, blessed, good and true,\nLet me thy beauty, beauty see,\nThy precious words are ever new,\nDear Christ, abide with me.",
+        "I could not keep the narrow way,\nIf I could walk alone;\nOh, guide my feet through all the day,\nMy hand hold in thy own. [Refrain]",
+        "This world would be a dreary place,\nAnd life a burden long,\nWithout thy sweet and tender grace,\nWhich fills our souls with song. [Refrain]"
+      ],
+      "sourceHymnal": "Pearls of Praise",
+      "sourceYear": 1893,
+      "number": 4,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-rankin",
+      "title": "Abide With Me",
+      "author": "Rankin, Jeremiah Eames, 1828-1904",
+      "stanzas": [
+        "Abide with me,\nWithin the west day is fast declining,\nThe shadows lengthen on the purpling hills;\nHow Thy dear presence, tender and refining,\nEach murmur of my troubled spirit stills.\nAbide with me.",
+        "Abide with me.\nFrom my soul’s native land where Thou art dwelling,\nTo still my homesick heart of all its woe,\nCome Thou, of that celestial mansion telling;\nAnd wipe the tears which from my eyelids flow.\nAbide with me.",
+        "Abide with me.\nWhen I before Thy feet am bending lowly,\nMy heart within all kindling to a glow,\nAwakened by Thy voice are raptures holy,\nWhich only those who love Thee, e’er can know!\nAbide with me.",
+        "Abide with me,\nHow fast the years, the hearts I’ve loved are thinning,\nAS dies, when morning comes, star after star;\nMy dear ones first a better portion winning,\nWithin that unseen land that is afar.\nAbide with me.",
+        "Abide with me.\n“My peace be with thee!” this thine evening greeting;\nThus let me see the radiance of Thy face;\nHow swift to night the day of life is fleeting,\nAnd death and life beyond come on apace.\nAbide with me.",
+        "Abide with me.\nSoon will for me these earthly scenes be ending\nLike some brief vision of night-watches fled;\nThe length’ning shadows on life’s hills descending,\nAnd the last word above my dust be said.\nAbide with me.",
+        "Abide with me.\nAh, then O Lord, through Thy rich grace I enter\nThat land of which Thou art the life and light;\nWhere from all climes Thy ransomed captives enter,\nAnd know no parting, or descending night.\nAbide with me."
+      ],
+      "sourceHymnal": "Crowning Day No. 2",
+      "sourceYear": 1896,
+      "number": 5,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-crosby",
+      "title": "Abide With Me",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "All the day, in sweet communion,\nJesus, I have walked with thee;\nDo not now withdraw thy presence,\nFrom this hour abide with me.",
+        "Refrain:\nThou my life, my only guide,\nThere is nought in heav’n or earth I ask but thee;\nHear my prayer, my soul’s petition,\nGo not hence, abide with me.",
+        "One by one the evening shadows\nGather darkly o’er the lea,\nYet the light of peace remaineth\nIf thou still abide with me. [Refrain]"
+      ],
+      "sourceHymnal": "The Ark of Praise",
+      "sourceYear": 1882,
+      "number": 6,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-gabriel",
+      "title": "Abide With Me",
+      "author": "Gabriel, Chas. H. (Charles Hutchinson), 1856-1932",
+      "stanzas": [
+        "Dear Lord, I need Thy saving care about me;\nInto Thine arms of refuge would I flee;\nI could not live—I dare not die without Thee,\nIn mercy then abide, abide with me.",
+        "Chorus:\nAbide with me,—I need Thee ev’ry hour;\nAbide with me, I fear the tempter’s pow’r;\nAbide with me, in sunshine and in show’r;\nIn life, in death, O Lord, abide with me.",
+        "When foes without, and foes within assail me,\nAnd I am tossed upon a troubled sea,\nWhen, in my weakness, hope and courage fail me,\nIn mercy then abide, abide with me. [Chorus]",
+        "When o’er my way the sun is brightly shining,\nMy counselor, my guide and keeper be;\nAnd in the hour of sorrow and repining,\nIn mercy then abide, abide with me. [Chorus]",
+        "When I am near the dark and unknown river,\nLord, who in earth or heav’n can save but Thee?\n‘Tis Thou alone hath power to deliver,\nIn mercy then abide, abide with me. [Chorus]"
+      ],
+      "sourceHymnal": "Bethany Hymns: A compilation of Choice Songs and Hymns",
+      "sourceYear": 1908,
+      "number": 7,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-ever",
+      "title": "Abide with me Ever",
+      "author": "Yates, John Henry, 1837-1900",
+      "stanzas": [
+        "Without Thee, my Saviour, I nothing can do;\nI strive, but I fail to be faithful and true;\nMy strength is but weakness, and faint is my heart,\nUnless Thou art nigh me Thy grace to impart.",
+        "Refrain:\nAbide with me ever, O Saviour, abide,\nMy Refuge in danger, in darkness, my Guide.",
+        "Without Thee, my Saviour, I struggle in vain;\nI sink ‘neath the wave with no arm to sustain;\nBut when Thou art with me to strengthen my soul,\nI cling to the Rock though the waves o’er me roll. [Refrain]",
+        "Without Thee, my Saviour, I cannot prevail\nWhen foes of my soul with their weapons assail;\nBut when Thou art with me to gird me with might,\nI march to the battle, and win in the fight. [Refrain]"
+      ],
+      "sourceHymnal": "Sacred Songs No. 1: compiled and arranged for use in gospel meetings, Sunday schools, prayer meetings and other religious services",
+      "sourceYear": 1896,
+      "number": 8,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-i-need-thee",
+      "title": "Abide With Me, I Need Thee",
+      "author": "Dietrich, Emma Graves",
+      "stanzas": [
+        "Abide with me, I need Thee ev'ry day,\nTo lead me safe through all the weary way;\nWhen storms surround and only clouds I see,\nLord, be my comfort and abide with me!",
+        "Be with me, Lord, where’er my path may lead,\nFulfill Thy Word, supply my ev'ry need;\nHelp me to live each day more close to Thee,\nAnd oh, dear Lord, I pray, abide with me!",
+        "Abide with me, my Lord, and when at last\nThis earth and all its weary cares are past,\nI’ll pray no more that Thou abide with me,\nFor then, at last, I shall abide with Thee!"
+      ],
+      "sourceHymnal": "The Christian Hymnary: books 1-4",
+      "sourceYear": 1972,
+      "number": 9,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-my-savior-blest",
+      "title": "Abide With Me, My Savior Blest",
+      "author": "Aaberg, J. C. (Jens Christian), 1877-1970; Timm, H. A. (Herman Andreas), 1800-1866",
+      "stanzas": [
+        "Abide with me, my Savior blest,\nThe shades of night will hide me,\nIf to Thy home of peace and rest\nThy Spirit doth not guide me.\nAbide with me, Thou Light of life,\nDrive from my soul all sin and strife,\nAll fear of death forever.",
+        "Abide with me, my Savior blest,\nThat like a palm I flourish,\nThou art the Vine, and I, at best,\nThe branch Thy strength doth nourish.\nO Vine from Eden's balmy shore,\nMy peace and strength Thou dost restore;\nI cannot live without Thee.",
+        "Abide with me, my Savior blest,\nThro' all my earthly danger.\nMy weary soul can find no rest,\nI am on earth a stranger.\nOh, save Thou me from Satan's pow'r,\nBe with me till my latest hour\nAnd like a Shepherd lead me.",
+        "Abide with me, my Savior blest,\nWhen night grows dark and somber;\nI know if Thou wilt be my Guest\nThat I in peace shall slumber.\nBe with me in the hour of death,\nAnd tell me at my passing breath:\nTo heaven I will lead thee."
+      ],
+      "sourceHymnal": "Hymnal for Church and Home",
+      "sourceYear": 1927,
+      "number": 10,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "abide-with-me-fast-falls-the-evenitde",
+      "title": "Abide with me! fast falls the evenitde",
+      "author": "Lyte, Henry Francis, 1793-1847",
+      "stanzas": [
+        "Abide with me! fast falls the eventide,\nThe darkness deepens--Lord, with me abide!\nWhen other helpers fail and comforts flee,\nHelp of the helpless, oh abide with me!",
+        "Swift to its close ebbs out life's little day--\nEarth's joys grow dim, its glories pass away.\nChange and decay in all around I see--\nO Thou who changest not, abide with me!",
+        "I need Thy presence every passing hour:\nWhat but Thy grace can foil the tempter's power?\nWho like Thyself my guide and strength can be?\nIn life, in death, O Lord, abide with me!"
+      ],
+      "sourceHymnal": "The Book of Worship",
+      "sourceYear": 1867,
+      "number": 11,
+      "traditions": [
+        "classic"
+      ],
+      "alsoKnownAs": [
+        "Abide with Me"
+      ]
+    },
+    {
+      "id": "amazing-grace",
+      "title": "Amazing Grace",
+      "author": "Paice, Henry",
+      "stanzas": [
+        "Ah! but for free and sovereign grace,\nI still had lived estranged from God,\nTill hell had proved the destined place\nOf my deserved but dread abode.",
+        "But O, amazed, I see the hand\nThat stopped me in my wild career;\nA miracle of grace I stand;\nThe Lord has taught my heart to fear.",
+        "To fear his name, to trust his grace,\nTo learn his will be my employ;\nTill I shall see him face to face,\nHimself my heaven, himself my joy."
+      ],
+      "sourceHymnal": "A Selection of Hymns for Public Worship. In four parts (10th ed.) (Gadsby's Hymns)",
+      "sourceYear": 1844,
+      "number": 12,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "amazing-grace-and-shall-i-still",
+      "title": "Amazing grace! and shall I still",
+      "author": null,
+      "stanzas": [
+        "Amazing grace! and shall I still\nProve disobedient to thy will?\nAh no: dear lord, the watery tomb\nBelongs to thee and there I come."
+      ],
+      "sourceHymnal": "A Selection of Hymns: from the best authors, intended to be an appendix to Dr. Watt's psalms and hymns. (1st Am. ed.)",
+      "sourceYear": 1792,
+      "number": 13,
+      "traditions": [
+        "classic"
+      ],
+      "alsoKnownAs": [
+        "Amazing Grace"
+      ]
+    },
+    {
+      "id": "be-still-my-soul-before-thy-god",
+      "title": "Be Still, My Soul, Before Thy God",
+      "author": "Hogue, Wilson T. (Wilson Thomas), 1852-1920",
+      "stanzas": [
+        "Be still, my soul, before thy God,\nwhen called to pass beneath the rod;\nHis chast'ning hand learn thou to bless,\nwho chastens e'er in righteousness.",
+        "Be still, my soul, and murmur not,\nhowever hard may be thy lot;\nThough sorest grief now weigh thee down,\nglory ere long thy course shall crown.",
+        "Be still, my soul, in trustful rest;\nwhate'er God wills for thee is best.\nHe chastens only whom He loves;\nHis rod thy folly but reproves.",
+        "Be still, my soul, submissively\naccept what He appoints for thee;\nThough in the fiery furnace tried,\nin hope rejoice, in faith abide.",
+        "Be still, my soul, and thou shalt see\nthat Christ hath vict'ry won for thee.\nBe still, amid the storm and strife;\nbe still, and win the crown of life."
+      ],
+      "sourceHymnal": "Our Great Redeemer's Praise",
+      "sourceYear": 2022,
+      "number": 14,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "be-still-my-soul-for-god-is-near",
+      "title": "Be still, my soul, for God is near!",
+      "author": "Maclagan, William Dalrymple, 1826-1910",
+      "stanzas": [
+        "Be still, my soul, for God is near!\nThe great High Priest is with thee now!\nThe Lord of Life Himself is here,\nBefore Whose face the angels bow.",
+        "To make thy heart His lowly throne\nThy Saviour God in love draws nigh;\nHe gives Himself unto His own,\nFor whom He once came down to die.",
+        "He pleads before the mercy-seat,\nHe pleads with God, He pleads for thee;\nHe gives thee Bread from heaven to eat,--\nHis Flesh and Blood in mystery.",
+        "I come, O Lord!--for Thou dost call--\nTo blend my pleading prayer with Thine;\nTo Thee I give myself--my all--\nAnd feed on Thee, and make Thee mine.",
+        "Amen."
+      ],
+      "sourceHymnal": "Common Service Book of the Lutheran Church",
+      "sourceYear": 1917,
+      "number": 15,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "blasting-at-the-rock-of-ages",
+      "title": "Blasting at the Rock of Ages",
+      "author": "Oatman, Johnson, Jr., 1856-1922",
+      "stanzas": [
+        "O what are they doing when they preach against the cross?\nThey’re blasting at the Rock of Ages!\nO what are they doing when God’s gold they mix with dross?\nThey’re blasting at the Rock of Ages.",
+        "Refrain:\nThen rally, soldiers, rally, for the time has come to fight;\nPut ye on the whole armor, go to battle for the right;\nFor Christ and the Church strike with all your pow’r and might,\nFor they’re blasting at the Rock of Ages.",
+        "Bold skeptics are sneering at redemption through the blood,—\nThey’re blasting at the Rock of Ages!\nAnd scholars are saying Christ was not the Son of God!\nThey’re blasting at the Rock of Ages. [Refrain]",
+        "Our faith in our Savior they desire to take away,—\nThey’re blasting at the Rock of Ages\nBut, praise Him forever! true to Jesus we will stay,—\nThey’re blasting at the Rock of Ages. [Refrain]",
+        "All vain are their blastings, for they never move the Stone,—\nThey’re blasting at the Rock of Ages!\nWhile men are disputing still the Lord is on His throne;\nThe Everlasting Rock of Ages. [Refrain]"
+      ],
+      "sourceHymnal": "Great Revival Hymns",
+      "sourceYear": 1911,
+      "number": 16,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "blessed-assurance",
+      "title": "Blessed Assurance",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "Blessed assurance, Jesus is mine!\nOh, what a foretaste of glory divine!\nHeir of salvation, purchased of God,\nBorn of His Spirit, wash'ed in His blood.",
+        "Chorus:\nThis is my story, This is my song,\nPraising my Saviour all the day long;\nThis is my story, this is my song\nPraising my Saviour all the day long.",
+        "Perfect submission, perfect delight,\nVisions of rapture burst on my sight;\nAngels descending, bring from above,\nEchoes of mercy, whispers of love. [Chorus]",
+        "Perfect submission, all is at rest,\nI in my Saviour am happy and blest;\nWatching and waiting, looking above,\nFill'd with His goodness, lost in His love. [Chorus]"
+      ],
+      "sourceHymnal": "The Gospel Awakening: a collection of original and selected \"hymns and spiritual songs\" for the use in gospel meetings everywhere",
+      "sourceYear": 1888,
+      "number": 17,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "breathing-after-holiness",
+      "title": "Breathing after Holiness",
+      "author": "Wesley, Charles, 1707-1788",
+      "stanzas": [
+        "Love divine, all love excelling,\nJoy of heaven to earth come down!\nFix in us thine humble dwelling,\nAll thy faithful mercies crown;\nJesus! thou art all compassion,\nPure unbounded love thou art,\nVisit us with thy salvation,\nEnter ev'ry trembling heart!",
+        "Breathe! O breathe thy lovely spirit\nInto ev'ry troubled breast!\nLet us all in thee inherit,\nLet us find the promis'd rest;\nTake away the power of sinning,\nAlpha and Omega be,\nEnd of faith, as its beginning,\nSet our hearts at liberty.",
+        "Come! Almighty to deliver,\nLet us all thy life receive!\nSuddenly return, and never,\nNever more thy temples leave!\nThee we would be always blessing,\nServe thee as thy hosts above,\nPray, and praise thee without ceasing,\nGlory in thy precious love.",
+        "Finish then thy new creation,\nPure, unspotted may we be,\nLet us see thy great salvation,\nPerfectly restor'd by thee!\nChang'd from glory into glory,\nTill in heaven we take our place,\nTill we cast our crowns before thee,\nLost in wonder, love and praise!"
+      ],
+      "sourceHymnal": "A Collection of Hymn Tunes from the most modern and approved authors",
+      "sourceYear": 1783,
+      "number": 18,
+      "traditions": [
+        "methodist",
+        "classic"
+      ],
+      "alsoKnownAs": [
+        "Love Divine, All Loves Excelling"
+      ]
+    },
+    {
+      "id": "chippewa-hymn-26-come-thou-fount-of-every-blessing",
+      "title": "Chippewa Hymn 26: Come, Thou Fount of every Blessing",
+      "author": "Robinson, Robert, 1735-1790",
+      "stanzas": [
+        "Oon dah shon suh, ta bain duh mun,\nKe che zhuh wain je ga win;\nWuh wa zhe toon mon duh nin da,\nChe nuh nuh guh mo too non\nKe Ke noo uh muh we shin suh,\nIsh pe ming na guh mo wod;\nKe che me gwaich min je mee yon\nKe zhuh wain je ga win ing!",
+        "Kee gee duh gwe shim suh o mah\nChe zhee be ne ka too non;\nE na ne me wuh nan dush go\nMee nuh wah ning uh kee way;\nJe sus ning ee me kog ma gwah\nPuh bah wah ne she nom bon;\nMee ewh nun nee zah ne ze yon\nKah oon je ne bo tuh wid!",
+        "Oh ka gain zhu wain je ga win,\nNing e che muh ze nuh aun!\nMon oo zah ge e de win ing,\nMin je muh pe doon nin da:\nNa tah wuh ne she noong in suh\nNin de zhe ke de mah gis:\nKe mee nin nin da, Oh mon oo,\nO dah pe nuh muh we shin."
+      ],
+      "sourceHymnal": "Voices: Native American hymns and worship resources",
+      "sourceYear": 1992,
+      "number": 19,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "come-and-abide-with-me",
+      "title": "Come and Abide With Me",
+      "author": "Bateman, L. M. Beal, Mrs.",
+      "stanzas": [
+        "Laden with sin, by all its ways beguiled,\nLost in mazes, burdened and oppressed,\nHark to the Christ Who calls in accent mild—\nHo! all ye weary, come to me and rest.”",
+        "Refrain:\nWeary of sin, oh, come and rest with me,\nThirsty ones, come where living waters be,\nHungry and faint, the bread of life is free,\nNight draweth near, come and abide with me.",
+        "Sad be the soul, in Him are light and joy;\nBowing in weakness, His is strength divine;\nEarth’s wealth but dross, in Him is no alloy;\nHis is the way where heav’nly glories shine. [Refrain]",
+        "Empty and poor, in Him all fulness dwells;\nIn Jesus trusting, fear and doubting cease;\nSweetly His life eternal life foretells;\nIn Him abideth perfect love and peace. [Refrain]"
+      ],
+      "sourceHymnal": "Consecrated Hymns",
+      "sourceYear": 1902,
+      "number": 20,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "come-thou-fount-of-ev-ry-blessing",
+      "title": "Come, thou fount of ev'ry blessing",
+      "author": "Robinson, Robert, 1735-1790; Madan, Martin, 1726-1790",
+      "stanzas": [
+        "Come, thou fount of ev'ry blessing,\nTune my heart to sing thy grace!\nStreams of mercy never ceasing,\nCall for songs of loudest praise:\nTeach me some melodious sonnet,\nSung by flaming tongues above;\nPraise the mount — I'm fix'd upon it,\nMount of thy redeeming love!",
+        "Here I raise mine Ebenezer,\nHither by thy help I'm come;\nAnd I hope by thy good pleasure,\nSafely to arrive at home.\nJesus sought me when a stranger,\nWand'ring from the fold of God;\nHe, to rescue me from danger,\nInterpos'd with precious blood!",
+        "O! to grace how great a debtor\nDaily I'm constrain'd to be!\nLet thy goodness like a fetter,\nBind my wand'ring heart to thee;\nProne to wander, Lord, I feel it,\nProne to leave the God I love -\nHere's my heart, O take and seal it;\nSeal it for thy courts above!"
+      ],
+      "sourceHymnal": "A Pocket hymn book, designed as a constant companion for the pious: collected from various authors",
+      "sourceYear": 1788,
+      "number": 21,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "crown-him-with-many-crowns",
+      "title": "Crown Him with many crowns",
+      "author": "Bridges, Matthew, 1800-1894; Thring, Godfrey, 1823-1903",
+      "stanzas": [
+        "Crown Him with many crowns,\nThe Lamb upon His throne;\nHark! how the heavenly anthem drowns\nAll music but its own!\nAwake, my soul, and sing\nOf Him Who died for thee;\nAnd hail Him as thy matchless King\nThrough all eternity.",
+        "Crown Him the Virgin's Son!\nThe God incarnate born,\nWhose arm those crimson trophies won\nWhich now His brow adorn,\nFruit of the Mystic Rose,\nTrue Branch of Jesse's stem,\nThe Root whence mercy ever flows,\nThe Babe of Bethlehem!",
+        "Crown Him the Lord of Love!\nBehold His hands and side,--\nThose wounds, yet visible above,\nIn beauty glorified:\nNo angel in the sky\nCan fully bear that sight,\nBut downward bends his wondering eye\nAt mysteries so bright.",
+        "Crown Him the Lord of Peace!\nwhose power a sceptre sways\nIn heaven and earth, that wars may cease,\nAnd all be prayer and praise.\nHis reign shall know no end;\nAnd round His piercèd feet\nFair flowers of Paradise extend\nTheir fragrance ever sweet.",
+        "Crown Him the Lord of Heaven!\nOne with the Father known,--\nAnd the blest Spirit, through Him given\nFrom yonder Triune throne!\nAll hail, Redeemer, hail!\nFor Thou hast died for me:\nthy praise and glory shall not fail\nThroughout eternity."
+      ],
+      "sourceHymnal": "Hymnal: according to the use of the Protestant Episcopal Church in the United States of America",
+      "sourceYear": 1871,
+      "number": 22,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "evening-of-life",
+      "title": "Evening of Life",
+      "author": "Lyte, Henry Francis, 1793-1847",
+      "stanzas": [
+        "Swift to its close ebbs out life's little day;\nEarth's joys grow dim, its glories pass away:\nChange and decay in all around I see;\nO thou, who changest not, abide with me!",
+        "Come not in terrors, as the King of kings;\nBut kind and good, with healing in thy wings,\nTears for all woes, a heart for every plea;\nCome, Friend of sinners, and abide with me.",
+        "I fear no foe, with thee at hand to bless\nIlls have no weight, and tears no bitterness:\nWhere is Death's sting? where, Grave, thy victory?\nI triumph still, if thou abide with me.",
+        "Hold thou thy cross before my closing eyes;\nShine through the gloom, and point me to the skies;\nHeaven's morning breaks, and earth's vain shadows flee:\nIn life, in death, O Lord, abide with me!"
+      ],
+      "sourceHymnal": "Laudes Domini: a selection of spiritual songs ancient and modern",
+      "sourceYear": 1884,
+      "number": 23,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "fight-the-good-fight",
+      "title": "Fight the good fight",
+      "author": "Montgomery, James, 1771-1854",
+      "stanzas": [
+        "Fight the good fight; lay hold\nUpon eternal life;\nKeep but thy shield, be bold,\nStand through the hottest strife;\nInvincible while in the field,\nThou canst not fail, unless thou yield.",
+        "No force of earth or hell,\nThough fiends with men unite,\n162\nTruth's champion can compel,\nHowever press'd, to flight;\nInvincible upon the field,\nHe cannot fall, unless he yield.",
+        "Apollyon's arm may shower\nDarts thick as hail, and hide\nHeaven's face, as in the hour,\nWhen Christ on Calvary died;\nNo powers of darkness in the field\nCan tread thee down, unless thou yield.",
+        "Trust in thy Saviour's might;\nYea, fill thy latest breath,\nFight, and like Him in fight,\nBy dying conquer death;\nAnd all-victorious in the field,\nThen with thy sword, thy spirit yield.",
+        "Great words are these, and strong\nYet Lord, I look to Thee,\nTo whom alone belong,\nValour and victory;\nWith Thee, my Captain in the field,\nI must prevail, I cannot yield."
+      ],
+      "sourceHymnal": "Sacred Poems and Hymns",
+      "sourceYear": 1854,
+      "number": 24,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "fight-the-good-fight-habington",
+      "title": "Fight the Good Fight",
+      "author": "Habington, J. Bidlake",
+      "stanzas": [
+        "We soon shall see the day\nWhen our toils and cares shall cease;\nWhen we shall cast our arms away,\nAnd dwell in endless peace:—",
+        "Refrain:\nIf, like Paul, we shall fight the good fight;\nIf, like Paul, we lay hold on eternal life;\nWe shall receive a crown, a crown of righteousness,\nWhich the Lord, the righteous Judge, shall give us that day.",
+        "This hope supports us here,\nAnd it makes our burdens light;\n‘Twill serve our drooping hearts to cheer,\nTill faith shall end in sight:—[Refrain]",
+        "Then, of the prize possessed,\nWe, of wars, shall hear no more;\nBut ever with our Leader rest\nOn yonder peaceful shore:— [Refrain]"
+      ],
+      "sourceHymnal": "Great Revival Hymns",
+      "sourceYear": 1911,
+      "number": 25,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "fight-the-good-fight-with-all-thy-might",
+      "title": "Fight the good fight with all thy might",
+      "author": "Monsell, John S. B. (John Samuel Bewley), 1811-1875",
+      "stanzas": [
+        "Fight the good fight with all thy might,\nChrist is thy strength, and Christ thy right:\nLay hold on life, and it shall be\nThy joy and crown eternally.",
+        "Run the straight race through God's good grace,\nLift up thine eyes, and seek His face;\nLife with its way before us lies,\nChrist is the path, and Christ the prize.",
+        "Cast care aside, lean on thy Guide;\nHis boundless mercy will provide;\nTrust, and the trusting soul shall prove\nChrist is its life, and Christ its love.",
+        "Faint not nor fear, His arms are near;\nHe changeth not, and thou art dear;\nOnly believe, and thou shalt see\nThat Christ is all in all to thee.",
+        "Amen."
+      ],
+      "sourceHymnal": "The Hymnal, Revised and Enlarged, as adopted by the General Convention of the Protestant Episcopal Church in the United States of America in the year of our Lord 1892",
+      "sourceYear": 1894,
+      "number": 26,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "for-the-beauty-of-the-earth",
+      "title": "For the beauty of the earth",
+      "author": "Pierpoint, Folliott Sandford, 1835-1917",
+      "stanzas": [
+        "For the beauty of the earth,\nFor the glory of the skies,\nFor the love which from our birth\nOver and around us lies;\nChrist, our Lord, to Thee we raise\nThis our hymn of grateful praise.",
+        "For the wonder of each hour\nOf the day and of the night;\nHill and vale, and tree and flower,\nSun and moon, and stars of light;\nChrist, our Lord, to Thee we raise\nThis our hymn of grateful praise.",
+        "For the joy of human love,\nBrother, sister, parent, child;\nFriends on earth, and friends above,\nPleasures pure and undefiled;\nChrist, our Lord, to Thee we raise\nThis our hymn of grateful praise.",
+        "For Thy Church that evermore\nLifts her holy hands above,\nOffering up on every shore\nHer pure sacrifice of love;\nChrist, our Lord, to Thee we raise\nThis our hymn of grateful praise.",
+        "Amen."
+      ],
+      "sourceHymnal": "Voices of Praise: for school and church and home",
+      "sourceYear": 1883,
+      "number": 27,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "great-is-thy-faithfulness",
+      "title": "Great Is Thy Faithfulness",
+      "author": "Chisholm, Thomas O. 1866-1960",
+      "stanzas": [
+        "\"Great is Thy faithfulness,\" O God my Father,\nThere is no shadow of turning with Thee;\nThou changest not, Thy compassions, they fail not;\nAs Thou hast been Thou forever wilt be.",
+        "Chorus:\n\"Great is Thy faithfulness!\nGreat is Thy faithfulness!\"\nMorning by morning new mercies I see;\nAll I have needed Thy hand hath provided -\n\"Great is Thy faithfulness,\"\nLord, unto me!",
+        "Summer and winter, and springtime and harvest,\nSun, moon and stars in their courses above,\nJoin with all nature in manifold witness\nTo Thy great faithfulness, mercy and love. [Chorus]",
+        "Pardon for sin and a peace that endureth,\nThy own dear presence to cheer and to guide;\nStrength for today and bright hope for tomorrow,\nBlessings all mine, with ten thousand beside! [Chorus]"
+      ],
+      "sourceHymnal": "Tabernacle Hymns: Number Four: a choice collection of hymns and songs for every religious use",
+      "sourceYear": 1941,
+      "number": 28,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "hail-holy-holy-holy-lord",
+      "title": "Hail, holy, holy, holy, Lord!",
+      "author": "Perronet, Edward, 1721-1792",
+      "stanzas": [
+        "Hail, holy, holy, holy, Lord!\nLet powers immortal sing;\nAdore the co-eternal Word,\nRejoice, the Lord is King!",
+        "To Thee all angels cry aloud,\nThy Name hosannas ring;\nAround Thy throne their myriads crowd,\nAnd shout, the Lord is King!",
+        "Hail Him, they cry, ye sons of light,\nOf joy the eternal Spring;\nPraise Him who formed you by His might,\nRejoice, the Lord is King!",
+        "Hail Him, ye saints, whose love for you\nHas drawn the monster's sting;\nO render to the Lord His due;\nRejoice, the Lord is King!",
+        "Cry out and shout, fair Zion's land!\nYe priests, your offerings bring;\nWatchmen, that on her ramparts stand,\nO shout, the Lord is King!",
+        "Let worlds above and worlds below,\nIn songs united sing;\nAnd, while eternal ages flow,\nRejoice, the Lord is King!"
+      ],
+      "sourceHymnal": "Church Book: for the use of Evangelical Lutheran congregations",
+      "sourceYear": 1890,
+      "number": 29,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "hail-holy-holy-holy-lord-wesley",
+      "title": "Hail! holy, holy, holy Lord",
+      "author": "Wesley, Charles, 1707-1788",
+      "stanzas": [
+        "Hail! holy, holy, holy Lord,\nWhom One in Three we know;\nBy all thy heavenly hosts adored,\nBy all Thy Church below.",
+        "One undivided Trinity\nWith triumph we proclaim;\nThy universe is full of Thee,\nAnd speaks Thy glorious Name.",
+        "Thee, holy Father, we confess:\nThee, holy Son, adore;\nAnd Thee, the Holy Ghost, we bless,\nAnd worship evermore.",
+        "Hail! holy, holy, holy Lord,\nOur heavenly song shall be;\nSupreme, essential One, adored\nIn co-eternal Three!"
+      ],
+      "sourceHymnal": "Church Book: for the use of Evangelical Lutheran congregations",
+      "sourceYear": 1890,
+      "number": 30,
+      "traditions": [
+        "methodist",
+        "classic"
+      ]
+    },
+    {
+      "id": "he-will-ever-abide-with-me",
+      "title": "He Will Ever Abide With Me",
+      "author": "Cassel, E. T. (Elijah Taylor), 1849-1930",
+      "stanzas": [
+        "I have found a friend that never will fail,\nHe will ever abide with me;\nTho’ the mountains fall and crumble as shale\nHe will ever abide with me.",
+        "Refrain:\nJust the same today and yesterday\nAnd forever more the same,\nAll his boundless love endureth for aye,\nHe will ever abide with me.",
+        "Earthly friends may leave and never return\nHe will ever abide with me;\nAt his feet I wait his pleasure to learn,\nHe will ever abide with me. [Refrain]",
+        "When the final call comes over the main\nHe will ever abide with me;\nWhen in mansion fair I ever shall rain,\nHe will ever abide with me. [Refrain]"
+      ],
+      "sourceHymnal": "Calvary's Praises",
+      "sourceYear": 1917,
+      "number": 31,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "hide-me-over-in-the-rock-of-ages",
+      "title": "Hide Me Over In The Rock of Ages",
+      "author": null,
+      "stanzas": [
+        "O my loving brother, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving sister, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving mother, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving father, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving mourner, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving sinner, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving deacon, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me.",
+        "O my loving preacher, when the world’s on fire\nDon’t you want God’s bosom to be your pillow;\nHide me over in the Rock of ages,\nRock of ages, cleft for me."
+      ],
+      "sourceHymnal": "National Jubilee Melodies",
+      "sourceYear": 1916,
+      "number": 32,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "hide-me-o-thou-rock-of-ages",
+      "title": "Hide me, O thou Rock of ages",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "In Thy cleft, O Rock of Ages,\nHide Thou me;\nWhen the fitful tempest rages,\nHide Thou me;\nWhere no mortal arm can sever\nFrom my heart Thy love forever,\nHide me, O Thou Rock of Ages,\nSafe in Thee.",
+        "From the snare of sinful pleasure,\nHide Thou me;\nThou, my soul’s eternal treasure,\nHide Thou me;\nWhen the world its power is wielding,\nAnd my heart is almost yielding,\nHide me, O Thou Rock of Ages,\nSafe in Thee.",
+        "In the lonely night of sorrow,\nHide Thou me;\nTill in glory dawns the morrow,\nHide Thou me;\nIn the sight of Jordan’s billow,\nLet Thy bosom be my pillow;\nHide me, O Thou Rock of Ages,\nSafe in Thee.",
+        "Amen."
+      ],
+      "sourceHymnal": "Book of Worship with Hymns and Tunes",
+      "sourceYear": 1899,
+      "number": 33,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy",
+      "title": "Holy, holy, holy",
+      "author": null,
+      "stanzas": [
+        "Holy, holy, holy, God almighty, Lord!\nHoly, holy, holy, everywhere adored!\n1 God without beginning,\nGod, eternal One\nreigns and rules forever\nall beneath the sun.",
+        "Holy, holy, holy, God almighty, Lord!\nHoly, holy, holy, everywhere adored!\n2 Power and love and wonder\ncircling round God's throne,\npraise our God most holy,\nLord of Life alone.",
+        "---",
+        "GERMAN -\nHeilig, heilig, heilig, heilig ist der Herr!\nHeilig, heilig, heilig, heilig ist nur Er!\n1 Er der nie begonnen,\nEr, der immer war,\newig ist und waltet,\nsein wird immer dar.",
+        "Heilig, heilig, heilig, heilig ist der Herr!\nHeilig, heilig, heilig, heilig ist nur Er!\n2 Allmacht, Wunder, Liebe,\nalles rings umher!\nHeilig, heilig,\nheilig ist der Herr!"
+      ],
+      "sourceHymnal": "The Book of Praise",
+      "sourceYear": 1997,
+      "number": 34,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-2",
+      "title": "Holy, holy, holy Lord",
+      "author": null,
+      "stanzas": [
+        "Holy, holy, holy Lord of power and might.\nheaven, earth, heaven and earth are full of your glory.\nAll glory to your name.\nAll glory to your name.",
+        "Blessed, blessed is he who comes in the name of the Lord.\nBlessed, blessed in he who comes in the name of the Lord.\nHosanna in the highest.\nHosanna in the highest."
+      ],
+      "sourceHymnal": "The Book of Praise",
+      "sourceYear": 1997,
+      "number": 35,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-montgomery",
+      "title": "Holy, Holy, Holy Lord",
+      "author": "Montgomery, James, 1771-1854",
+      "stanzas": [
+        "Holy, Holy, Holy Lord,\nGod of Hosts! when heaven and earth,\nOut of darkness at Thy word,\nIssued into glorious birth,\nAll Thy works before Thee stood,\nAnd Thine eye beheld them good,\nWhile they sang with sweet accord,\nHoly, Holy, Holy Lord!",
+        "Holy, Holy, Holy! Thee,\nOne Jehovah evermore,\nFather, Son, and Spirit! we,\nDust and ashes, would adore;\nLightly by the world esteem'd,\nFrom that world by Thee redeem'd,\nSing we here with glad accord,\nHoly, Holy, Holy Lord!",
+        "Holy, Holy, Holy! All\nHeaven's triumphant choirs shall sing,\nWhen the ransom'd nations fall\nAt the footstool of their King:\n2\nThen shall saints and seraphim,\nHearts and voices swell one hymn,\nRound the Throne with full accord,\nHoly, Holy, Holy Lord!"
+      ],
+      "sourceHymnal": "Sacred Poems and Hymns",
+      "sourceYear": 1854,
+      "number": 36,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-wesley",
+      "title": "Holy, Holy, Holy Lord",
+      "author": "Wesley, Charles, 1707-1788",
+      "stanzas": [
+        "Holy, holy, holy Lord,\nGod the Father, and the Word,\nGod the Comforter, receive\nBlessings more than we can give,\nBlessings more than we can give.",
+        "One, inexplicably three,\nThree, in simplest unity;\nGod, incline thy gracious ear,\nUs thy lisping creatures, hear.",
+        "Thee while man, the earth-born, sings,\nAngels shrink within their wings;\nProstrate seraphim above\nBreathe unutterable love.",
+        "Happy they who never rest,\nWith thy heavenly presence blest!\nThey the heights of glory see,\nSound the depths of Deity!",
+        "Fain with them our souls would vie;\nSink as low, mount as high;\nFall, o’erwhelmed with love, or soar;\nShout, or silently adore!"
+      ],
+      "sourceHymnal": "Triumphant Songs No.3",
+      "sourceYear": 1892,
+      "number": 37,
+      "traditions": [
+        "methodist",
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-kudus-kudus-kuduslah-tuhan",
+      "title": "Holy, Holy, Holy LORD (Kudus, kudus, kuduslah Tuhan)",
+      "author": null,
+      "stanzas": [
+        "INDONESIAN -\nKudus, kudus, kuduslah Tuhan\nAllah segala kuasa.\nSurga dan bumi pennuh kemulianMu.\nTerpujilah, Terpujilah,\nEngkau di surga.\nTerberkatilah, yang datang atas nama Tuhan.\nTerpujilah terpujilah\nEng kau di surga.",
+        "---",
+        "ENGLISH -\nHoly, holy, holy LORD,\nGod of power and might,\nheaven and earth are full of your glory;\nHosanna in the highest.\nHosanna in the highest.\nBlessed is he who comes in the name of the LORD.\nHosanna in the highest.\nHosanna in the highest."
+      ],
+      "sourceHymnal": "Sound the Bamboo: CCA Hymnal 2000",
+      "sourceYear": 2000,
+      "number": 38,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord",
+      "title": "Holy, holy, holy Lord!",
+      "author": "Dodd, William, 1729-1777; Williams, Benjamin, 1725-1795",
+      "stanzas": [
+        "Holy, holy, holy Lord!\nBe thy glorious name adore'd!\nLord, thy mercies never fail:\nHail, celestial goodness, hail!",
+        "Tho' unworthy, Lord, thine ear,\nOur humble hallelujahs hear:\nPurer praise we hope to bring,\nWhen around thy throne we sing.",
+        "While on earth ordain'd to stay,\nGuide our footsteps in thy way,\nTill we come to reign with thee,\nAnd all thy glorious greatness see.",
+        "Then no tongue shall silent be;\nAll shall join in harmony;\nThat, thro' heav'n's all-spacious round,\nThy praise, O God, may ever sound.",
+        "Lord, thy mercies never fail:\nHail, celestial goodness, hail!\nHoly, holy, holy, Lord,\nBe thy glorious Name ador'd!"
+      ],
+      "sourceHymnal": "A Collection of Psalms and Hymns for Publick Worship",
+      "sourceYear": 1789,
+      "number": 39,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-ryland",
+      "title": "Holy, holy, holy Lord!",
+      "author": "Ryland, John, 1753-1825",
+      "stanzas": [
+        "Holy, holy, holy Lord!\nSelf-existent Diety,\nBy the hosts of heaven ador'd,\nTeach us how to worship thee:\nOnly uncreated mind,\nWonders in thy nature meet;\nPerfect Unity combin'd\nWith Society complete.",
+        "All perfection dwells in thee,\nNow to us obscurely known,\nThree in one, and one in three,\nGreat Jehovah, God alone!\nBe our all, O Lord divine!\nFather, Saviour, Vital Breath!\nBody, spirit, soul be thine,\nNow, and at, and after death!",
+        "Glorious, thou, in holiness,\nFather didst thy rights maintain;\nTruth and grace at once express,\nWhen thy only Son was slain:\nHere is deepest wisdom seen;\nHere the richest stores of grace:\nMildest love, and vengeance keen;\nO how bright their mingled rays!",
+        "Fearful thou in praises too,\nLoving Saviour, slaughter'd Lamb!\nWe with joy and reverence view\nAll thy glory, all they shame!\nBe thy death the death of sin,\nBe thy life the sinner's plea;\nSave me, teach me, rule within,\nProphet, Priest, and King to me."
+      ],
+      "sourceHymnal": "Hymns, Selected and Original: for public and private worship (1st ed.)",
+      "sourceYear": 1828,
+      "number": 40,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-blessed-lord",
+      "title": "Holy, Holy, Holy, Blessed Lord",
+      "author": "Gerok, Karl, 1815-1890",
+      "stanzas": [
+        "Holy, holy, holy, blessed Lord!\nAll the choirs of heaven now adore Thee;\nO that I might join that great white host,\nCasting down their golden crowns before Thee,\nCasting down their golden crowns before Thee.",
+        "Look on me, a creature of the dust,\nPity me, though i have naught of merit;\nLet me bring to Thee for Jesus' sake\nHumble praises of a contrite spirit,\nHumble praises of a contrite spirit.",
+        "Bend Thine ear, dear Lord, and hear my prayer;\nCleanse me in Thy blood for sinners given;\nDeck me in the robe of spotless white\nThou hast promised to Thy bride in heaven,\nThou hast promised to Thy bride in heaven.",
+        "Amen."
+      ],
+      "sourceHymnal": "The Hymnal and Order of Service",
+      "sourceYear": 1926,
+      "number": 41,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "holy-holy-holy-lord-wordsworth",
+      "title": "Holy, holy, holy, Lord",
+      "author": "Wordsworth, Christopher, 1807-1885",
+      "stanzas": [
+        "Holy, holy, holy, Lord\nGod of hosts, Eternal King,\nBy the heavens and earth adored!\nAngels and archangels sing,\nChanting everlastingly\nTo the blessed Trinity.",
+        "Thousands, tens of thousands stand,\nSpirits blest before Thy throne,\nSpeeding thence at Thy command;\nAnd, when Thy command is done,\nSinging everlastingly\nTo the blessed Trinity.",
+        "Cherubim and seraphim\nVeil their faces with their wings;\nEyes of angels are too dim\nTo behold the King of kings,\nWhile they sing eternally\nTo the blessed Trinity.",
+        "Thee, apostles, prophets, Thee,\nThee, the noble martyr band,\nPraise with solemn jubilee;\nThee the Church in every land;\nSinging everlastingly,\nTo the blessed Trinity.",
+        "Alleluia! Lord, to Thee,\nFather, Son, and Holy Ghost,\nThree in One, and One in Three,\nJoin we with the heavenly host,\nSinging everlastingly\nTo the blessed Trinity."
+      ],
+      "sourceHymnal": "Hymnal: according to the use of the Protestant Episcopal Church in the United States of America",
+      "sourceYear": 1871,
+      "number": 42,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "i-am-safe-on-the-rock-of-ages",
+      "title": "I am Safe on the Rock of Ages",
+      "author": "Wilson, Jennie, 1857-1913",
+      "stanzas": [
+        "Far above the swelling tide,\nFrom life’s beating storms I hide,\nHere by faith I will abide,\nI am safe on the Rock of Ages.",
+        "Refrain:\nI am safe on the Rock of Ages,\nI am safe on the Rock of Ages,\nTho’ the wildest gale my retreat assail,\nI am safe on the Rock of Ages.",
+        "Changing seasons come and go,\nSurging billows ebb and flow,\nStill abiding peace I know,\nI am safe on the Rock of Ages. [Refrain]",
+        "This dear covert cleft for me,\nShall my welcome refuge be,\nThroughout all eternity,\nI am safe on the Rock of Ages. [Refrain]"
+      ],
+      "sourceHymnal": "Gospel Herald in Song",
+      "sourceYear": 1899,
+      "number": 43,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "in-the-garden-of-god",
+      "title": "In the Garden of God",
+      "author": "Mechthild, of Magdeburg, ca. 1212- ca. 1282; Bevan, Frances, 1827-1909",
+      "stanzas": [
+        "When mine eyes are dim with weeping,\nAnd my tongue with grief is dumb;\nAnd it is as if Thou wert sleeping,\nWhen my heart calleth, “Come;”\nWhen I hunger with bitter hunger\nO Lord for Thee,\nWhere art Thou then, Belovèd?\nSpeak, speak to me—\n“I am where I was in the ancient days,\nI in Myself must be;\nIn all things I am, and in every place,\nFor there is no change in Me.\nWhere the sun is My Godhead, throned above,\nFor thee, O Mine own I wait;\nI wait for thee in the Garden of love,\nTill thou comest irradiate,\nWith the light that shines from My Face divine,\nAnd I pluck the flowers for thee;\nThey are thine, beloved, for they are Mine,\nAnd thou art one with Me.\nIn the tender grass by the waters still\nI have made thy resting-place;\nThy rest shall be sweet in My holy will,\nAnd sure in My changeless grace—\nAnd I bend for thee the holy Tree,\nWhere blossoms the mystic Rod,\nThe highest of all the trees that be\nIn the Paradise of God.\nAnd thou of that Tree of life shalt eat,\nOf the Life that is in Me;\nThou shalt feed on the fruit that is good for meat,\nAnd passing fair to see.\nThere, overshadowed by mighty wings\nOf the Holy Spirit’s peace,\nBeyond the sorrow of earthly things,\nThe toil and the tears shall cease.\nAnd there beneath the eternal Tree\nI will teach thy lips to sing,\nThe sweet new song that is strange to thee\nIn the land of thy banishing.\nThey follow the Lamb where’er He goes\nTo whom it is revealed;\nThe pure and the undefiled are those,\nThe ransomed and the sealed.\nThou shalt learn the speech and the music rare,\nAnd thou shalt sing as they,\nNot only there in my garden fair,\nBut here belovèd, to-day!\nO Lord, a faint and a feeble voice\nIs mine in this house of clay,\nBut Thy love hath made my lips rejoice,\nAnd I can sing and say,\n“I am pure, O Lord, for Thou art pure,\nThy love and mine are one;\nAnd my robe is white, for Thine is white,\nAnd brighter than the sun.\nThy mouth and mine can know no moan,\nNo note of man’s sad mirth,\nBut the everlasting joy alone\nUnknown to songs of earth;\nAnd for ever fed on that living Tree,\nI will sing the song of Thy love with Thee.”"
+      ],
+      "sourceHymnal": "Hymns of Ter Steegen and Others (Second Series)",
+      "sourceYear": 1899,
+      "number": 44,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "in-the-garden-with-jesus",
+      "title": "In the Garden With Jesus",
+      "author": "Poole, William C., 1875-1949",
+      "stanzas": [
+        "Have you been in the garden with Jesus,\nAlone with the Savior in prayer?\nDid the angels of heaven come near you,\nWas Jesus awaiting you there?",
+        "Chorus:\nHave you been in the garden with Jesus,\nHave you walked with Him, talked with Him there?\nHave you been in the garden with Jesus—\nAll alone with the Savior in prayer.",
+        "Have you been in the garden with Jesus,\nAnd prayed till the break of the day,\nAnd the glory of heaven’s bright morning,\nDrove all of the darkness away? [Chorus]",
+        "Have you been in the garden with Jesus,\nO say, have you tarried in prayer\nTill the angels from heaven there met you,\nWith Jesus, the Savior, in prayer? [Chorus]"
+      ],
+      "sourceHymnal": "Rodeheaver's Gospel Solos and Duets",
+      "sourceYear": 1925,
+      "number": 45,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "in-the-garden",
+      "title": "In the Garden.",
+      "author": "Miles, C. Austin (Charles Austin), 1868-1946",
+      "stanzas": [
+        "I come to the garden alone,\nWhile the dew is still on the roses;\nAnd the voice I hear,\nFalling on my ear;\nThe Son of God discloses.",
+        "Chorus:\nAnd He walks with me, and He talks with me,\nAnd He tells me I am His own,\nAnd the joy we share as we tarry there,\nNone other has ever known.",
+        "He speaks, and the sound of His voice\nIs so sweet the birds hush their singing,\nAnd the melody\nThat He gave to me,\nWithin my heart is ringing. [Chorus]",
+        "I'd stay in the garden with Him\nTho' the night around me be falling;\nBut He bids me go;\nThro' the voice of woe,\nHis voice to me is calling. [Chorus]"
+      ],
+      "sourceHymnal": "Victory Songs: For the Church, Sunday School and Evangelistic Services.",
+      "sourceYear": 1920,
+      "number": 46,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "it-is-well-with-my-soul",
+      "title": "It is well with my soul",
+      "author": "Spafford, Horatio Gates, 1828-1888",
+      "stanzas": [
+        "When peace, like a river, attendeth my way,\nWhen sorrows, like sea billows, roll;\nWhatever my lot, Thou hast taught me to say,\n\"It is well, it is well with my soul.\"",
+        "Refrain:\nIt is well with my soul\nIt is well, it is well with my soul.",
+        "Though Satan should buffet, though trials should come,\nLet this blest assurance control,\nThat Christ hath regarded my helpless estate,\nAnd hath shed his own blood for my soul. [Refrain]",
+        "My sin O the bliss of the glorious thought!\nMy sin not in part, but the whole,\nIs nailed to his cross and I bear it no more;\nPraise the Lord, praise the Lord, O my soul! [Refrain]",
+        "And, Lord, haste the day when the faith shall be sight,\nThe clouds be rolled back as a scroll,\nThe trump shall resound, and the Lord shall descend,\n\"Even so\" it is well with my soul. [Refrain]"
+      ],
+      "sourceHymnal": "The Seventh-Day Adventist Hymn and Tune Book: for use in divine worship",
+      "sourceYear": 1886,
+      "number": 47,
+      "traditions": [
+        "classic"
+      ],
+      "alsoKnownAs": [
+        "It Is Well with My Soul"
+      ]
+    },
+    {
+      "id": "jesus-in-the-garden",
+      "title": "Jesus in the Garden",
+      "author": "Sederquist, G. W. (George W.), 1838-1921",
+      "stanzas": [
+        "I am redeem'd, O wonderful love;\n'Twas love that bro't my pardon;\nBy him who came the sinner to save,\nWho suffered in the garden.",
+        "Chorus:\nO, it was love, 'twas wonderful love;\nHe who purchased my pardon:\nPraying in sorrow, shedding his blood,\nJesus alone in the garden.",
+        "Laden with anguish, smitten with grief;\nHe entered in the garden,\nPraying in sorrow, shedding his blood,\nThe blood that seals our pardon. [Chorus]",
+        "\"Let this cup pass, my Father,\" he pray'd;\n\"I suffer in submission,\nDrink it I will, thy law to fulfil,\nThat man may have remission. [Chorus]",
+        "\"Could you not watch one hour with me?\"\nThe Saviour said, in sorrow,\n\"Behold! I go, 'tis written of me,\nTo die for man tomorrow.\" [Chorus]",
+        "Free from the law thro' Jesus the Lamb,\nWho died on Calvary's mountain,\nShedding his blood so freely for all,\nThe only cleansing fountain. [Chorus]"
+      ],
+      "sourceHymnal": "The Golden Sheaf: a collection of choice hymns and songs especially designed for Sunday schools, loyal worker's meetings, prayer and social services (Enl. ed.)",
+      "sourceYear": 1902,
+      "number": 48,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "jesus-is-the-rock-of-ages",
+      "title": "Jesus Is the Rock of Ages",
+      "author": "Bennard, George, 1873-1958",
+      "stanzas": [
+        "Blessed Rock in time of storm,\nJesus is the Rock of Ages,\nRock that shelters from all harm,\nJesus is the Rock of Ages.",
+        "Refrain:\nRock of Ages firm and sure,\nRock that ever shall endure,\nTrusting Thee I am secure,\nJesus is the Rock of Ages.",
+        "Rock that shields ‘mid tempest blasts,\nJesus is the Rock of Ages,\nShield me ‘till life’s storms are past,\nJesus is the Rock of Ages. [Refrain]",
+        "Let sin’s mighty billows roll,\nJesus is the Rock of Ages,\nThey can never harm my soul,\nJesus is the Rock of Ages. [Refrain]",
+        "When the pow’rs of hell assail,\nJesus is the Rock of Ages,\nNever shall my fortress fail,\nJesus is the Rock of Ages. [Refrain]",
+        "While I live to Him I’ll cling,\nJesus is the Rock of Ages,\nWhen in heaven I will sing,\nJesus is the Rock of Ages. [Refrain]"
+      ],
+      "sourceHymnal": "Full Redemption Songs",
+      "sourceYear": 1933,
+      "number": 49,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "jesus-in-the-garden-of-gethsemane",
+      "title": "Jesus, in the Garden of Gethsemane",
+      "author": "Richards, George, 1755?-1814",
+      "stanzas": [
+        "Jesus, bow'd down by mighty woe,\nUnfelt, unknown, to all below,\nExcept the Son of God;\nIn agonistic pangs of soul,\nDrinks deep from wormwood's bitt'rest bowl,\nAnd sweats great drops of blood.",
+        "See, his disciples slumb'ring round;\nNor pitying friend on earth is found;\nHe treads the press alone:\nIn vain to Heav'n he turns his eyes;\nNo pardon waits him from the skies;\nHis death it must atone.",
+        "\"O Father hear! this cup remove—\nSave thou the darling of thy love,\n(The prostrate victim said)\nYet not my will, but thine be done,\nShould that exted, to count thy Son,\nAmid the sleeping dead.\"",
+        "His earnest prayers, his deep'ning groans,\nWere heard before angelic thrones;\nAmazement wrapt the sky.\n\"Go strengthen Christ,\" Jehovah said;\nTh' astonish'd Seraph bow'd his head,\nAnd left the realms on high.",
+        "Made strong in strength rene'd from heav'n,\nJesus receives the cup as giv'n;\nSubmiss, resign'd in all,\nHe drink;—nor leaves a dreg behind;\nAnd bears away from human kind,\nThe wormwood mix'd with gall."
+      ],
+      "sourceHymnal": "Psalms, Hymns and Spiritual Songs: selected and original, designed for the use of the Church Universal in public and private devotion",
+      "sourceYear": 1792,
+      "number": 50,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "just-as-i-am",
+      "title": "Just as I am",
+      "author": "Farningham, Marianne, 1834-1909",
+      "stanzas": [
+        "\"Just as I am,\" thine own to be,\nFriend of the young, who lovest me:\nTo consecrate myself to thee,\nO Jesus Christ, I come, I come.",
+        "Chorus:\nJust as I am,\nJust as I am\nJust as I am,\nO Lord, I come.\nJust as I am,\nJust as I am\nJust as I am,\nO Lord, I come.",
+        "In the glad morning of my day,\nMy life to give, my vows to pay,\nWith no reserve and no delay,\nWith all my heart I come, I come. [Chorus]",
+        "I would live ever in the light,\nI would work ever for the right,\nI would serve thee with all my might,\nTherefore to thee I come, I come. [Chorus]",
+        "\"Just as I am,\" young, strong and free,\nTo be the best that I can be\nFor truth, and righteousness, and thee,\nLord of my life, I come, I come. [Chorus]"
+      ],
+      "sourceHymnal": "Junior Songs: a collection of sacred hymns and songs; for use in meetings of junior societies, Sunday Schools, etc.",
+      "sourceYear": 1892,
+      "number": 51,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "just-as-i-am-o-can-it-be",
+      "title": "Just as I Am, O Can It Be",
+      "author": "De Armond, Lizzie, 1847-1936",
+      "stanzas": [
+        "Just as I am, O can it be,\nThat Christ, my Saviour, cares for me,\nAnd in His love doth condescend,\nTho’ sinning oft, to call me friend.",
+        "Chorus:\nJust as I am, O thought divine,\nThat I am His, and He is mine,\nJust as I am, in tender love,\nHe lifts me up to heights above.",
+        "Just as I am, my need He knows,\nAnd blessings rich on me bestows,\nHe reaches down a helping hand,\nAnd strong in Him, secure I stand. [Chorus]",
+        "Just as I am, His saving grace,\nProvides for me in heav’n a place,\nThat where He is, there I may be,\nThroughout a long eternity. [Chorus]"
+      ],
+      "sourceHymnal": "Kingdom Songs: for use in the Sunday School, the young people's meeting, the devotional service",
+      "sourceYear": 1914,
+      "number": 52,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "just-as-i-am-o-lamb-of-god",
+      "title": "Just as I Am, O Lamb of God",
+      "author": "Hastings, H. L. (Horace Lorenzo), 1831-1899",
+      "stanzas": [
+        "Just as I am, O Lamb of God,\nNow I come, now I come;\nTo wash me in Thy cleansing blood,\nNow I come, now I come.\nWhile mercy’s guiding beacons beam\nTo point to the crimson stream\nThat makes the foulest sinner clean,\nNow I come, now I come.",
+        "Just as I am, without delay,\nNow I come, now I come;\nTo Christ the true and living Way,\nNow I come, now I come.\nFor pardon purchased on the tree,\nFor grace and mercy rich and free,\nO Lamb of God, I come to Thee,\nNow I come, now I come."
+      ],
+      "sourceHymnal": "Gloria Deo: a Collection of Hymns and Tunes for Public Worship in all Departments of the Church",
+      "sourceYear": 1901,
+      "number": 53,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "just-as-i-am-without-one-plea",
+      "title": "Just as I am, without one plea",
+      "author": "Elliott, Charlotte, 1789-1871",
+      "stanzas": [
+        "Just as I am, without one plea,\nBut that Thy blood was shed for me,\nAnd that Thou bid'st me come to Thee,\nO Lamb of God, I come!",
+        "Just as I am, and waiting not\nTo rid my soul of one dark blot,\nTo Thee, whose blood can cleanse each spot,\nO Lamb of God, I come!",
+        "Just as I am, though tossed about\nWith many a conflict, many a doubt,\nFightings within, and fears without,\nO Lamb of God, I come!",
+        "Just as I am--poor,wretched, blind,\nSight, riches, healing of the mind,\nYea, all I need, in Thee to find,\nO Lamb of God, I come!",
+        "Just as I am--Thou wilt receive,\nWilt welcome, pardon, cleanse, relieve;\nBecause Thy promise I believe,\nO Lamb of God, I come!",
+        "Just as I am-- Thy love unknown\nHath broken every barrier down;\nNow, to be Thine, yea, Thine alone,\nO Lamb of God, I come!"
+      ],
+      "sourceHymnal": "The Book of Worship",
+      "sourceYear": 1867,
+      "number": 54,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "leaning-on-the-everlasting-arms",
+      "title": "Leaning on the Everlasting Arms",
+      "author": "Hoffman, E. A. (Elisha Albright), 1839-1929",
+      "stanzas": [
+        "What a fellowship, what a joy divine,\nLeaning on the everlasting arms;\nWhat a blessedness, what a peace is mine,\nLeaning on the everlasting arms.",
+        "Refrain:\nLeaning, leaning,\nSafe and secure from all alarms;\nLeaning, leaning,\nLeaning on the everlasting arms.",
+        "Oh, how sweet to walk in this pilgrim way,\nLeaning on the everlasting arms;\nOh, how bright the path grows from day to day,\nLeaning on the everlasting arms. [Refrain]",
+        "What have I to dread, what have I to fear,\nLeaning on the everlasting arms?\nI have blessed peace with my Lord so near,\nLeaning on the everlasting arms. [Refrain]"
+      ],
+      "sourceHymnal": "The Golden Sheaf: a collection of choice hymns and songs especially designed for Sunday schools, loyal worker's meetings, prayer and social services (Enl. ed.)",
+      "sourceYear": 1902,
+      "number": 55,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "life-everlasting",
+      "title": "Life everlasting",
+      "author": "Newton, John, 1725-1807",
+      "stanzas": [
+        "Amazing grace! (how sweet the sound)\nThat sav'd a wretch like me!\nI once was lost, but now am found,\nWas blind, but now I see.",
+        "'Twas grace that taught my heart to fear,\nAnd grace my fears reliev'd;\nHow precious did that grace appear,\nThe hour I first believ'd!",
+        "Thro' many dangers, toils, and snares,\nI have already come;\n'Tis grace has brought me safe thus far,\nAnd grace will lead me home.",
+        "The Lord has promis'd good to me,\nHis word my hope secures;\nHe will my shield and portion be,\nAs long as life endures.",
+        "Yes, when this flesh and heart shall fail,\nAnd mortal life shall cease;\nI shall possess, within the vail,\nA life of joy and peace.",
+        "There joys unseen by mortal eyes\nOr reason's feeble ray,\nIn ever blooming prospects rise,\nUnconscious of decay.",
+        "Then now, on faith's sumblimest wing,\nLet ardent wishes rise\nTo those bright scenes, where pleasures spring,\nImmortal in the skies"
+      ],
+      "sourceHymnal": "The Psalms of David: with hymns and spiritual songs: also, the catechism, confession of faith, and liturgy of the Reformed Church in the Netherlands",
+      "sourceYear": 1789,
+      "number": 56,
+      "traditions": [
+        "catholic",
+        "presbyterian",
+        "classic"
+      ]
+    },
+    {
+      "id": "now-thank-we-all-our-god",
+      "title": "Now thank we all our God",
+      "author": "Winkworth, Catherine, 1827-1878; Rinckart, Martin, 1586-1649",
+      "stanzas": [
+        "Now thank we all our God,\nWith heart and hands and voices,\nWho wondrous things hath done,\nIn whom the world rejoices;\nWho from our mother's arms\nHath bless'd us on our way\nWith countless gifts of love,\nAnd still is ours today.",
+        "Oh may this bounteous God\nThrough all our life be near us,\nWith ever joyful hearts\nAnd blessied peace to cheer us;\nAnd keep us in His grace,\nAnd guide us when perplex'd,\nAnd free us from all ills\nIn this world and the next.",
+        "All praise and thanks to God\nThe Father now be given,\nThe Son, and Him who reigns\nWith them in highest heaven,\nThe One eternal God,\nWhom earth and heaven adore,\nFor thus it was, is now,\nAnd shall be evermore!"
+      ],
+      "sourceHymnal": "Chorale Book for England, The",
+      "sourceYear": 1863,
+      "number": 57,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "o-holy-holy-holy-lord",
+      "title": "O holy, holy, holy Lord",
+      "author": "Eastburn, James Wallis, 1797-1819",
+      "stanzas": [
+        "O holy, holy, holy Lord,\nBright in thy deeds and in thy name,\nForever be thy name adored,\nThy glories let the world proclaim.",
+        "O Jesus, Lamb once crucified\nTo take our load of sins away,\nThine be the hymn that rolls its tide\nAlong the realms of upper day;",
+        "O Holy Spirit, from above,\nIn streams of light and glory given;\nThou source of ecstasy and love,\nThy praises ring through earth and heaven!",
+        "O God triune, to thee we owe\nOur every thought our every song;\nAnd ever may thy praises flow\nFrom saint and seraph's burning tongue!"
+      ],
+      "sourceHymnal": "A Collection of Hymns and Prayers, for Public and Private Worship",
+      "sourceYear": 1845,
+      "number": 58,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "o-holy-holy-holy-lord-conder",
+      "title": "O Holy, Holy, Holy Lord!",
+      "author": "Conder, Josiah, 1789-1855",
+      "stanzas": [
+        "O Holy, Holy, Holy Lord!\nThou God of hosts, by all adored;\nThe earth and heavens are full of Thee,\nThy light, Thy power, Thy majesty.",
+        "Loud alleluias to Thy name,\nAngels and seraphim proclaim;\nBy all the powers and thrones in Heaven\nEternal praise to Thee is given.",
+        "Apostles join the glorious throng,\nAnd swell the loud triumphant song;\nProphets and martyrs hear the sound,\nAnd spread the alleluias round.",
+        "Glory to Thee, O God most high!\nFather, we praise Thy majesty;\nThe Son, the Spirit we adore--\nOne Godhead, blest for evermore!",
+        "Amen."
+      ],
+      "sourceHymnal": "Book of Worship with Hymns and Tunes",
+      "sourceYear": 1899,
+      "number": 59,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "o-rock-of-ages",
+      "title": "O Rock of Ages",
+      "author": "Hastings, H. L. (Horace Lorenzo), 1831-1899",
+      "stanzas": [
+        "My soul at last a rest hath found,\nA rest that will not fail;\nA sure and certain anch’rageground\nIn Christ within the vail.",
+        "Chorus:\nO Rock of Ages cleft for me,\nIn Thee my soul securely hide;\nMy tow’r of strength, I fly to Thee,\nAnd safely there abide.",
+        "I’ll hide me in this refuge strong,\nFrom every stormy blast;\nAnd sit and sing until the waves\nOf wrath are over-past. [Chorus]",
+        "Ye comfort-less and tempest-tost,\nBy sins and woes opprest;\nYe tempted, troubled, ruined, lost,\nCome find in Christ your rest. [Chorus]",
+        "Ye thirsty, from this smitten Rock,\nLife’s crystal waters spring;\nThere hide from every stormy shock,\nAnd rest, and drink, and sing. [Chorus]"
+      ],
+      "sourceHymnal": "Winnowed Songs for Sunday Schools",
+      "sourceYear": 1890,
+      "number": 60,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "only-trust-and-obey",
+      "title": "Only Trust and Obey",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "Only trust and obey,\nAs you pass on your way;\nYou’ll be happy in Jesus,\nIf you trust and obey.",
+        "Refrain:\nOnly trust and obey,\nNot a moment delay;\nYou’ll be happy, always happy,\nIf you trust and obey.",
+        "Only trust and obey,\nDo your duty today;\nAnd you’ll serve your Redeemer,\nIf you trust and obey. [Refrain]",
+        "Only trust and obey,\nDrive temptation away;\nOh, the Saviour will help you,\nIf you trust and obey. [Refrain]",
+        "Only trust and obey,\nIn the end it will pay;\nJesus waits to reward you,\nIf you trust and obey. [Refrain]"
+      ],
+      "sourceHymnal": "Songs of the Kingdom: prepared for the use of young people's societies and adapter for prayer meetings, Sunday schools and the home",
+      "sourceYear": 1896,
+      "number": 61,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "onward-christian-soldiers",
+      "title": "Onward, Christian soldiers",
+      "author": "Baring-Gould, S. (Sabine), 1834-1924",
+      "stanzas": [
+        "Onward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before.\nChrist the Royal Master\nLeads against the foe,\nForward into battle,\nSee, His banners go.\nOnward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before.",
+        "At the sign of triumph\nSatan's host doth flee;\nOn, then, Christian soldiers,\nOn to victory.\nHell's foundations quiver\nAt the shout of praise;\nBrothers, lift your voices,\nLoud your anthems raise.\nOnward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before.",
+        "Like a mighty army\nMoves the Church of God;\nBrothers, we are treading\nWhere the saints have trod;\nWe are not divided,\nAll one body we,\nOne in hope, and doctrine,\nOne in charity.\nOnward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before.",
+        "Crowns and thrones may perish,\nKingdoms rise and wane,\nBut the Church of Jesus\nConstant will remain;\nGates of hell can never\n'Gainst that Church prevail;\nWe have Christ's own promise,\nAnd that cannot fail.\nOnward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before.",
+        "Onward, then, ye people,\nJoin our happy throng,\nBlend with ours your voices\nIn the triumph-song;\nGlory, laud, and honour,\nUnto Christ the King,\nThis through countless ages\nMen and Angels sing.\nOnward, Christian soldiers,\nMarching as to war,\nWith the Cross of Jesus\nGoing on before."
+      ],
+      "sourceHymnal": "Hymnal: according to the use of the Protestant Episcopal Church in the United States of America",
+      "sourceYear": 1871,
+      "number": 62,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "pass-me-not",
+      "title": "Pass me not",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "Pass me not, O gentle Saviour,\nHear my humble cry;\nWhile on others thou art smiling,\nDo not pass me by;",
+        "Chorus:\nSaviour, Saviour,\nHear my humble cry;\nWhile on others thou art calling,\nDo not pass me by.",
+        "Let me at a throne of mercy\nFind a sweet relief,\nKneeling there in deep contrition:\nHelp my unbelief. [Chorus]",
+        "Trusting only in thy merit,\nWould I seek thy face;\nHeal my wounded, broken spirit,\nSave me by thy grace. [Chorus]",
+        "Thou, the spring of all my comfort,\nMore than life to me;\nWhom have I on earth beside thee?\nWhom in heaven but thee? [Chorus]"
+      ],
+      "sourceHymnal": "The Little Seraph: in seven character notes, for churches and Sunday-schools",
+      "sourceYear": 1874,
+      "number": 63,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "pass-me-not-suffern",
+      "title": "Pass Me Not",
+      "author": "Suffern, J. William",
+      "stanzas": [
+        "Pass me not, O loving Saviour,\nWhen I call to thee;\nAs for mercy I am pleading,\nMercy grant to me.\nPass me not, O gentle Saviour,\nThou of all most kind;\nSave me from the great temptations\nThat allure the mind.",
+        "Refrain:\nHear me, hear me,\nJesus, Saviour dear;\nHear me as I plead for mercy;\nOh, be ever near.",
+        "Pass me not, O gracious Saviour;\nLow I bend to thee!\nAnd for mercy now am calling,\nSaviour, pardon me.\nPass me not, O tender Saviour;\nHear my earnest cry;\nHelp me, or I perish striving;\nDo not pass me by. [Refrain]"
+      ],
+      "sourceHymnal": "Calvary Songs",
+      "sourceYear": 1875,
+      "number": 64,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "prayer-in-the-garden",
+      "title": "Prayer in the Garden",
+      "author": "Beddome, Benjamin, 1717-1795",
+      "stanzas": [
+        "Jesus the Lord came freely forth,And left his Father's throne,To tread the winepress of his wrath,And trod it all alone.2. His sufferings, marvellous and great,Do all our thoughts confound;And falling drops of bloody sweatBedew the hallowed ground.3. Though sorrowful beyond degree,And e'en to death oppressed,Amidst the dreadful agony,He thus his prayer addressed:4. Father, remove this bitter cup,And let it pass away;If otherwise, I'll drink it up,And all thy will obey.5. He with the Father's will complies,And suffers on the tree;Tis done, he bows his head and dies,To set the captives free."
+      ],
+      "sourceHymnal": "Hymns Adapted to Public Worship or Family Devotion: Now First Published, from the Manuscripts of the Late Rev. Benjamin Beddome, A. M.",
+      "sourceYear": 1818,
+      "number": 65,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "rock-of-ages",
+      "title": "Rock of Ages",
+      "author": "Crouse, William H., 1874-1941",
+      "stanzas": [
+        "Rock of Ages, wilt thou be,\nCleft for guilty ones like me?\nMay I peace and comfort find?\nI am poor and weak and blind.",
+        "Refrain:\nJesus, Lord, I look to thee;\nThou alone canst shelter me;\nAt thy cross I humbly fall;\nO be thou my all in all.",
+        "Rock of Ages, dear to me,\nLet me shelter safe in thee;\nOpen thou and take me in,\nCleanse me now from ev’ry sin. [Refrain]",
+        "While the waves around me roll,\nPassing o’er the treach’rous shoal,\nChart and compass be to me,\nRock of Ages, pilot me. [Refrain]",
+        "Soon I’ll close my eyes in death;\nWhile I draw this fleeting breath,\nLord, assure me there shall be\nShelter in this Rock for me. [Refrain]",
+        "Lord, by faith I now can see\nCleansing blood that flows for me;\nJoy and peace within I hold,\nSheltered in thy blissful fold. [Refrain]"
+      ],
+      "sourceHymnal": "Songs of Grace and Glory: A New and Inspiring Selection of Sacred Songs for Evangelical Use and General Worship",
+      "sourceYear": 1918,
+      "number": 66,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "rock-of-ages-let-our-song",
+      "title": "Rock of Ages, Let Our Song",
+      "author": "Stein, Leopold, 1810-1882; Jastrow, Marcus, 1829-1903; Gottheil, Gustav, 1827-1903",
+      "stanzas": [
+        "Rock of Ages, let our song\npraise your saving power;\nyou amidst the raging foes\nwere our sheltering tower.\nRaging they assailed us,\nbut your arm availed us,\nand your word broke their sword\nwhen our own strength failed us.",
+        "Kindling new the holy lamps,\npriests, unbowed by suffering,\npurified the nation’s shrine,\nbrought to God their offering.\nAnd in lands surrounding\nhear the joy abounding,\nhappy throngs singing songs\nwith a mighty sounding.",
+        "Children of the prophet’s word\nwhether free or fettered,\nwake the echoes of the songs\nwhere you may be scattered.\nYours the message cheering\nthat the time is nearing\nwhich shall see nations free,\ntyrants disappearing."
+      ],
+      "sourceHymnal": "Singing the Living Tradition",
+      "sourceYear": 1993,
+      "number": 67,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "rock-smitten-or-rock-of-ages",
+      "title": "Rock smitten; or Rock of Ages",
+      "author": "Toplady, Augustus, 1740-1778",
+      "stanzas": [
+        "Rock of Ages, shelter me,\nLet me hide myself in thee!\nLet the Water, and the Blood,\nFrom thy wounded Side which flow'd,\nBe of Sin the double Cure,\nCleanse me from its Guilt and Power.",
+        "Not the Labour of my Hands\nCan fulfil thy Law's Demands;\nCould my Zeal no Respite know,\nCould my Tears for ever flow,\nAll for Sin could not attone,\nThou must save, and thou alone.",
+        "Nothing in my Hand I bring,\nSimply to thy Cross I cling;\nNaked come to thee for Dress,\nHelpless look to thee for Grace;\nBlack' I to the Fountain fly;\nWash me, Saviour, or I die!",
+        "While I draw this fleeting Breath,\nWhen my Eye-Strings break in Death,\nWhen I soar to Worlds unknown,\nSee thee on thy Judgment Throne,\nRock of Ages, shelter me,\nLet me hide myself in thee."
+      ],
+      "sourceHymnal": "The Christians Duty, exhibited, in a series of Hymns: collected from various authors, designed for the worship of God, and for the edification of Christians (1st Ed.)",
+      "sourceYear": 1791,
+      "number": 68,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "shelter-me-o-rock-of-ages",
+      "title": "Shelter Me, O Rock of Ages",
+      "author": "Wilson, Jennie, 1857-1913",
+      "stanzas": [
+        "Shelter me, O Rock of Ages,\nSafe in thee now let me hide;\nWild the tempest 'round me rages,\nFiercely beats the surging tide.",
+        "Chorus:\nShelter me, O Rock of Ages,\nEvermore my refuge be;\nShelter me, O Rock of Ages,\nClings my helpless souls to thee.",
+        "Earth's supports from me are drifting,\nOnly thou dost steadfast prove;\nTo thy height my soul uplifting,\nGrant me refuge, naught can move. [Chorus]",
+        "Blessed Rock, in thee abiding,\nTho' the angry billows roll;\nIn eternal strength confiding,\nHoly calm shall fill my soul. [Chorus]",
+        "From the storm of time retreating,\nTo thy sacred cleft I flee;\nOther help is vain and fleeting,\nRock of Ages, shelter me. [Chorus]"
+      ],
+      "sourceHymnal": "The Golden Sheaf: a collection of choice hymns and songs especially designed for Sunday schools, loyal worker's meetings, prayer and social services (Enl. ed.)",
+      "sourceYear": 1902,
+      "number": 69,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "sheltered-in-the-rock-of-ages",
+      "title": "Sheltered in the Rock of Ages",
+      "author": "Wellesley-Wesley, Ernest G.",
+      "stanzas": [
+        "Sheltered in the “Rock of Ages,”\nSafe when storm and tempest rages,\nSafe, so safe am I;\nStrongest wave can harm me never,\nHere my soul shall rest forever,\nSafe, so safe am I.",
+        "Refrain:\nSafely sheltered in the Rock,\nSafe, so safe am I;\nSafely sheltered in the Rock,\nSafe, so safe am I.",
+        "Sheltered in the “Rock of Ages,”\nSafe when sin its death-strife wages,\nSafe, so safe am I;\nSwiftest shaft falls harmless, shattered,\nFiercest foeman’s forces scattered,\nSafe, so safe am I. [Refrain]",
+        "Sheltered in the “Rock of Ages,”\nDeep “His peace” which fear assuages,\nSafe, so safe am I;\nKept secure from sorrow’s sadness,\nChangeth heart-pain into gladness,\nSafe, so safe am I. [Refrain]"
+      ],
+      "sourceHymnal": "The Crowning Day : For use in Sunday Schools and Gospel Meetings",
+      "sourceYear": 1894,
+      "number": 70,
+      "traditions": [
+        "methodist",
+        "classic"
+      ]
+    },
+    {
+      "id": "standing-on-the-promises",
+      "title": "Standing on the Promises",
+      "author": "Carter, Russell Kelso, 1849-1928",
+      "stanzas": [
+        "Standing on the promises of Christ my King,\nThro' eternal ages let his praises ring:\nGlory in the highest I will shout and sing,\nStanding on the promises of God.",
+        "Chorus:\nStanding, Standing,\nStanding on the promises of God my Saviour;\nStanding, Standing,\nI'm standing on the promises of God.",
+        "Standing on the promises that cannot fail,\nWhen the howling storms of doubt and fear assail,\nBy the living Word of God I shall prevail,\nStanding on the promises of God. [Chorus]",
+        "Standing on the promises I now can see\nPerfect, present cleansing in the blood for me:\nStanding in the liberty where Christ makes free,\nStanding on the promises of God. [Chorus]",
+        "Standing on the promises of Christ the Lord,\nBounding to him eternally by love's strong cord,\nOvercoming daily with the Spirits's sword,\nStanding on the promises of God. [Chorus]",
+        "Standing on the promises I cannot fall,\nListening every moment to the Spirits's call,\nResting in my Saviour, as my all in all,\nStanding on the promises of God. [Chorus]"
+      ],
+      "sourceHymnal": "The Gospel Awakening: a collection of original and selected \"hymns and spiritual songs\" for the use in gospel meetings everywhere",
+      "sourceYear": 1888,
+      "number": 71,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "sweet-hour-of-prayer-sweet-hour-of-prayer",
+      "title": "Sweet hour of prayer! sweet hour of prayer!",
+      "author": "Walford, William W., 1772-1850",
+      "stanzas": [
+        "Sweet hour of prayer! sweet hour of prayer!\nThat calls me from a world of care,\nAnd bids me at my Father's throne\nMake all my wants and wishes known:\nIn seasons of distress and grief,\nMy soul has often found relief;\nAnd oft escaped the tempter's snare\nBy thy return, sweet hour of prayer;\nAnd oft escaped the temper's snare\nBy thy return, sweet hour of prayer.",
+        "Sweet hour of prayer! sweet hour of prayer!\nThy wings shall my petition bear,\nTo him whose truth and faithfulness,\nEngage the waiting soul to bless;\nAnd since he bids me seek his face,\nBelieve his word, and trust his grace,\nI'll cast on him my every care,\nAnd wait for thee, sweet hour of prayer!\nI'll cast on him my every care,\nAnd wait for thee, sweet hour of prayer",
+        "Sweet hour of prayer! sweet hour of prayer!\nMay I thy consolation share;\nTill from Mount Pisgah's lofty height,\nI view my home, and take my flight:\nThis robe of flesh I'll drop, and rise\nTo seize the everlasting prize;\nAnd shout, while passing through the air,\nFarewell, farewell, sweet hour of prayer.\nAnd shout, while passing through the air,\nFarewell, farewell, sweet hour of prayer."
+      ],
+      "sourceHymnal": "The New Sabbath School Hosanna: enlarged and improved: a choice collection of popular hymns and tunes, original and selected: for the Sunday school and the family circle...",
+      "sourceYear": 1870,
+      "number": 72,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-agony-in-the-garden",
+      "title": "The Agony in the Garden",
+      "author": "Hemans, Mrs., 1793-1835",
+      "stanzas": [
+        "He knelt; the Saviour knelt and prayed,\nWhen but his Father’s eye\nLooked, through the lonely garden’s shade,\nOn that dread agony;\nHe poured in prayer his suppliant breath,\nBowed down with sorrow unto death.",
+        "The sun went down in fearful hour;\nThe heavens might well grow dim,\nWhen this mortality had power\nThus to o’ershadow him;\nThat he who came to save might know\nThe very depths of human woe.",
+        "He knew them all,—the doubt, the strife,\nThe faint, perplexing dread;\nThe mists that hang o’er parting life\nAll darkened round his head;\nAnd the Deliverer knelt to pray;\nYet passed it not, that cup, away.",
+        "It passed not, though the stormy wave\nHad sunk beneath his tread;\nIt passed not, though to him the grave\nHad yielded up its dead;\nBut there was sent him, from on high,\nA gift of strength, for man to die.",
+        "And was his mortal hour beset\nWith anguish and dismay?\nHow may we meet our conflict yet\nIn the dark, narrow way?\nHow, but through him that path who trod?\nSave, or we perish, Son of God!"
+      ],
+      "sourceHymnal": "A Book of Hymns for Public and Private Devotion (15th ed.)",
+      "sourceYear": 1866,
+      "number": 73,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-blessed-rock-of-ages",
+      "title": "The Blessed Rock of Ages",
+      "author": "Jones, Harriet E., 1823-1915",
+      "stanzas": [
+        "My feet were in the miry clay\nUntil my Saviour came this way;\nThey’re safe upon the Rock today,\nThe blessed Rock of Ages.",
+        "Chorus:\nO, restful Rock of Ages,\nO peaceful Rock of Ages\nOut of the miry clay,\nUpon the Rock today;\nThe blessed Rock of Ages.",
+        "No more upon the sinking sand,\nThe storms may rage on ev’ry hand,\nI’m not afraid, where now I stand,\nUpon the Rock of Ages. [Chorus]",
+        "Oh, sure foundation for my feet,\nWhile dreadful storms around me beat;\nI’ll cling to Thee, thou refuge sweet—\nThou blessed Rock of Ages. [Chorus]",
+        "Oh, shelter for the tempest-tried,\nOh, blessed cleft wherein to hide,\nIn Thee, in Thee will I abide—\nThou blessed Rock of Ages. [Chorus]"
+      ],
+      "sourceHymnal": "Gems and Jewels",
+      "sourceYear": 1890,
+      "number": 74,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-blessed-rock-of-ages-hosmer",
+      "title": "The Blessed Rock of Ages",
+      "author": "Hosmer, Grace L.",
+      "stanzas": [
+        "On the blessed Rock of Ages,\nIn calm or tide,\nAlways in that sacred shelter\nLet me abide.\nTrusting only in its keeping,\nNaught else to see,\nEver on the Rock of Ages,\nLord, hold Thou me.",
+        "Refrain:\nLord, hold Thou me,\nLord, hold Thou me,\nEver on the Rock of Ages,\nLord, hold Thou me,",
+        "On the blessed Rock of Ages,\nNor drawn away\nBy the many lights alluring,\nO keep, I pray!\nAnd if swept by sorrow’s tempest\nMy strength shall flee,\nFather, on the Rock of Ages,\nO hold Thou me. [Refrain]",
+        "On the blessed Rock of Ages\nWhen comes the call;\nNot to journey, ’tis but passing,\nOne step is all.\nOnly that I may be ready\nThy face to see,\nO upon the Rock of Ages,\nLord, hold Thou me. [Refrain]"
+      ],
+      "sourceHymnal": "New Songs of Pentecost",
+      "sourceYear": 1916,
+      "number": 75,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-day-thou-gavest-lord-is-ended",
+      "title": "The day thou gavest, Lord is ended",
+      "author": "Ellerton, John, 1826-1893",
+      "stanzas": [
+        "The day thou gavest, Lord, is ended,\nThe darkness falls at Thy behest;\nTo Thee our morning hymns ascended,\nThy praise shall hallow now our rest.",
+        "We thank Thee that Thy Church unsleeping,\nWhile earth rolls onward into light,\nThrough all the world her watch is keeping,\nAnd rests not now by day or night.",
+        "As o'er each continent and island\nThe dawn leads on another day,\nThe voice of prayer is never silent,\nNor dies the strain of praise away.",
+        "The sun, that bids us rest, is waking\nOur brethren 'neath the western sky,\nAnd hour by hour fresh lips are making\nThy wondrous doings heard on high.",
+        "So be it, Lord; Thy throne shall never,\nLike earth's proud empires, pass away:\nBut stand, and rule, and grow for ever,\nTill all Thy creatures own Thy sway.",
+        "Amen."
+      ],
+      "sourceHymnal": "The Hymnal: published by the Authority of the General Assembly of the Presbyterian Church in the U.S.A.",
+      "sourceYear": 1895,
+      "number": 76,
+      "traditions": [
+        "presbyterian",
+        "classic"
+      ]
+    },
+    {
+      "id": "the-mighty-rock-of-ages",
+      "title": "The Mighty Rock of Ages",
+      "author": "Hewitt, E. E. (Eliza Edmunds), 1851-1920",
+      "stanzas": [
+        "‘Tis the mighty Rock of Ages that’s beneath my feet today,\nSo I need not fear the billows’ angry roar;\nTho’ the winds are wildly raging, tho’ the mountains flee away,\n‘Tis the Rock that standeth changeless evermore.",
+        "Refrain:\nRock of Ages, naught can shake thee!\nStronger than the “everlasting hills” art thou!\nThou my trust, when ills o’ertake me,\nUnto thee the hosts of heav’n and earth shall bow.",
+        "‘Tis the mighty Rock of Ages that’s beneath my feet today,\nFor it stood before the sun and stars were made,\nAnd ‘twill stand when skies above us like a scroll shall pass away;\nIn its glory to our wond’ring view displayed. [Refrain]",
+        "‘Tis the mighty Rock of Ages that was cleft on Calv’ry’s brow;\nIn its riven side there’s shelter for my soul;\nSee the streams of peace and cleansing freely, freely gushing now\nAnd there’s life where’er the crimson waters roll. [Refrain]",
+        "‘Tis the mighty Rock of Ages, ‘tis the Rock once cleft for me;\nBurst my heart, with humble gratitude and love!\nBlessed Saviour, thou my refuge! all my hopes are built on thee;\nI will praise thee here and in thy home above. [Refrain]"
+      ],
+      "sourceHymnal": "New Songs of the Gospel: for use in all religious meetings",
+      "sourceYear": 1900,
+      "number": 77,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-old-rugged-cross-dake",
+      "title": "The Old Rugged Cross",
+      "author": "Dake, Vivian Adelbert, 1854-1892",
+      "stanzas": [
+        "The old, rugged cross! yes I love it,\nIts burdens, reproaches and shame;\nAnd naught else on earth do I covet,\nBut to bear it for Jesus’ name.",
+        "Chorus:\nThe old, rugged cross, yes, the old, rugged cross,\n‘Tis the badge of discipleship here;\nAnd the way to a throne, and a kingdom and crown;\nAs the way of the cross shall appear.",
+        "The old, rugged cross, I will cherish;\nHe bore it up Calvary’s hill;\nHe bore it that I might not perish,\nI’ll bear it in love for His will. [Chorus]",
+        "The old, rugged cross, highest honor\nE’en granted to creature of God,\nTo bear the great Conqueror’s banner,\nI’ll gladly “pass under the rod.” [Chorus]",
+        "The cross of my Christ, the Anointed,\nThe badge of redemption from sin,\nIts reproach maketh all those appointed,\nCrowns and kingdoms eternal to win. [Chorus]"
+      ],
+      "sourceHymnal": "Light and Life Songs: adapted especially to sunday schools, prayer meetings and other social services",
+      "sourceYear": 1904,
+      "number": 78,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "the-old-rugged-cross",
+      "title": "The Old Rugged Cross.",
+      "author": "Bennard, George, 1873-1958",
+      "stanzas": [
+        "On a hill far away stood an old rugged cross,\nThe emblem of suff'ring and shame;\nAnd I love that old cross where the dearest and best\nFor a world of lost sinners was slain.",
+        "Chorus:\nSo I'll cherish the old rugged cross,\nTill my trophies at last I lay down;\nI will cling to the old rugged cross,\nAnd exchange it some day for a crown.",
+        "Oh, that old rugged cross, so despised by the world,\nHas a wondrous attraction for me,\nFor the dear Lamb of God left His glory above,\nTo bear it to dark Calvary. [Chorus]",
+        "In that old rugged cross, stained with blood so divine,\nA wondrous beauty I see;\nFor 'twas on that old cross Jesus suffered and died,\nTo pardon and sanctify me. [Chorus]",
+        "To that old rugged cross I will ever be true,\nIts shame and reproach gladly bear;\nThen He'll call me some day to my home far away,\nWhere His glory forever I'll share. [Chorus]"
+      ],
+      "sourceHymnal": "Victory Songs: For the Church, Sunday School and Evangelistic Services.",
+      "sourceYear": 1920,
+      "number": 79,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "this-is-my-father-s-world",
+      "title": "This Is My Father's World",
+      "author": "Babcock, Maltbie D. (Maltbie Davenport), 1858-1901",
+      "stanzas": [
+        "This is my Father's world,\nAnd to my list'ning ears\nAll nature sings, and round me rings\nThe music of the spheres.\nThis is my Father's world;\nI rest me in the thought\nOf rocks and trees, of skies and seas -\nHis hand the wonders wrought.",
+        "This is my Father's world:\nThe birds their carols raise,\nThe morning light, the lily white,\nDeclare their Maker's praise.\nThis is my Father's world:\nHe shines in all that's fair;\nIn the rustling grass I hear Him pass,\nHe speaks to me ev'rywhere.",
+        "This is my Father's world:\nO let me ne'er forget\nThat though the wrong seems oft so strong,\nGod is the Ruler yet.\nThis is my Father's world:\nWhy should my heart be sad?\nThe Lord is King, - let the heaven's ring:\nGod reigns; let the earth be glad."
+      ],
+      "sourceHymnal": "The New Christian Hymnal",
+      "sourceYear": 1929,
+      "number": 80,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "to-god-be-the-glory",
+      "title": "To God Be the Glory",
+      "author": "Crosby, Fanny, 1820-1915",
+      "stanzas": [
+        "To God be the glory, great things he hath done,\nSo loved he the world that he gave us his Son,\nWho yielded his life an atonement for sin,\nAnd opened the Life-Gate, that all may come in.",
+        "Refrain:\nPraise the Lord, praise the Lord,\nLet the earth hear his voice;\nPraise the Lord, praise the Lord,\nLet the people rejoice;\nO come to the Father, thro' Jesus the Son,\nAnd give him the glory, great things he hath done.",
+        "O perfect redemption, the purchase of blood,\nTo every believer the promise of God;\nThe vilest offender who truly believes,\nMost surely from Jesus a pardon receives. [Refrain]",
+        "Great things he hath taught us, great things he hath done,\nAnd great our rejoicing thro' Jesus the Son;\nBut purer, and higher, and greater will be\nOur wonder, our transport, when Jesus we see. [Refrain]"
+      ],
+      "sourceHymnal": "The Christian Sunday School Hymnal: a compilation of choice hymns and tunes for Sunday schools",
+      "sourceYear": 1883,
+      "number": 81,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "trust-and-obey",
+      "title": "Trust and Obey",
+      "author": "Sammis, John H. (John Henry), 1846-1919",
+      "stanzas": [
+        "When we walk with the Lord\nIn the light of his word,\nWhat a glory he sheds on our way!\nWhile we do his good will,\nHe abides with us still,\nAnd with all who will trust and obey.",
+        "Chorus:\nTrust and obey,\nFor there's no other way\nTo be happy in Jesus\nBut to trust and obey.",
+        "Not a shadow can rise,\nNot a cloud in the skies,\nBut his smile quickly drives it away;\nNot a doubt nor a fear,\nNot a sigh nor a tear\nCan abide while we trust and obey. [Chorus]",
+        "Not a burden we bear,\nNot a sorrow we share,\nBut our toil he doth richly repay;\nNot a grief nor a loss,\nNot a frown nor a cross,\nBut is blest if we trust and obey. [Chorus]",
+        "But we never can prove\nThe delights of his love\nUntil all on the altar we lay,\nFor the favor he shows,\nFor the joy he bestows,\nAre for all who will trust and obey. [Chorus]",
+        "Then in fellowship sweet\nWe will sit at his feet,\nOr we'll walk by his side in the way;\nWhat he says we will do,\nWhere he sends we will go,\nNever fear, only trust and obey. [Chorus]"
+      ],
+      "sourceHymnal": "Living Hymns: for use in the Sabbath School, Christian Endeavor Meetings, the church & home",
+      "sourceYear": 1890,
+      "number": 82,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "trusting-in-the-rock-of-ages",
+      "title": "Trusting in the Rock of Ages",
+      "author": "Barrows, Emma Frances",
+      "stanzas": [
+        "Rock of Ages, still the same,\nEverlasting, bless his name!\nThou on earth o'er sinners wept,\nFaithful watch hast ever kept;\nTo thy sheltering arms I flee,\nSympathy I find in thee.",
+        "Rock of Ages, gladly come,\nWanderers, to the Father's home;\nThus the weary, fainting child,\nTraveling o'er the desert wild,\n'Neath thy grateful shadows flee,\nRest and strength receive from thee.",
+        "Rock of Ages, from thy side,\nAll who in the Rock abide\nMay receive a full supply;\nCan with perfect faith draw nigh;\nThirsting souls, the waters see,\nSweet, refreshing, come from thee.",
+        "Rock of Ages, firm, secure,\nNothing else can thus endure\nStorm and tempest; ages gone,\nStill unmoved, the shock that borne;\nThou, my righteousness I see,\nAll my hopes are built on thee.",
+        "Rock of Ages, thou alone,\nThrough eternal years art known;\nWhile the endless cycles roll,\nRock and refuge of my soul,\nRest and joy awaiteth me,\nHeaven and home are found in thee."
+      ],
+      "sourceHymnal": "Bible Study Songs: for junior societies, junior and primary Sunday schools",
+      "sourceYear": 1899,
+      "number": 83,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "what-a-friend-we-have-in-jesus",
+      "title": "What a friend we have in Jesus",
+      "author": "Scriven, Joseph Medlicott, 1819-1886",
+      "stanzas": [
+        "What a friend we have in Jesus,\nAll our sins and griefs to bear;\nWhat a privilege to carry\nEvery thing to God in prayer.\nOh, what peace we often forfeit,\nOh, what needless pain we bear;—\nAll because we do not carry\nEvery thing to God in prayer.",
+        "Have we trials and temptations?\nIs there trouble anywhere?\nWe should never be discouraged,\nTake it to the Lord in prayer.\nCan we find a friend so faithful,\nWho will all our sorrows share;\nJesus knows our every weakness,\nTake it to the Lord in prayer.",
+        "Are we weak and heavy laden,\nCumbered with a load of care;\nPrecious Saviour, still our refuge,\nTake it to the Lord in prayer.\nDo thy friends despise, forsake thee,\nTake it to the Lord in prayer;\nIn his arms he'll take and shield thee,\nThou wilt find a solace there."
+      ],
+      "sourceHymnal": "Calvary Songs",
+      "sourceYear": 1875,
+      "number": 84,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "whispering-hope",
+      "title": "Whispering Hope",
+      "author": "McClelland, J. I., Mrs.",
+      "stanzas": [
+        "Like the faint dawn of the morning,\nLike the sweet freshness of dew,\nComes the dear whisper of Jesus,\nComforting, tender and true.\nDarkness gives way to the sunlight,\nWhile His voice falls on my ear;\nSeasons of heaven’s refreshing,\nCall to new gladness and cheer.",
+        "Refrain:\nWhispering hope, like the song of the angels,\nJesus, Thy love is sweet music to me.",
+        "Singing the song of forgiveness,\nSoftly I hear in my soul,\nJesus has conquered forever\nSin with its fearful control.\nWhispering courage for warfare,\nBending Thine ear when I pray;\nGlorious, risen Redeemer,\nO how I praise Thee today! [Refrain]",
+        "Hope is an anchor to keep us,\nHolding both steadfast and sure;\nHope brings a wonderful cleansing,\nThro’ His blood, making us pure.\nWhispering hope of His coming,\nHow my heart thrills at His Word!\nO to be watching and waiting,\nReady to welcome the Lord! [Refrain]"
+      ],
+      "sourceHymnal": "Songs of Faith and Triumph 1, 2 and 3 Combined: Tryout Edition",
+      "sourceYear": 1929,
+      "number": 85,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "whispering-hope-winner",
+      "title": "Whispering Hope",
+      "author": "Winner, Septimus, 1827-1902",
+      "stanzas": [
+        "Soft as the voice of an angel,\nBreathing a lesson unheard,\nHope with a gentle persuasion,\nWhispers her comforting word.\nWait till the darkness is over,\nWait till the tempest is done,\nHope for the sunshine tomorrow,\nAfter the shower is gone.",
+        "Chorus:\nWhispering Hope\nO how welcome thy voice,\nMaking my heart in its sorrow rejoice.",
+        "If in the dusk of the twilight,\nDim be the region afar,\nWill not the deepening darkness\nBrighten the glimmering star?\nThen when the night is upon us,\nWhy should the heart sink away?\nWhen the dark midnight is over,\nWatch for the breaking of day. [Chorus]",
+        "Hope as an anchor so steadfast,\nRends the dark veil for the soul,\nWhither the Master has entered,\nRobbing the grave of its goal.\nCome then, O come, glad fruition,\nCome to my sad weary heart,\nCome, O Thou blest hope of glory,\nNever, O never depart. [Chorus]\nO blessed Hope!"
+      ],
+      "sourceHymnal": "Christian Hymns: for every purpose in worship",
+      "sourceYear": 1935,
+      "number": 86,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "whispering-hope-lyon",
+      "title": "Whispering Hope",
+      "author": "Lyon, G. W. (George Washington), 1838-1903",
+      "stanzas": [
+        "There's light in the valley of shadows,\nNo longer the darkness I fear;\nFor Jesus is reigning in Glory,\nMy strength and my light ever near.",
+        "Chorus:\nThen whispering hope,\nO how gentle thy voice;\nMaking my heart\nIn its sorrow rejoice.",
+        "There's hope for the sad and despondent,\nWho suffer in silence alone;\nAmid their bereavements and sorrow,\nO'ercome by the weight of their gloom. [Chorus]",
+        "There's joy for the wayward and lonely,\nAfar from their own native place;\nA home and a welcome are waiting,\nA father with sweet smiling face. [Chorus]",
+        "There's comfort and help for the dying,\nA rod and a staff for the way;\nA Guide who securely will lead them\nTo realms of an uncloudy day. [Chorus]"
+      ],
+      "sourceHymnal": "The New Wonderful Songs for Work and Worship",
+      "sourceYear": 1938,
+      "number": 87,
+      "traditions": [
+        "classic"
+      ]
+    },
+    {
+      "id": "within-the-garden-8217-s-sombre-shade",
+      "title": "Within the garden’s sombre shade",
+      "author": "Brownlie, John, 1857-1925",
+      "stanzas": [
+        "I\nWithin the garden’s sombre shade,\nThe Christ of God in anguish prayed;—\nAnd who that agony could tell,\nAs from his brow the blood-drops fell?",
+        "II\n“Can you not watch one hour?” He saith,\n“My soul is sorrowful to death.”\nBut He alone the vigil kept,\nWhile worn disciples slumbering slept.",
+        "III\nO dark the cloud that threatening hung,\nAnd sore the grief His soul that wrung,—\nThe hate of man, the guilty name,\nThe bitter Cross, the sin and shame.",
+        "IV\n“If I must drink this cup,” He prayed,\n“The burden bear upon me laid,\nMy God, I bow Me to Thy will,\nAnd meekly Thy behest fulfil.”",
+        "V\nMy soul, when to the garden led,\nAnd clouds are gathering overhead,\nWhen none the hour of anguish shares,\nTo God direct thy earnest prayers.",
+        "VI\n“Thy will be done, Thy will is best,—\nEven then the bitter cup is blest,—\nIf ’tis Thy will the cup I’ll drain,\nDespite the agony of pain.”"
+      ],
+      "sourceHymnal": "Hymns from the East",
+      "sourceYear": 1907,
+      "number": 88,
+      "traditions": [
+        "classic"
+      ]
+    }
+  ]
+}

@@ -8,6 +8,12 @@ fn dev_repo_root() -> PathBuf {
 
 /// Directory containing `models/`, `embeddings/`, and the Bible DB (layout differs in dev vs install).
 pub fn content_root(app: &AppHandle) -> PathBuf {
+    // Dev: always use repo root so `models/whisper/` and `data/rhema.db` match `bun run setup:all`.
+    // Tauri may copy bundled `rhema.db` into target/debug without Whisper, which would break STT.
+    if cfg!(debug_assertions) {
+        return dev_repo_root();
+    }
+
     if let Ok(resource) = app.path().resource_dir() {
         if resource.join("rhema.db").exists() {
             return resource;

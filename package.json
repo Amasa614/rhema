@@ -14,6 +14,8 @@
     "test": "vitest",
     "download:bible-data": "bun run data/download-sources.ts",
     "download:twi-bible": "bun run data/download-twi-bible.ts",
+    "download:methodist-hymns": "bun run data/download-methodist-hymns.ts",
+    "download:hymns": "bun run data/download-hymns.ts",
     "build:bible": "bun run data/build-bible-db.ts",
     "download:model": "bun run data/download-model.ts",
     "export:verses": "bun run data/compute-embeddings.ts",

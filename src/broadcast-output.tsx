@@ -21,17 +21,23 @@ function uint8ToBase64(bytes: Uint8Array | Uint8ClampedArray): string {
   return btoa(parts.join(""))
 }
 
-/** Read output ID from URL query param (?output=main or ?output=alt). Defaults to "main". */
-const OUTPUT_ID = new URLSearchParams(window.location.search).get("output") ?? "main"
+/** The window label is reliable for both packaged app assets and the dev server. */
+const OUTPUT_ID = getCurrentWebviewWindow().label === "broadcast-alt" ? "alt" : "main"
 
 interface BroadcastPayload {
   theme: BroadcastTheme
   verse: VerseRenderData | null
 }
 
+interface BroadcastSnapshot {
+  version: number
+  payload: BroadcastPayload
+}
+
 function BroadcastCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const latestData = useRef<BroadcastPayload | null>(null)
+  const latestVersion = useRef(0)
   const imageCacheRef = useRef<Map<string, HTMLImageElement>>(new Map())
   const ndiConfigRef = useRef<NdiConfigEventPayload>({
     active: false,
@@ -67,8 +73,12 @@ function BroadcastCanvas() {
     }
 
     const { theme, verse } = data
-    canvas.width = theme.resolution.width
-    canvas.height = theme.resolution.height
+    if (canvas.width !== theme.resolution.width) {
+      canvas.width = theme.resolution.width
+    }
+    if (canvas.height !== theme.resolution.height) {
+      canvas.height = theme.resolution.height
+    }
     const result = renderVerse(ctx, theme, verse, {
       scale: 1,
       imageCache: imageCacheRef.current,
@@ -99,6 +109,19 @@ function BroadcastCanvas() {
     }
     img.src = url
   }, [draw, logDebug])
+
+  const applySnapshot = useCallback((snapshot: BroadcastSnapshot) => {
+    if (snapshot.version < latestVersion.current) return
+    latestVersion.current = snapshot.version
+    latestData.current = snapshot.payload
+    preloadBackgroundImage(snapshot.payload.theme)
+    logDebug("Applied broadcast snapshot", {
+      version: snapshot.version,
+      hasVerse: Boolean(snapshot.payload.verse),
+      themeId: snapshot.payload.theme.id,
+    })
+    draw()
+  }, [draw, logDebug, preloadBackgroundImage])
 
   const pushNdiFrame = useCallback(async () => {
     if (!ndiConfigRef.current.active) return
@@ -172,22 +195,52 @@ function BroadcastCanvas() {
 
     const currentWindow = getCurrentWebviewWindow()
     logDebug("Listener registration started", { label: currentWindow.label })
-    const unlisten = currentWindow.listen<BroadcastPayload>("broadcast:verse-update", (event) => {
-      latestData.current = event.payload
-      preloadBackgroundImage(event.payload.theme)
-      logDebug("Received broadcast:verse-update", {
-        hasVerse: Boolean(event.payload.verse),
-        themeId: event.payload.theme.id,
-      })
-      draw()
-      pushNdiBurst()
-    })
+    let disposed = false
+    let removeListeners: (() => void) | null = null
 
-    const unlistenNdiConfig = currentWindow.listen<NdiConfigEventPayload>("broadcast:ndi-config", (event) => {
-      ndiConfigRef.current = event.payload
-      logDebug("Received broadcast:ndi-config", event.payload)
-      // Push burst when NDI becomes active
-      if (event.payload.active) pushNdiBurst()
+    const registerListeners = async () => {
+      const [unlistenVerse, unlistenNdiConfig] = await Promise.all([
+        currentWindow.listen<BroadcastSnapshot>("broadcast:snapshot-update", (event) => {
+          applySnapshot(event.payload)
+          pushNdiBurst()
+        }),
+        currentWindow.listen<NdiConfigEventPayload>("broadcast:ndi-config", (event) => {
+          ndiConfigRef.current = event.payload
+          logDebug("Received broadcast:ndi-config", event.payload)
+          if (event.payload.active) pushNdiBurst()
+        }),
+      ])
+
+      if (disposed) {
+        unlistenVerse()
+        unlistenNdiConfig()
+        return
+      }
+
+      removeListeners = () => {
+        unlistenVerse()
+        unlistenNdiConfig()
+      }
+
+      // Pull durable state after listeners register. If an update races with
+      // this request, version ordering prevents an older snapshot winning.
+      const snapshot = await invoke<BroadcastSnapshot | null>(
+        "get_broadcast_snapshot",
+        { outputId: OUTPUT_ID },
+      )
+      if (snapshot) {
+        applySnapshot(snapshot)
+        pushNdiBurst()
+      }
+
+      await currentWindow.emitTo("main", "broadcast:output-ready", {
+        outputId: OUTPUT_ID,
+      })
+      logDebug("Sent broadcast:output-ready")
+    }
+
+    void registerListeners().catch((error) => {
+      console.error("[broadcast-output] failed to initialize event listeners", error)
     })
 
     // Request current NDI status on mount (fixes race condition
@@ -208,17 +261,11 @@ function BroadcastCanvas() {
         // Command may not exist yet
       })
 
-    void currentWindow.emitTo("main", "broadcast:output-ready").then(() => {
-      logDebug("Sent broadcast:output-ready")
-    }).catch(() => {
-      console.warn("[broadcast-output] failed to send output-ready event")
-    })
-
     return () => {
-      unlisten.then((fn) => fn())
-      unlistenNdiConfig.then((fn) => fn())
+      disposed = true
+      removeListeners?.()
     }
-  }, [draw, logDebug, preloadBackgroundImage, pushNdiFrame, pushNdiBurst])
+  }, [applySnapshot, draw, logDebug, pushNdiFrame, pushNdiBurst])
 
   // Slow keepalive: push one frame every 2s if idle (prevents NDI receivers from dropping the source)
   useEffect(() => {
