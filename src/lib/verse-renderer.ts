@@ -19,12 +19,12 @@ export interface VerseLayoutMetrics {
   verseRect: VerseLayoutRect | null
 }
 
-export function wrapText(
+function wrapParagraph(
   ctx: CanvasRenderingContext2D,
   text: string,
   maxWidth: number
 ): string[] {
-  const words = text.split(" ")
+  const words = text.split(/\s+/).filter(Boolean)
   const lines: string[] = []
   let currentLine = ""
 
@@ -45,6 +45,20 @@ export function wrapText(
   }
 
   return lines
+}
+
+export function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+): string[] {
+  const lines: string[] = []
+  for (const paragraph of text.split("\n")) {
+    const trimmed = paragraph.trim()
+    if (!trimmed) continue
+    lines.push(...wrapParagraph(ctx, trimmed, maxWidth))
+  }
+  return lines.length > 0 ? lines : [""]
 }
 
 function alignX(

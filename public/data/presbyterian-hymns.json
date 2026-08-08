@@ -1,7 +1,7 @@
 {
   "attribution": "Public-domain hymn texts provided by Hymnary.org (Calvin University) via Open Christian Data (CC0-1.0). https://hymnary.org",
   "source": "https://raw.githubusercontent.com/OpenChristianData/open-christian-data/main/data/hymns/hymnary-pd/collection.json",
-  "generatedAt": "2026-08-07T11:16:39.148Z",
+  "generatedAt": "2026-08-07T21:24:03.444Z",
   "label": "Presbyterian / Reformed",
   "hymns": [
     {
@@ -165,7 +165,8 @@
       "number": 9,
       "traditions": [
         "presbyterian",
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -971,7 +972,8 @@
       "sourceYear": 1895,
       "number": 53,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -1181,7 +1183,8 @@
       "sourceYear": 1895,
       "number": 65,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -2211,7 +2214,11 @@
       "number": 122,
       "traditions": [
         "catholic",
-        "presbyterian"
+        "presbyterian",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Lord, Dismiss Us with Thy Blessing"
       ]
     },
     {
@@ -4647,7 +4654,8 @@
       "sourceYear": 1867,
       "number": 253,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -5773,7 +5781,8 @@
       "sourceYear": 1895,
       "number": 310,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -6548,7 +6557,11 @@
       "sourceYear": 1800,
       "number": 350,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "While Shepherds Watched Their Flocks"
       ]
     },
     {
@@ -6814,7 +6827,8 @@
       "sourceYear": 1845,
       "number": 364,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -7011,7 +7025,8 @@
       "sourceYear": 1934,
       "number": 374,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -7027,7 +7042,8 @@
       "sourceYear": 1881,
       "number": 375,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -14509,7 +14525,8 @@
       "sourceYear": 1871,
       "number": 716,
       "traditions": [
-        "presbyterian"
+        "presbyterian",
+        "methodist"
       ]
     },
     {
@@ -14685,7 +14702,8 @@
       "number": 725,
       "traditions": [
         "presbyterian",
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {

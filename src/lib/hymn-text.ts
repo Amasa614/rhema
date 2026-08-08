@@ -70,3 +70,13 @@ export function parseHymnStanzas(value: string): string[] {
 
   return stanzas
 }
+
+/** Preserve line breaks for projection; only collapse spaces/tabs within each line. */
+export function formatProjectionLyrics(text: string): string {
+  return text
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => line.replace(/[ \t]+/g, " ").trim())
+    .join("\n")
+    .trim()
+}

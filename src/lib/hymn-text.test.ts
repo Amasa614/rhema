@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   decodeHtmlEntities,
+  formatProjectionLyrics,
   normalizeHymnText,
   parseHymnStanzas,
 } from "./hymn-text"
@@ -16,6 +17,12 @@ describe("hymn text parsing", () => {
     expect(normalizeHymnText("  First line\r\n    Second line  ")).toBe(
       "First line\nSecond line",
     )
+  })
+
+  it("keeps projection line breaks while trimming each line", () => {
+    expect(
+      formatProjectionLyrics("  Line one  \n  Line two  ")
+    ).toBe("Line one\nLine two")
   })
 
   it("splits pasted lyrics by headings and blank lines", () => {

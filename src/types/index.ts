@@ -17,3 +17,8 @@ export type {
   NdiSessionInfo,
   NdiStartRequest,
 } from "./ndi"
+export type {
+  CleanvoiceProgress,
+  SermonSession,
+  WaveformData,
+} from "./postproduction"

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
+import { invoke } from "@tauri-apps/api/core"
 import { PanelHeader } from "@/components/ui/panel-header"
 import { LevelMeter } from "@/components/ui/level-meter"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ import {
 import { useTauriEvent } from "@/hooks/use-tauri-event"
 import { useTranscription } from "@/hooks/use-transcription"
 import { bibleActions } from "@/hooks/use-bible"
+import { usePostProductionStore } from "@/stores/postproduction-store"
 import type { DetectionResult, ReadingAdvance } from "@/types"
 
 /**
@@ -29,7 +31,11 @@ function AudioLevelMeter() {
 /**
  * Leaf component that subscribes to `currentPartial`. Partials update per audio tick.
  */
-function LivePartialLine({ scrollRef }: { scrollRef: RefObject<HTMLDivElement | null> }) {
+function LivePartialLine({
+  scrollRef,
+}: {
+  scrollRef: RefObject<HTMLDivElement | null>
+}) {
   const currentPartial = useTranscriptStore((s) => s.currentPartial)
 
   useEffect(() => {
@@ -77,6 +83,24 @@ export function TranscriptPanel() {
   // Listen for detection results from the backend (batch replaces previous detections)
   useTauriEvent<DetectionResult[]>("verse_detections", (detections) => {
     useDetectionStore.getState().addDetections(detections)
+    const sessionId = usePostProductionStore.getState().activeRecordingSessionId
+    const directScriptures = detections
+      .filter(
+        (detection) =>
+          detection.source === "direct" && !detection.is_chapter_only
+      )
+      .map((detection) => ({
+        reference: detection.verse_ref,
+        source: "ai-direct",
+      }))
+    if (sessionId && directScriptures.length > 0) {
+      void invoke("append_sermon_scriptures", {
+        sessionId,
+        scriptures: directScriptures,
+      }).catch((error) => {
+        console.warn("[post-production] Could not archive scriptures", error)
+      })
+    }
 
     // Auto-navigate book search + select verse for preview/live
     const directOnly = detections.filter((d) => d.source === "direct")
@@ -96,13 +120,11 @@ export function TranscriptPanel() {
         text: directHit.verse_text,
       })
       // Navigate book search panel to this verse
-      useBibleStore
-        .getState()
-        .setPendingNavigation({
-          bookNumber: directHit.book_number,
-          chapter: directHit.chapter,
-          verse: directHit.verse,
-        })
+      useBibleStore.getState().setPendingNavigation({
+        bookNumber: directHit.book_number,
+        chapter: directHit.chapter,
+        verse: directHit.verse,
+      })
     }
 
     // Auto-queue high-confidence detections
@@ -118,7 +140,7 @@ export function TranscriptPanel() {
             d.chapter,
             d.verse,
             d.verse_ref,
-            d.verse_text,
+            d.verse_text
           )
       ) {
         continue
@@ -133,7 +155,7 @@ export function TranscriptPanel() {
           ? queue.items.findIndex(
               (i) =>
                 i.verse.book_number === d.book_number &&
-                i.verse.chapter === d.chapter,
+                i.verse.chapter === d.chapter
             )
           : queue.findDuplicate(d.book_number, d.chapter, d.verse)
         if (dupIdx !== -1) {
@@ -274,7 +296,7 @@ export function TranscriptPanel() {
           </Button>
         ) : (
           <Button variant="ghost" size="sm" onClick={startTranscription}>
-              <MicIcon className="size-3" />
+            <MicIcon className="size-3" />
             Start transcribing
           </Button>
         )}

@@ -18,20 +18,12 @@ pub fn spawn() {
         let refresh = ProcessRefreshKind::nothing().with_memory();
 
         loop {
-            sys.refresh_processes_specifics(
-                ProcessesToUpdate::Some(&[pid]),
-                true,
-                refresh,
-            );
+            sys.refresh_processes_specifics(ProcessesToUpdate::Some(&[pid]), true, refresh);
 
             if let Some(proc_) = sys.process(pid) {
                 let rss_mb = proc_.memory() as f64 / 1024.0 / 1024.0;
                 let virt_mb = proc_.virtual_memory() as f64 / 1024.0 / 1024.0;
-                log::info!(
-                    "[MEM] rss={:.1}MB virt={:.0}MB",
-                    rss_mb,
-                    virt_mb,
-                );
+                log::info!("[MEM] rss={:.1}MB virt={:.0}MB", rss_mb, virt_mb,);
             }
 
             tokio::time::sleep(INTERVAL).await;

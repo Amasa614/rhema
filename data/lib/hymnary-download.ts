@@ -39,7 +39,8 @@ export interface BundledHymnRecord {
   alsoKnownAs?: string[]
 }
 
-const METHODIST_PATTERN = /\b(?:methodist|wesleyan|wesley)\b/i
+const METHODIST_PATTERN =
+  /\b(?:methodist|wesleyan|wesley|united methodist hymnal)\b/i
 const CATHOLIC_PATTERN =
   /\b(?:catholic|roman catholic|missal|breviary|liturg(?:y|ical)|eucharist|adoration|mari(?:an|ology)|holy communion|st\.?\s*basil|st\.?\s*gregory)\b/i
 const PRESBYTERIAN_PATTERN =

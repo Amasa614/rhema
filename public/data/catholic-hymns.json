@@ -1,7 +1,7 @@
 {
   "attribution": "Public-domain hymn texts provided by Hymnary.org (Calvin University) via Open Christian Data (CC0-1.0). https://hymnary.org",
   "source": "https://raw.githubusercontent.com/OpenChristianData/open-christian-data/main/data/hymns/hymnary-pd/collection.json",
-  "generatedAt": "2026-08-07T11:16:39.145Z",
+  "generatedAt": "2026-08-07T21:24:03.441Z",
   "label": "Catholic",
   "hymns": [
     {
@@ -228,7 +228,11 @@
       "sourceYear": 1788,
       "number": 14,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Dona Nobis Pacem"
       ]
     },
     {
@@ -1252,7 +1256,8 @@
       "sourceYear": 1880,
       "number": 73,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
       ]
     },
     {
@@ -1754,7 +1759,11 @@
       "number": 102,
       "traditions": [
         "catholic",
-        "presbyterian"
+        "presbyterian",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Lord, Dismiss Us with Thy Blessing"
       ]
     },
     {
@@ -2030,7 +2039,8 @@
       "sourceYear": 1880,
       "number": 118,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
       ]
     },
     {
@@ -3235,7 +3245,11 @@
       "sourceYear": 1880,
       "number": 185,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Holy God, We Praise Thy Name"
       ]
     },
     {
@@ -3382,7 +3396,11 @@
       "sourceYear": 1814,
       "number": 193,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Blest Be the Tie That Binds"
       ]
     },
     {
@@ -8548,7 +8566,11 @@
       "sourceYear": 1814,
       "number": 486,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "I Sing the Almighty Power of God"
       ]
     },
     {
@@ -8582,7 +8604,8 @@
       "sourceYear": 1880,
       "number": 488,
       "traditions": [
-        "catholic"
+        "catholic",
+        "methodist"
       ]
     },
     {

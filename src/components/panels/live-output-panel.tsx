@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { useBroadcastStore, useBibleStore } from "@/stores"
 import { useVerseRenderData } from "@/hooks/use-broadcast"
 import { useHymnSlide } from "@/hooks/use-hymn-slide"
+import { useNoteSlide } from "@/hooks/use-note-slide"
 
 export function LiveOutputPanel() {
   const isLive = useBroadcastStore((s) => s.isLive)
@@ -17,7 +18,8 @@ export function LiveOutputPanel() {
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0]
   const rendered = useVerseRenderData(selectedVerse)
   const hymnSlide = useHymnSlide()
-  const verseData = isLive ? (hymnSlide ?? rendered) : null
+  const noteSlide = useNoteSlide()
+  const verseData = isLive ? (hymnSlide ?? noteSlide ?? rendered) : null
 
   useEffect(() => {
     useBroadcastStore.getState().setLiveVerse(verseData)

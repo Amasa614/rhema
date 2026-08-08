@@ -19,6 +19,7 @@ import {
   CheckIcon,
   PlusIcon,
   Music2Icon,
+  StickyNoteIcon,
 } from "lucide-react"
 import {
   Tooltip,
@@ -33,8 +34,9 @@ import { Input } from "@/components/ui/input"
 import { searchContextWithFuse } from "@/lib/context-search"
 import { clampChapter, getMaxChapter } from "@/lib/book-chapters"
 import { HymnSearch } from "@/components/panels/hymn-search"
+import { NotesSearch } from "@/components/panels/notes-search"
 
-type SearchTab = "book" | "context" | "hymns"
+type SearchTab = "book" | "context" | "hymns" | "notes"
 
 /** Highlights words from the query that appear in the text. */
 function HighlightedText({ text, query }: { text: string; query: string }) {
@@ -71,6 +73,7 @@ export function SearchPanel() {
   const [selectedVerseId, setSelectedVerseId] = useState<number | null>(null)
   const [contextQuery, setContextQuery] = useState("")
   const [hymnQuery, setHymnQuery] = useState("")
+  const [notesQuery, setNotesQuery] = useState("")
 
   // EasyWorship-style autocomplete
   const [quickInput, setQuickInput] = useState("")
@@ -439,6 +442,18 @@ export function SearchPanel() {
             <Music2Icon className={cn("size-3.5", activeTab === "hymns" ? "text-lime-400" : "text-muted-foreground")} />
             Songs &amp; hymns
           </button>
+          <button
+            onClick={() => setActiveTab("notes")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors",
+              activeTab === "notes"
+                ? "border-lime-500/50 bg-lime-500/15"
+                : "border-border bg-background text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <StickyNoteIcon className={cn("size-3.5", activeTab === "notes" ? "text-lime-400" : "text-muted-foreground")} />
+            Notes
+          </button>
         </div>
 
         {activeTab === "book" ? (
@@ -547,12 +562,21 @@ export function SearchPanel() {
                 </SelectContent>
               </Select>
           </div>
-        ) : (
+        ) : activeTab === "hymns" ? (
           <div className="flex flex-1 items-center gap-2 pr-3">
             <Input
               placeholder="Search hymn number, title, author, or lyrics…"
               value={hymnQuery}
               onChange={(event) => setHymnQuery(event.target.value)}
+              className="h-7 flex-1 text-xs"
+            />
+          </div>
+        ) : (
+          <div className="flex flex-1 items-center gap-2 pr-3">
+            <Input
+              placeholder="Search notes by title or text…"
+              value={notesQuery}
+              onChange={(event) => setNotesQuery(event.target.value)}
               className="h-7 flex-1 text-xs"
             />
           </div>
@@ -795,6 +819,7 @@ export function SearchPanel() {
         </div>
       )}
       {activeTab === "hymns" ? <HymnSearch query={hymnQuery} /> : null}
+      {activeTab === "notes" ? <NotesSearch query={notesQuery} /> : null}
     </div>
   )
 }

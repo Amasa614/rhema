@@ -1,5 +1,7 @@
 import { create } from "zustand"
+import { invoke } from "@tauri-apps/api/core"
 import type { QueueItem } from "@/types"
+import { usePostProductionStore } from "@/stores/postproduction-store"
 
 interface QueueState {
   items: QueueItem[]
@@ -17,27 +19,54 @@ interface QueueState {
   /** Find an existing item by book+chapter+verse. Returns its index or -1. */
   findDuplicate: (bookNumber: number, chapter: number, verse: number) => number
   /** Update a chapter-only queue item in place when the verse is refined. */
-  updateEarlyRef: (bookNumber: number, chapter: number, verse: number, reference: string, verseText: string) => boolean
+  updateEarlyRef: (
+    bookNumber: number,
+    chapter: number,
+    verse: number,
+    reference: string,
+    verseText: string
+  ) => boolean
 }
 
 let flashTimer: ReturnType<typeof setTimeout> | null = null
+
+function archiveQueuedScripture(item: QueueItem) {
+  if (item.is_chapter_only) return
+  const sessionId = usePostProductionStore.getState().activeRecordingSessionId
+  if (!sessionId) return
+  void invoke("append_sermon_scriptures", {
+    sessionId,
+    scriptures: [
+      {
+        reference: item.reference,
+        source: item.source === "ai-direct" ? "ai-direct" : "queued",
+      },
+    ],
+  }).catch((error) => {
+    console.warn("[post-production] Could not archive queued scripture", error)
+  })
+}
 
 export const useQueueStore = create<QueueState>((set, get) => ({
   items: [],
   activeIndex: null,
   highlightedId: null,
 
-  addItem: (item) =>
+  addItem: (item) => {
+    let added = false
     set((state) => {
       const duplicate = state.items.some(
         (i) =>
           i.verse.book_number === item.verse.book_number &&
           i.verse.chapter === item.verse.chapter &&
-          i.verse.verse === item.verse.verse,
+          i.verse.verse === item.verse.verse
       )
       if (duplicate) return state
+      added = true
       return { items: [item, ...state.items] }
-    }),
+    })
+    if (added) archiveQueuedScripture(item)
+  },
   removeItem: (id) =>
     set((state) => ({
       items: state.items.filter((i) => i.id !== id),
@@ -61,7 +90,7 @@ export const useQueueStore = create<QueueState>((set, get) => ({
       (i) =>
         i.verse.book_number === bookNumber &&
         i.verse.chapter === chapter &&
-        i.verse.verse === verse,
+        i.verse.verse === verse
     ),
   updateEarlyRef: (bookNumber, chapter, verse, reference, verseText) => {
     let found = false
@@ -71,14 +100,12 @@ export const useQueueStore = create<QueueState>((set, get) => ({
         (i) =>
           i.is_chapter_only &&
           i.verse.book_number === bookNumber &&
-          i.verse.chapter === chapter,
+          i.verse.chapter === chapter
       )
       // Fallback: same book, any chapter (book-only detection guessed chapter 1)
       if (idx === -1) {
         idx = state.items.findIndex(
-          (i) =>
-            i.is_chapter_only &&
-            i.verse.book_number === bookNumber,
+          (i) => i.is_chapter_only && i.verse.book_number === bookNumber
         )
       }
       if (idx === -1) return state

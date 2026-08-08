@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { filterAndRankHymns } from "@/lib/hymn-search-rank"
 import { hymnDisplayTitle } from "@/lib/hymn-display"
 import { useHymnStore } from "@/stores/hymn-store"
+import { useNotesStore } from "@/stores/notes-store"
 import type { HymnTradition } from "@/types/hymn"
 
 const BROWSE_LIMIT = 200
@@ -104,7 +105,10 @@ export function HymnSearch({ query }: { query: string }) {
               <button
                 key={hymn.id}
                 type="button"
-                onClick={() => useHymnStore.getState().selectHymn(hymn)}
+                onClick={() => {
+                  useNotesStore.getState().clearSelection()
+                  useHymnStore.getState().selectHymn(hymn)
+                }}
                 className={cn(
                   "hymn-list-item flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-colors",
                   selectedHymn?.id === hymn.id

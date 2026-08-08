@@ -4,6 +4,8 @@ import { toast } from "sonner"
 import { useAudioStore } from "@/stores/audio-store"
 import { useSettingsStore } from "@/stores/settings-store"
 import { useTranscriptStore } from "@/stores/transcript-store"
+import { usePostProductionStore } from "@/stores/postproduction-store"
+import type { SermonSession } from "@/types/postproduction"
 import { useTauriEvent } from "./use-tauri-event"
 
 interface TranscriptPartialPayload {
@@ -31,7 +33,7 @@ export const transcriptionActions = {
 
     const settings = useSettingsStore.getState()
     try {
-      await invoke("start_transcription", {
+      const session = await invoke<SermonSession | null>("start_transcription", {
         apiKey:
           settings.sttProvider === "deepgram"
             ? (settings.deepgramApiKey ?? "")
@@ -39,7 +41,9 @@ export const transcriptionActions = {
         deviceId: settings.audioDeviceId,
         gain: settings.gain,
         provider: settings.sttProvider,
+        recordSession: true,
       })
+      usePostProductionStore.getState().setActiveRecording(session)
       transcript.setTranscribing(true)
     } catch (e) {
       const msg = String(e)
@@ -64,6 +68,7 @@ export const transcriptionActions = {
     transcript.setTranscribing(false)
     transcript.setPartial("")
     transcript.setConnectionStatus("disconnected")
+    usePostProductionStore.getState().setActiveRecording(null)
   },
 }
 
@@ -115,6 +120,20 @@ export function useTranscription(options?: UseTranscriptionOptions) {
       words: [],
       timestamp: Date.now(),
     })
+    const sessionId =
+      usePostProductionStore.getState().activeRecordingSessionId
+    if (sessionId) {
+      void invoke("append_sermon_transcript", {
+        sessionId,
+        text: payload.text,
+      }).catch((error) => {
+        console.warn("[post-production] Could not archive transcript", error)
+      })
+    }
+  })
+
+  useTauriEvent<SermonSession>("sermon_recording_saved", (session) => {
+    usePostProductionStore.getState().upsertSession(session)
   })
 
   const onMissingApiKey = options?.onMissingApiKey

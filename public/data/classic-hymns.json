@@ -1,7 +1,7 @@
 {
   "attribution": "Public-domain hymn texts provided by Hymnary.org (Calvin University) via Open Christian Data (CC0-1.0). https://hymnary.org",
   "source": "https://raw.githubusercontent.com/OpenChristianData/open-christian-data/main/data/hymns/hymnary-pd/collection.json",
-  "generatedAt": "2026-08-07T11:16:39.154Z",
+  "generatedAt": "2026-08-07T21:24:03.451Z",
   "label": "Classic / popular",
   "hymns": [
     {
@@ -36,7 +36,8 @@
       "number": 2,
       "traditions": [
         "presbyterian",
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -71,7 +72,8 @@
       "sourceYear": 1893,
       "number": 4,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -210,7 +212,8 @@
       "sourceYear": 1844,
       "number": 12,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -298,7 +301,8 @@
       "sourceYear": 1888,
       "number": 17,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -386,7 +390,8 @@
       "sourceYear": 1871,
       "number": 22,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -474,7 +479,8 @@
       "sourceYear": 1883,
       "number": 27,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -601,7 +607,11 @@
       "sourceYear": 1997,
       "number": 34,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Holy, Holy, Holy! Lord God Almighty"
       ]
     },
     {
@@ -820,7 +830,8 @@
       "sourceYear": 1886,
       "number": 47,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ],
       "alsoKnownAs": [
         "It Is Well with My Soul"
@@ -948,7 +959,8 @@
       "sourceYear": 1867,
       "number": 54,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -965,7 +977,8 @@
       "sourceYear": 1902,
       "number": 55,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1003,7 +1016,8 @@
       "sourceYear": 1863,
       "number": 57,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1092,7 +1106,8 @@
       "sourceYear": 1871,
       "number": 62,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1110,7 +1125,11 @@
       "sourceYear": 1874,
       "number": 63,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Pass Me Not, O Gentle Savior"
       ]
     },
     {
@@ -1159,7 +1178,11 @@
       "sourceYear": 1918,
       "number": 66,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Rock of Ages, Cleft for Me"
       ]
     },
     {
@@ -1247,7 +1270,8 @@
       "sourceYear": 1888,
       "number": 71,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1263,7 +1287,11 @@
       "sourceYear": 1870,
       "number": 72,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
+      ],
+      "alsoKnownAs": [
+        "Sweet Hour of Prayer"
       ]
     },
     {
@@ -1336,7 +1364,8 @@
       "number": 76,
       "traditions": [
         "presbyterian",
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1390,7 +1419,8 @@
       "sourceYear": 1920,
       "number": 79,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1406,7 +1436,8 @@
       "sourceYear": 1929,
       "number": 80,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1423,7 +1454,8 @@
       "sourceYear": 1883,
       "number": 81,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1442,7 +1474,8 @@
       "sourceYear": 1890,
       "number": 82,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {
@@ -1476,7 +1509,8 @@
       "sourceYear": 1875,
       "number": 84,
       "traditions": [
-        "classic"
+        "classic",
+        "methodist"
       ]
     },
     {

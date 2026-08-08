@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useBibleStore, useHymnStore } from "@/stores"
+import { useNotesStore } from "@/stores/notes-store"
 import type { Translation, Book, Verse, CrossReference } from "@/types"
 import type { SemanticSearchResult } from "@/types/detection"
 
@@ -131,6 +132,7 @@ export const bibleActions = {
       .setPendingNavigation({ bookNumber, chapter, verse }),
   selectVerse: (verse: Verse | null) => {
     useHymnStore.getState().clearSelection()
+    useNotesStore.getState().clearSelection()
     useBibleStore.getState().selectVerse(verse)
   },
 }

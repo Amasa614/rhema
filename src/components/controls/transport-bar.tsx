@@ -1,19 +1,38 @@
-import { useState } from "react"
+import { lazy, Suspense, useState } from "react"
 import { LevelMeter } from "@/components/ui/level-meter"
 import { LiveIndicator } from "@/components/ui/live-indicator"
 import { Badge } from "@/components/ui/badge"
-import { MicIcon, PaletteIcon, CastIcon, SunIcon, MoonIcon } from "lucide-react"
+import {
+  AudioLinesIcon,
+  MicIcon,
+  PaletteIcon,
+  CastIcon,
+  SunIcon,
+  MoonIcon,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ThemeDesigner } from "@/components/broadcast/theme-designer"
 import { BroadcastSettings } from "@/components/broadcast/broadcast-settings"
 import { useAudioStore, useTranscriptStore, useBroadcastStore } from "@/stores"
 import { useTheme } from "@/components/theme-provider"
+import { usePostProductionStore } from "@/stores/postproduction-store"
+import { cn } from "@/lib/utils"
+
+const PostProductionWorkspace = lazy(() =>
+  import("@/components/post-production/post-production-workspace").then(
+    (module) => ({ default: module.PostProductionWorkspace }),
+  ),
+)
 
 export function TransportBar() {
   const { theme, setTheme } = useTheme()
   const audioLevel = useAudioStore((s) => s.level)
   const isTranscribing = useTranscriptStore((s) => s.isTranscribing)
+  const postProductionOpen = usePostProductionStore((s) => s.isOpen)
+  const activeRecordingSessionId = usePostProductionStore(
+    (s) => s.activeRecordingSessionId,
+  )
   const [broadcastOpen, setBroadcastOpen] = useState(false)
 
   return (
@@ -70,6 +89,32 @@ export function TransportBar() {
           <PaletteIcon className="size-3.5" />
         </Button>
         <ThemeDesigner />
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          title={
+            activeRecordingSessionId
+              ? "Post Production — recording sermon"
+              : "Post Production"
+          }
+          className="relative"
+          onClick={() => usePostProductionStore.getState().setOpen(true)}
+        >
+          <AudioLinesIcon
+            className={cn(
+              "size-3.5",
+              activeRecordingSessionId ? "text-red-400" : "",
+            )}
+          />
+          {activeRecordingSessionId ? (
+            <span className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-red-400" />
+          ) : null}
+        </Button>
+        {postProductionOpen ? (
+          <Suspense fallback={null}>
+            <PostProductionWorkspace />
+          </Suspense>
+        ) : null}
         <SettingsDialog />
       </div>
     </div>

@@ -5,6 +5,7 @@ import { useBibleStore, useBroadcastStore } from "@/stores"
 import { bibleActions } from "@/hooks/use-bible"
 import { useVerseRenderData } from "@/hooks/use-broadcast"
 import { useHymnSlide } from "@/hooks/use-hymn-slide"
+import { useNoteSlide } from "@/hooks/use-note-slide"
 
 export function PreviewPanel() {
   const selectedVerse = useBibleStore((s) => s.selectedVerse)
@@ -28,7 +29,8 @@ export function PreviewPanel() {
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0]
   const renderedVerse = useVerseRenderData(selectedVerse)
   const hymnSlide = useHymnSlide()
-  const verseData = hymnSlide ?? renderedVerse
+  const noteSlide = useNoteSlide()
+  const verseData = hymnSlide ?? noteSlide ?? renderedVerse
 
   return (
     <div
