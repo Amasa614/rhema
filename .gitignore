@@ -26,6 +26,7 @@ dist-ssr
 # Build artifacts
 build
 src-tauri/bundle/
+src-tauri/bundle-resources/
 data/rhema.db
 data/sources/*.json
 data/cross-refs/cross_references.txt

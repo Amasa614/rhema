@@ -7,7 +7,7 @@
     "frontendDist": "../build",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "bun dev",
-    "beforeBuildCommand": "bun run build"
+    "beforeBuildCommand": "bun run prepare:bundle && bun run build"
   },
   "app": {
     "windows": [
@@ -37,11 +37,11 @@
       "icons/icon.ico"
     ],
     "resources": {
-      "../data/rhema.db": "rhema.db",
-      "../embeddings/kjv-qwen3-0.6b.bin": "embeddings/kjv-qwen3-0.6b.bin",
-      "../embeddings/kjv-qwen3-0.6b-ids.bin": "embeddings/kjv-qwen3-0.6b-ids.bin",
-      "../models/qwen3-embedding-0.6b/tokenizer.json": "models/qwen3-embedding-0.6b/tokenizer.json",
-      "../models/qwen3-embedding-0.6b-int8/model_quantized.onnx": "models/qwen3-embedding-0.6b-int8/model_quantized.onnx"
+      "bundle-resources/rhema.db": "rhema.db",
+      "bundle-resources/embeddings/kjv-qwen3-0.6b.bin": "embeddings/kjv-qwen3-0.6b.bin",
+      "bundle-resources/embeddings/kjv-qwen3-0.6b-ids.bin": "embeddings/kjv-qwen3-0.6b-ids.bin",
+      "bundle-resources/models/qwen3-embedding-0.6b/tokenizer.json": "models/qwen3-embedding-0.6b/tokenizer.json",
+      "bundle-resources/models/qwen3-embedding-0.6b-int8/model_quantized.onnx": "models/qwen3-embedding-0.6b-int8/model_quantized.onnx"
     }
   }
 }
