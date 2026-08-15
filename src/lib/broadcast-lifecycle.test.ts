@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import type { ProgramLook } from "@/types/stream"
+
 const listenMock = vi.fn()
 const emitToMock = vi.fn()
 const syncBroadcastOutputForMock = vi.fn()
 const settingsState = {
   streamShowOnProjector: false,
   streamVideoDevice: "",
-  streamProgramLook: "slides" as const,
+  streamProgramLook: "slides" as ProgramLook,
 }
 
 vi.mock("@tauri-apps/api/event", () => ({

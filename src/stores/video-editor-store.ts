@@ -8,25 +8,18 @@ import type {
   EditorProjectSummary,
   MediaAsset,
   TimelineClip,
-  TimelineTrack,
   VideoEditorProject,
 } from "@/types/video-editor"
 import {
   assetById,
   canPlaceAssetOnTrack,
-  clipDuration,
   clipEnd,
   clipsForAsset,
-  clipsOnTrack,
-  createEmptyProject,
-  findClipAtPlayhead,
   newClipId,
   nextVideoAppendStart,
   projectDuration,
   splitClipAtPlayhead,
   trackById,
-  trimClipEnd,
-  trimClipStart,
   validateProject,
 } from "@/lib/video-editor/timeline"
 
