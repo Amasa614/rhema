@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { TextProperties } from "@/components/broadcast/text-properties"
 import { BackgroundProperties } from "@/components/broadcast/background-properties"
 import { LayoutProperties } from "@/components/broadcast/layout-properties"
+import { LogoProperties } from "@/components/broadcast/logo-properties"
 
 export function PropertiesPanel() {
   const draftTheme = useBroadcastStore((s) => s.draftTheme)
@@ -35,10 +36,19 @@ export function PropertiesPanel() {
       {/* Tabs */}
       <Tabs defaultValue="text" className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="shrink-0 px-4 pt-3">
-          <TabsList variant="default" className="w-full">
-            <TabsTrigger value="text">Text</TabsTrigger>
-            <TabsTrigger value="background">Background</TabsTrigger>
-            <TabsTrigger value="layout">Layout</TabsTrigger>
+          <TabsList variant="default" className="h-9 w-full overflow-hidden">
+            <TabsTrigger value="text" className="px-1.5 text-xs">
+              Text
+            </TabsTrigger>
+            <TabsTrigger value="background" className="px-1.5 text-xs">
+              Background
+            </TabsTrigger>
+            <TabsTrigger value="layout" className="px-1.5 text-xs">
+              Layout
+            </TabsTrigger>
+            <TabsTrigger value="logo" className="px-1.5 text-xs">
+              Logo
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -51,6 +61,9 @@ export function PropertiesPanel() {
           </TabsContent>
           <TabsContent value="layout" className="mt-0 p-4">
             <LayoutProperties />
+          </TabsContent>
+          <TabsContent value="logo" className="mt-0 p-4">
+            <LogoProperties />
           </TabsContent>
         </ScrollArea>
       </Tabs>

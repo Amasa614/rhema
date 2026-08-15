@@ -1,9 +1,15 @@
 import { useEffect } from "react"
 import { PanelHeader } from "@/components/ui/panel-header"
-import { CanvasVerse } from "@/components/ui/canvas-verse"
+import { ProgramLookMonitor } from "@/components/broadcast/program-look-monitor"
+import { LiveIndicator } from "@/components/ui/live-indicator"
 import { Switch } from "@/components/ui/switch"
+import {
+  PROGRAM_LOOK_LABEL,
+  programLookUsesCamera,
+} from "@/lib/program-look"
 import { cn } from "@/lib/utils"
 import { useBroadcastStore, useBibleStore } from "@/stores"
+import { useSettingsStore } from "@/stores/settings-store"
 import { useVerseRenderData } from "@/hooks/use-broadcast"
 import { useHymnSlide } from "@/hooks/use-hymn-slide"
 import { useNoteSlide } from "@/hooks/use-note-slide"
@@ -12,6 +18,8 @@ export function LiveOutputPanel() {
   const isLive = useBroadcastStore((s) => s.isLive)
   const themes = useBroadcastStore((s) => s.themes)
   const activeThemeId = useBroadcastStore((s) => s.activeThemeId)
+  const look = useSettingsStore((s) => s.streamProgramLook)
+  const cameraLook = programLookUsesCamera(look)
 
   const selectedVerse = useBibleStore((s) => s.selectedVerse)
 
@@ -30,15 +38,23 @@ export function LiveOutputPanel() {
       data-slot="live-output-panel"
       className={cn(
         "flex min-h-0 flex-col overflow-hidden rounded-lg border border-border bg-card",
-        isLive && "shadow-[inset_0_2px_0_0_rgba(16,185,129,0.3)]"
+        isLive && "shadow-[inset_0_2px_0_0_rgba(16,185,129,0.3)]",
       )}
     >
       <PanelHeader title="Live display">
+        {cameraLook ? (
+          <LiveIndicator
+            active
+            tone="sky"
+            label={PROGRAM_LOOK_LABEL[look]}
+            title="Program look on the projector"
+          />
+        ) : null}
         <label className="flex items-center gap-2">
           <span
             className={cn(
               "text-[0.625rem] font-medium uppercase tracking-wider transition-colors",
-              isLive ? "text-emerald-400" : "text-muted-foreground"
+              isLive ? "text-emerald-400" : "text-muted-foreground",
             )}
           >
             {isLive ? "Live" : "Go live"}
@@ -55,11 +71,15 @@ export function LiveOutputPanel() {
 
       <div
         className={cn(
-          "flex min-h-0 flex-1 items-center justify-center p-3 transition-opacity",
-          !isLive && "opacity-40"
+          "relative flex min-h-0 flex-1 items-center justify-center p-3 transition-opacity",
+          !isLive && !cameraLook && "opacity-40",
         )}
       >
-        <CanvasVerse theme={activeTheme} verse={verseData} />
+        <ProgramLookMonitor
+          theme={activeTheme}
+          verse={verseData}
+          look={look}
+        />
       </div>
     </div>
   )

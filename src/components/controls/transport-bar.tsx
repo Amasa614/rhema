@@ -1,7 +1,6 @@
 import { lazy, Suspense, useState } from "react"
 import { LevelMeter } from "@/components/ui/level-meter"
 import { LiveIndicator } from "@/components/ui/live-indicator"
-import { Badge } from "@/components/ui/badge"
 import {
   AudioLinesIcon,
   MicIcon,
@@ -14,9 +13,12 @@ import { Button } from "@/components/ui/button"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ThemeDesigner } from "@/components/broadcast/theme-designer"
 import { BroadcastSettings } from "@/components/broadcast/broadcast-settings"
+import { ProgramLookSwitch } from "@/components/controls/program-look-switch"
+import { ProgramRecordControls } from "@/components/controls/program-record-controls"
 import { useAudioStore, useTranscriptStore, useBroadcastStore } from "@/stores"
 import { useTheme } from "@/components/theme-provider"
 import { usePostProductionStore } from "@/stores/postproduction-store"
+import { useStreamSessionStore } from "@/stores/stream-session-store"
 import { cn } from "@/lib/utils"
 
 const PostProductionWorkspace = lazy(() =>
@@ -33,6 +35,11 @@ export function TransportBar() {
   const activeRecordingSessionId = usePostProductionStore(
     (s) => s.activeRecordingSessionId,
   )
+  const activeVideoRecordingId = usePostProductionStore(
+    (s) => s.activeVideoRecordingId,
+  )
+  const live = useStreamSessionStore((s) => s.live)
+  const sermonRecording = Boolean(activeRecordingSessionId)
   const [broadcastOpen, setBroadcastOpen] = useState(false)
 
   return (
@@ -40,23 +47,21 @@ export function TransportBar() {
       data-slot="transport-bar"
       className="col-span-4 flex h-14 items-center justify-between border-b border-border  bg-card px-3"
     >
-      {/* Left: Logo + Plan Badge */}
       <div className="flex items-center gap-2.5">
         <span className="text-sm font-semibold tracking-tight text-foreground">
           Rhema
         </span>
-        <Badge variant="outline" className="text-[0.5625rem] uppercase">
-          Free
-        </Badge>
       </div>
 
-      {/* Right: Audio + Status + Settings */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" title="Transcription">
           <MicIcon className="size-3.5 text-muted-foreground" />
           <LevelMeter level={audioLevel.rms} bars={4} />
+          <LiveIndicator active={isTranscribing} />
         </div>
-        <LiveIndicator active={isTranscribing} />
+        <div className="h-4 w-px bg-border" />
+        <ProgramLookSwitch compact />
+        <ProgramRecordControls />
         <Button
           variant="ghost"
           size="icon-sm"
@@ -72,11 +77,17 @@ export function TransportBar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title="Broadcast Settings"
+          title={live ? "Broadcast — streaming" : "Broadcast Settings"}
           data-tour="broadcast"
+          className="relative"
           onClick={() => setBroadcastOpen(true)}
         >
-          <CastIcon className="size-3.5" />
+          <CastIcon
+            className={cn("size-3.5", live && "text-emerald-400")}
+          />
+          {live ? (
+            <span className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-emerald-400" />
+          ) : null}
         </Button>
         <BroadcastSettings open={broadcastOpen} onOpenChange={setBroadcastOpen} />
         <Button
@@ -93,20 +104,29 @@ export function TransportBar() {
           variant="ghost"
           size="icon-sm"
           title={
-            activeRecordingSessionId
+            sermonRecording
               ? "Post Production — recording sermon"
-              : "Post Production"
+              : activeVideoRecordingId
+                ? "Post Production — video"
+                : "Post Production"
           }
           className="relative"
-          onClick={() => usePostProductionStore.getState().setOpen(true)}
+          onClick={() => {
+            const store = usePostProductionStore.getState()
+            if (store.activeVideoRecordingId && !store.activeRecordingSessionId) {
+              store.openModule("video")
+              return
+            }
+            store.setOpen(true)
+          }}
         >
           <AudioLinesIcon
             className={cn(
               "size-3.5",
-              activeRecordingSessionId ? "text-red-400" : "",
+              sermonRecording ? "text-red-400" : "",
             )}
           />
-          {activeRecordingSessionId ? (
+          {sermonRecording ? (
             <span className="absolute right-1 top-1 size-1.5 animate-pulse rounded-full bg-red-400" />
           ) : null}
         </Button>

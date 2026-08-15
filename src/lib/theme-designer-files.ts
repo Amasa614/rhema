@@ -40,6 +40,11 @@ export async function pickThemeBackgroundImage(): Promise<string | null> {
   return `data:${mime};base64,${base64}`
 }
 
+/** Uses the same picker as background (returns a persisted data URL). */
+export async function pickThemeLogoImage(): Promise<string | null> {
+  return pickThemeBackgroundImage()
+}
+
 /**
  * Exports a theme as JSON via native save dialog.
  */
@@ -68,7 +73,14 @@ export async function importTheme(): Promise<BroadcastTheme | null> {
   const path = typeof selected === "string" ? selected : selected
   const bytes = await readFile(path)
   const text = new TextDecoder().decode(bytes)
-  const parsed = JSON.parse(text) as BroadcastTheme
+  let parsed: BroadcastTheme
+  try {
+    parsed = JSON.parse(text) as BroadcastTheme
+  } catch {
+    throw new Error(
+      "That file is not a theme. Import a .json export from Theme Designer. PNG and JPG images are added under Background or Logo.",
+    )
+  }
 
   if (!parsed.id || !parsed.name || !parsed.background || !parsed.layout) {
     throw new Error("Invalid theme file: missing required fields")

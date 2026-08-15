@@ -20,6 +20,8 @@ fn broadcast_output_id(label: &str) -> Option<&'static str> {
 }
 
 fn destroy_broadcast_outputs(app: &tauri::AppHandle) {
+    commands::stream::stop_if_running(app);
+
     if let Some(runtime) = app.try_state::<Mutex<NdiRuntime>>() {
         if let Ok(mut runtime) = runtime.lock() {
             runtime.stop("main");
@@ -50,6 +52,7 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_opener::init())
         .manage(Mutex::new(state::AppState::new()))
         .manage(Mutex::new(rhema_detection::DetectionPipeline::new()))
         .manage(Mutex::new(rhema_broadcast::ndi::NdiRuntime::default()))
@@ -61,6 +64,7 @@ pub fn run() {
         .manage(Mutex::new(rhema_detection::ReadingMode::new()))
         .manage(Mutex::new(commands::remote::OscRuntime::new()))
         .manage(Mutex::new(commands::remote::HttpRuntime::new()))
+        .manage(Mutex::new(commands::stream::StreamRuntime::default()))
         .invoke_handler(tauri::generate_handler![
             commands::bible::list_translations,
             commands::bible::list_books,
@@ -104,6 +108,37 @@ pub fn run() {
             commands::broadcast::stop_ndi,
             commands::broadcast::get_ndi_status,
             commands::broadcast::push_ndi_frame,
+            commands::stream::stream_status,
+            commands::stream::stream_list_devices,
+            commands::stream::stream_start,
+            commands::stream::stream_stop,
+            commands::stream::push_stream_overlay,
+            commands::stream::video_recording_start,
+            commands::stream::video_recording_append,
+            commands::stream::video_recording_stop,
+            commands::stream::list_video_recordings,
+            commands::stream::rename_video_recording,
+            commands::stream::delete_video_recording,
+            commands::stream::open_video_recordings_folder,
+            commands::video_edit::video_keep_range,
+            commands::video_edit::video_cut_range,
+            commands::video_edit::video_extract_audio,
+            commands::video_edit::video_replace_audio,
+            commands::video_edit::video_overlay_image,
+            commands::video_edit::video_clean_audio,
+            commands::video_project::list_editor_projects,
+            commands::video_project::create_editor_project,
+            commands::video_project::create_editor_project_from_recording,
+            commands::video_project::load_editor_project,
+            commands::video_project::save_editor_project,
+            commands::video_project::delete_editor_project,
+            commands::video_project::list_editor_media_assets,
+            commands::video_project::probe_editor_media,
+            commands::video_project::import_editor_media,
+            commands::video_project::analyze_editor_audio,
+            commands::video_project::detach_editor_audio,
+            commands::video_project::export_editor_project,
+            commands::video_project::cancel_editor_job,
             commands::remote::start_osc,
             commands::remote::stop_osc,
             commands::remote::get_osc_status,

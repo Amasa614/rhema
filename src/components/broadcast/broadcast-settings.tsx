@@ -16,12 +16,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { LiveStreamSettings } from "@/components/broadcast/live-stream-settings"
 import { Button } from "@/components/ui/button"
-
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
+import { armOnActivationKey, useArmedCommit } from "@/lib/user-armed-commit"
 import { useBroadcastStore } from "@/stores"
+import { usePostProductionStore } from "@/stores/postproduction-store"
+import { useSettingsStore } from "@/stores/settings-store"
 import type { NdiAlphaMode, NdiFrameRate, NdiResolution, NdiSessionInfo, NdiStartRequest } from "@/types"
 import {
   MonitorIcon,
@@ -287,7 +290,11 @@ export function BroadcastSettings({
   const handleMainToggle = async (enabled: boolean) => {
     setMainEnabled(enabled)
     if (!enabled) {
-      if (isPreviewOpen) {
+      const keepProjector =
+        Boolean(usePostProductionStore.getState().activeVideoRecordingId) ||
+        useSettingsStore.getState().streamShowOnProjector ||
+        useSettingsStore.getState().streamProgramLook !== "slides"
+      if (isPreviewOpen && !keepProjector) {
         try {
           await invoke("close_broadcast_window", {
             outputId: "main",
@@ -402,10 +409,17 @@ export function BroadcastSettings({
     }
   }
 
+  const mainOutputSwitch = useArmedCommit((enabled: boolean) => {
+    void handleMainToggle(enabled)
+  })
+  const altOutputSwitch = useArmedCommit((enabled: boolean) => {
+    void handleAltToggle(enabled)
+  })
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[700px] gap-4"
+        className="sm:max-w-[780px] gap-3 overflow-y-auto max-h-[min(90vh,760px)]"
         showCloseButton={true}
       >
         <DialogHeader>
@@ -435,7 +449,11 @@ export function BroadcastSettings({
                 </span>
                 <Switch
                   checked={mainEnabled}
-                  onCheckedChange={handleMainToggle}
+                  onPointerDown={mainOutputSwitch.arm}
+                  onKeyDown={(event) =>
+                    armOnActivationKey(event, mainOutputSwitch.arm)
+                  }
+                  onCheckedChange={mainOutputSwitch.commit}
                 />
               </div>
             </div>
@@ -670,7 +688,14 @@ export function BroadcastSettings({
                 <span className={cn("text-xs", altEnabled ? "text-foreground" : "text-muted-foreground")}>
                   {altEnabled ? "On" : "Off"}
                 </span>
-                <Switch checked={altEnabled} onCheckedChange={handleAltToggle} />
+                <Switch
+                  checked={altEnabled}
+                  onPointerDown={altOutputSwitch.arm}
+                  onKeyDown={(event) =>
+                    armOnActivationKey(event, altOutputSwitch.arm)
+                  }
+                  onCheckedChange={altOutputSwitch.commit}
+                />
               </div>
             </div>
 
@@ -789,6 +814,8 @@ export function BroadcastSettings({
               </div>
             )}
           </div>
+
+          <LiveStreamSettings className="col-span-2" />
         </div>
       </DialogContent>
     </Dialog>

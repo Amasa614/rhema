@@ -427,7 +427,7 @@ pub fn analyze_sermon_audio(
     analyze_wav(&path, points.unwrap_or(900).clamp(100, 4_000))
 }
 
-fn analyze_wav(path: &Path, points: usize) -> Result<WaveformData, String> {
+pub(crate) fn analyze_wav(path: &Path, points: usize) -> Result<WaveformData, String> {
     let mut reader = hound::WavReader::open(path).map_err(|error| error.to_string())?;
     let spec = reader.spec();
     let total_samples = reader.duration() as usize;
@@ -940,6 +940,132 @@ pub fn save_sermon_summary_as_note(
         "title": session.title,
         "body": format!("{}{}", session.summary, verses)
     }))
+}
+
+pub(crate) async fn clean_wav_file(
+    api_key: &str,
+    source: &Path,
+    destination: &Path,
+    mut on_stage: impl FnMut(&str),
+) -> Result<(), String> {
+    let api_key = normalize_cleanvoice_api_key(api_key).to_string();
+    if api_key.is_empty() {
+        return Err("Add your Cleanvoice API key in Settings first".to_string());
+    }
+    let filename = source
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("program.wav");
+    let client = reqwest::Client::new();
+    verify_cleanvoice_key(&client, &api_key).await?;
+    on_stage("Uploading audio");
+    let upload_response = client
+        .post(format!("{CLEANVOICE_BASE_URL}/upload"))
+        .query(&[("filename", filename)])
+        .header("X-API-Key", &api_key)
+        .send()
+        .await
+        .map_err(|error| format!("Could not contact Cleanvoice: {error}"))?;
+    let upload = cleanvoice_json(upload_response, "requesting an upload URL").await?;
+    let signed_url = upload
+        .get("signedUrl")
+        .or_else(|| upload.get("signed_url"))
+        .and_then(Value::as_str)
+        .ok_or_else(|| "Cleanvoice did not return an upload URL".to_string())?;
+    let file_url = signed_url.split('?').next().unwrap_or(signed_url);
+    let bytes = tokio::fs::read(source)
+        .await
+        .map_err(|error| error.to_string())?;
+    let storage_response = client
+        .put(signed_url)
+        .header("Content-Type", "audio/wav")
+        .body(bytes)
+        .send()
+        .await
+        .map_err(|error| format!("Could not upload audio to Cleanvoice storage: {error}"))?;
+    ensure_cleanvoice_success(storage_response, "uploading the audio file").await?;
+    on_stage("Starting Cleanvoice job");
+    let edit_body = serde_json::json!({
+        "input": {
+            "files": [file_url],
+            "config": {
+                "fillers": true,
+                "long_silences": true,
+                "mouth_sounds": true,
+                "stutters": true,
+                "breath": true,
+                "remove_noise": true,
+                "studio_sound": true,
+                "normalize": true,
+                "transcription": false,
+                "summarize": false
+            }
+        }
+    });
+    let create_response = client
+        .post(format!("{CLEANVOICE_BASE_URL}/edits"))
+        .header("X-API-Key", &api_key)
+        .json(&edit_body)
+        .send()
+        .await
+        .map_err(|error| format!("Could not contact Cleanvoice: {error}"))?;
+    let created = cleanvoice_json(create_response, "starting the edit job").await?;
+    let job_id = created
+        .get("id")
+        .or_else(|| created.get("edit_id"))
+        .and_then(Value::as_str)
+        .ok_or_else(|| "Cleanvoice did not return a job id".to_string())?
+        .to_string();
+    let result = poll_cleanvoice_job(&client, &api_key, &job_id, &mut on_stage).await?;
+    let url = result
+        .pointer("/result/download_url")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "Cleanvoice did not return cleaned audio".to_string())?;
+    on_stage("Downloading cleaned audio");
+    let response = client
+        .get(url)
+        .send()
+        .await
+        .map_err(|error| error.to_string())?
+        .error_for_status()
+        .map_err(|error| error.to_string())?;
+    tokio::fs::write(destination, response.bytes().await.map_err(|error| error.to_string())?)
+        .await
+        .map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+async fn poll_cleanvoice_job(
+    client: &reqwest::Client,
+    api_key: &str,
+    job_id: &str,
+    on_stage: &mut impl FnMut(&str),
+) -> Result<Value, String> {
+    for _ in 0..1_440 {
+        let response = client
+            .get(format!("{CLEANVOICE_BASE_URL}/edits/{job_id}"))
+            .header("X-API-Key", api_key.trim())
+            .send()
+            .await
+            .map_err(|error| format!("Could not contact Cleanvoice: {error}"))?;
+        let result = cleanvoice_json(response, "checking edit progress").await?;
+        let status = result
+            .get("status")
+            .and_then(Value::as_str)
+            .unwrap_or("PENDING");
+        on_stage(status);
+        match status {
+            "SUCCESS" => return Ok(result),
+            "FAILURE" => {
+                return Err(result.get("error").map_or_else(
+                    || "Cleanvoice processing failed".to_string(),
+                    Value::to_string,
+                ));
+            }
+            _ => tokio::time::sleep(Duration::from_secs(5)).await,
+        }
+    }
+    Err("Cleanvoice processing timed out".to_string())
 }
 
 #[cfg(test)]

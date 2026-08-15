@@ -7,12 +7,16 @@ interface CanvasVerseProps {
   theme: BroadcastTheme
   verse: VerseRenderData | null
   className?: string
+  skipBackground?: boolean
+  skipLogo?: boolean
 }
 
 export const CanvasVerse = memo(function CanvasVerse({
   theme,
   verse,
   className,
+  skipBackground = false,
+  skipLogo = false,
 }: CanvasVerseProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -53,29 +57,35 @@ export const CanvasVerse = memo(function CanvasVerse({
     renderVerse(ctx, theme, verse, {
       scale,
       imageCache: imageCacheRef.current,
+      skipBackground,
+      skipLogo,
     })
-  }, [theme, verse, containerWidth])
+  }, [theme, verse, containerWidth, skipBackground, skipLogo])
 
-  // Preload background image so the renderer can find it in the cache.
+  // Preload background and logo images so the renderer can find them in the cache.
   useEffect(() => {
-    const bg = theme.background
-    if (bg.type !== "image" || !bg.image?.url) return
-    const url = bg.image.url
-    const cache = imageCacheRef.current
-    if (cache.has(url)) return
+    const urls: string[] = []
+    if (theme.background.type === "image" && theme.background.image?.url) {
+      urls.push(theme.background.image.url)
+    }
+    if (theme.logo?.url) urls.push(theme.logo.url)
 
-    const img = new Image()
-    img.onload = () => {
-      cache.set(url, img)
-      draw()
+    const cache = imageCacheRef.current
+    for (const url of urls) {
+      if (cache.has(url)) continue
+      const img = new Image()
+      img.onload = () => {
+        cache.set(url, img)
+        draw()
+      }
+      img.onerror = () => {
+        console.warn("[canvas-verse] failed to load theme image", {
+          url: url.slice(0, 100),
+        })
+      }
+      img.src = url
     }
-    img.onerror = () => {
-      console.warn("[canvas-verse] failed to load background image", {
-        url: url.slice(0, 100),
-      })
-    }
-    img.src = url
-  }, [theme.background, draw])
+  }, [theme.background, theme.logo, draw])
 
   // Redraw whenever theme, verse, or container size changes.
   useEffect(() => {

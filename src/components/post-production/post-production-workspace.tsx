@@ -15,6 +15,7 @@ import {
   CheckCircle2Icon,
   DownloadIcon,
   FileTextIcon,
+  FilmIcon,
   Heading2Icon,
   ItalicIcon,
   ListIcon,
@@ -36,6 +37,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { downloadSermonMarkdown } from "@/lib/sermon-export"
+import { VideoEditorWorkspace } from "@/components/post-production/video-editor-workspace"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { useNotesStore } from "@/stores/notes-store"
 import { usePostProductionStore } from "@/stores/postproduction-store"
 import { useSettingsStore } from "@/stores/settings-store"
@@ -60,12 +63,16 @@ function sessionAudioLabel(session: SermonSession): string {
 
 export function PostProductionWorkspace() {
   const isOpen = usePostProductionStore((state) => state.isOpen)
+  const module = usePostProductionStore((state) => state.module)
   const sessions = usePostProductionStore((state) => state.sessions)
   const selectedSessionId = usePostProductionStore(
     (state) => state.selectedSessionId
   )
   const activeRecordingSessionId = usePostProductionStore(
     (state) => state.activeRecordingSessionId
+  )
+  const activeVideoRecordingId = usePostProductionStore(
+    (state) => state.activeVideoRecordingId
   )
   const waveform = usePostProductionStore((state) => state.waveform)
   const audioUrl = usePostProductionStore((state) => state.audioUrl)
@@ -112,8 +119,12 @@ export function PostProductionWorkspace() {
 
   useEffect(() => {
     if (!isOpen) return
+    if (module === "video") {
+      void usePostProductionStore.getState().refreshVideos()
+      return
+    }
     void usePostProductionStore.getState().refresh()
-  }, [isOpen])
+  }, [isOpen, module])
 
   useEffect(() => {
     if (!selectedSessionId) return
@@ -496,18 +507,61 @@ export function PostProductionWorkspace() {
 
           <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-4">
             <div className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-lime-500/15 text-lime-400">
-                <AudioLinesIcon className="size-4" />
+              <div
+                className={cn(
+                  "flex size-8 items-center justify-center rounded-lg",
+                  module === "video"
+                    ? "bg-sky-500/15 text-sky-400"
+                    : "bg-lime-500/15 text-lime-400"
+                )}
+              >
+                {module === "video" ? (
+                  <FilmIcon className="size-4" />
+                ) : (
+                  <AudioLinesIcon className="size-4" />
+                )}
               </div>
               <div>
                 <h1 className="text-base font-semibold">Post Production</h1>
                 <p className="text-[0.625rem] text-muted-foreground">
-                  Review, polish, transcribe and publish sermons
+                  {module === "video"
+                    ? "Timeline editor for program video"
+                    : "Review, polish, transcribe and publish sermons"}
                 </p>
               </div>
             </div>
+            <div className="flex rounded-lg border border-border p-0.5">
+              <button
+                type="button"
+                className={cn(
+                  "rounded-md px-3 py-1 text-xs font-medium transition-colors",
+                  module === "audio"
+                    ? "bg-lime-500/15 text-lime-300"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() =>
+                  usePostProductionStore.getState().setModule("audio")
+                }
+              >
+                Audio
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "rounded-md px-3 py-1 text-xs font-medium transition-colors",
+                  module === "video"
+                    ? "bg-sky-500/15 text-sky-300"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() =>
+                  usePostProductionStore.getState().setModule("video")
+                }
+              >
+                Video
+              </button>
+            </div>
             <div className="flex-1" />
-            {activeRecordingSessionId ? (
+            {activeRecordingSessionId || activeVideoRecordingId ? (
               <span className="flex items-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-3 py-1 text-xs text-red-300">
                 <span className="size-2 animate-pulse rounded-full bg-red-400" />
                 Recording in progress
@@ -522,6 +576,23 @@ export function PostProductionWorkspace() {
             </Button>
           </header>
 
+          {module === "video" ? (
+            <ErrorBoundary
+              fallback={(error) => (
+                <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 p-10 text-center">
+                  <p className="text-sm font-semibold">Video editor crashed</p>
+                  <p className="max-w-xl text-xs text-muted-foreground">
+                    {String(error)}
+                  </p>
+                  <Button onClick={() => window.location.reload()}>
+                    Reload
+                  </Button>
+                </div>
+              )}
+            >
+              <VideoEditorWorkspace />
+            </ErrorBoundary>
+          ) : (
           <div className="grid min-h-0 flex-1 grid-cols-[260px_minmax(0,1fr)_300px]">
             <aside className="flex min-h-0 flex-col border-r border-border bg-card/50">
               <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-3">
@@ -1085,6 +1156,7 @@ export function PostProductionWorkspace() {
               ) : null}
             </aside>
           </div>
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

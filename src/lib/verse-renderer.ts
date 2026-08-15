@@ -667,6 +667,12 @@ function buildScaledTheme(
       borderRadius: theme.textBox.borderRadius * scale,
       padding: theme.textBox.padding * scale,
     },
+    logo: theme.logo
+      ? {
+          ...theme.logo,
+          margin: theme.logo.margin * scale,
+        }
+      : theme.logo,
   }
 }
 
@@ -1026,6 +1032,45 @@ export function computeVerseLayoutMetrics(
   return { scaledTheme, textAreaRect, textRect, referenceRect, verseRect }
 }
 
+export function drawThemeLogo(
+  ctx: CanvasRenderingContext2D,
+  theme: BroadcastTheme,
+  imageCache?: Map<string, HTMLImageElement>,
+  dest?: { x: number; y: number; width: number; height: number },
+): void {
+  const logo = theme.logo
+  if (!logo?.enabled) return
+  const url = logo.url?.trim()
+  if (!url) return
+  const img = imageCache?.get(url)
+  if (!img || img.width <= 0 || img.height <= 0) return
+
+  const canvasW = dest?.width ?? theme.resolution.width
+  const canvasH = dest?.height ?? theme.resolution.height
+  const originX = dest?.x ?? 0
+  const originY = dest?.y ?? 0
+  const opacity = Math.max(0, Math.min(logo.opacity ?? 1, 1))
+  const margin = Math.max(0, logo.margin ?? 0)
+  const desiredW = Math.max(8, (canvasW * (logo.sizePercent ?? 18)) / 100)
+  const aspect = img.width / img.height
+  const maxH = canvasH * 0.35
+  const w = Math.min(desiredW, canvasW - margin * 2)
+  const h = Math.min(w / aspect, maxH)
+  const drawW = h * aspect
+
+  let x = margin
+  let y = margin
+  const pos = logo.position ?? "top-right"
+  if (pos.endsWith("right")) x = canvasW - margin - drawW
+  if (pos.endsWith("center")) x = (canvasW - drawW) / 2
+  if (pos.startsWith("bottom")) y = canvasH - margin - h
+
+  ctx.save()
+  ctx.globalAlpha = opacity
+  ctx.drawImage(img, originX + x, originY + y, drawW, h)
+  ctx.restore()
+}
+
 export function renderVerse(
   ctx: CanvasRenderingContext2D,
   theme: BroadcastTheme,
@@ -1056,8 +1101,12 @@ function renderVerseImpl(
     ctx.globalAlpha = options.opacity
   }
 
-  // Draw background
-  drawBackground(ctx, scaledTheme, options?.imageCache)
+  if (!options?.skipBackground) {
+    drawBackground(ctx, scaledTheme, options?.imageCache)
+  }
+  if (!options?.skipBackground && !options?.skipLogo) {
+    drawThemeLogo(ctx, scaledTheme, options?.imageCache)
+  }
 
   // Draw text box if enabled
   if (scaledTheme.textBox.enabled) {

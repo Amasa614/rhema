@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { load, type Store } from "@tauri-apps/plugin-store"
+import type { ProgramLook, StreamDestinationPreset } from "@/types/stream"
 
 type SttProvider = "deepgram" | "whisper"
 
@@ -15,6 +16,14 @@ interface SettingsState {
   cooldownMs: number
   onboardingComplete: boolean
   sttProvider: SttProvider
+  streamPreset: StreamDestinationPreset
+  streamServerUrl: string
+  streamKey: string
+  streamVideoDevice: string
+  streamAudioDevice: string
+  streamIncludeOverlay: boolean
+  streamShowOnProjector: boolean
+  streamProgramLook: ProgramLook
 
   setDeepgramApiKey: (key: string | null) => void
   setOpenaiApiKey: (key: string | null) => void
@@ -27,9 +36,17 @@ interface SettingsState {
   setCooldownMs: (ms: number) => void
   setOnboardingComplete: (complete: boolean) => void
   setSttProvider: (provider: SttProvider) => void
+  setStreamPreset: (preset: StreamDestinationPreset) => void
+  setStreamServerUrl: (url: string) => void
+  setStreamKey: (key: string) => void
+  setStreamVideoDevice: (id: string) => void
+  setStreamAudioDevice: (id: string) => void
+  setStreamIncludeOverlay: (include: boolean) => void
+  setStreamShowOnProjector: (show: boolean) => void
+  setStreamProgramLook: (look: ProgramLook) => void
 }
 
-export const useSettingsStore = create<SettingsState>((set) => ({
+export const useSettingsStore = create<SettingsState>((set, get) => ({
   deepgramApiKey: null,
   openaiApiKey: null,
   claudeApiKey: null,
@@ -41,6 +58,14 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   cooldownMs: 2500,
   onboardingComplete: false,
   sttProvider: "deepgram",
+  streamPreset: "youtube",
+  streamServerUrl: "rtmps://a.rtmps.youtube.com/live2",
+  streamKey: "",
+  streamVideoDevice: "",
+  streamAudioDevice: "",
+  streamIncludeOverlay: true,
+  streamShowOnProjector: false,
+  streamProgramLook: "slides",
 
   setDeepgramApiKey: (deepgramApiKey) => set({ deepgramApiKey }),
   setOpenaiApiKey: (openaiApiKey) => set({ openaiApiKey }),
@@ -53,6 +78,29 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setCooldownMs: (cooldownMs) => set({ cooldownMs }),
   setOnboardingComplete: (onboardingComplete) => set({ onboardingComplete }),
   setSttProvider: (sttProvider) => set({ sttProvider }),
+  setStreamPreset: (streamPreset) => set({ streamPreset }),
+  setStreamServerUrl: (streamServerUrl) => set({ streamServerUrl }),
+  setStreamKey: (streamKey) => set({ streamKey }),
+  setStreamVideoDevice: (streamVideoDevice) => set({ streamVideoDevice }),
+  setStreamAudioDevice: (streamAudioDevice) => set({ streamAudioDevice }),
+  setStreamIncludeOverlay: (streamIncludeOverlay) =>
+    set({ streamIncludeOverlay }),
+  setStreamShowOnProjector: (streamShowOnProjector) => {
+    const look = get().streamProgramLook
+    set({
+      streamShowOnProjector,
+      streamProgramLook: streamShowOnProjector
+        ? look === "slides"
+          ? "mix"
+          : look
+        : "slides",
+    })
+  },
+  setStreamProgramLook: (streamProgramLook) =>
+    set({
+      streamProgramLook,
+      streamShowOnProjector: streamProgramLook !== "slides",
+    }),
 }))
 
 const PERSISTED_KEYS = [
@@ -67,6 +115,14 @@ const PERSISTED_KEYS = [
   "cooldownMs",
   "onboardingComplete",
   "sttProvider",
+  "streamPreset",
+  "streamServerUrl",
+  "streamKey",
+  "streamVideoDevice",
+  "streamAudioDevice",
+  "streamIncludeOverlay",
+  "streamShowOnProjector",
+  "streamProgramLook",
 ] as const satisfies readonly (keyof SettingsState)[]
 
 let tauriStore: Store | null = null
@@ -94,6 +150,15 @@ export function hydrateSettings(): Promise<void> {
           ;(patch as Record<string, unknown>)[key] = value
         }
       }
+      const savedLook = patch.streamProgramLook
+      if (
+        savedLook !== "camera" &&
+        savedLook !== "slides" &&
+        savedLook !== "mix"
+      ) {
+        patch.streamProgramLook = patch.streamShowOnProjector ? "mix" : "slides"
+      }
+      patch.streamShowOnProjector = patch.streamProgramLook !== "slides"
       if (Object.keys(patch).length > 0) {
         useSettingsStore.setState(patch)
       }

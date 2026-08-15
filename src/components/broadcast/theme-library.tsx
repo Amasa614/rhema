@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { importTheme, exportTheme } from "@/lib/theme-designer-files"
+import { toast } from "sonner"
 import type { BroadcastTheme, VerseRenderData } from "@/types"
 
 type FilterTab = "all" | "pinned" | "custom"
@@ -273,10 +274,12 @@ export function ThemeLibrary() {
       </Tabs>
 
       {/* Import / Export */}
-      <div className="flex gap-1.5 px-3 pb-3">
+      <div className="flex flex-col gap-1.5 px-3 pb-3">
+        <div className="flex gap-1.5">
         <Button
           variant="outline"
           className="flex-1 border-border bg-transparent"
+          title="Import a theme settings file (.json). Images are chosen in Background and Logo."
           onClick={() => {
             void (async () => {
               try {
@@ -284,9 +287,16 @@ export function ThemeLibrary() {
                 if (theme) {
                   useBroadcastStore.getState().saveTheme(theme)
                   useBroadcastStore.getState().startEditing(theme.id)
+                  toast.success("Theme imported")
                 }
               } catch (err) {
                 console.error("[theme-library] import failed:", err)
+                toast.error("Could not import theme", {
+                  description:
+                    err instanceof Error
+                      ? err.message
+                      : "Choose a .json file exported from Theme Designer.",
+                })
               }
             })()
           }}
@@ -316,6 +326,10 @@ export function ThemeLibrary() {
           <DownloadIcon className="size-2.5" />
           Export
         </Button>
+        </div>
+        <p className="text-[0.625rem] leading-snug text-muted-foreground">
+          Import/Export is a theme settings file (.json). Add a PNG or JPG from the Background or Logo tab.
+        </p>
       </div>
 
       {/* Theme list */}

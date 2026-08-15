@@ -342,15 +342,14 @@ async function syncThemeToCanvas(
   const verseRegion = objectsRef.current.verseRegion
   if (!ws || !refRegion || !verseRegion) return
 
+  const themeImageUrls: string[] = []
   if (theme.background.type === "image" && theme.background.image?.url) {
-    const img = imageCache.get(theme.background.image.url)
-    if (!img) {
-      ensureImage(
-        theme.background.image.url,
-        imageCache,
-        imageRequests,
-        onImageReady
-      )
+    themeImageUrls.push(theme.background.image.url)
+  }
+  if (theme.logo?.url) themeImageUrls.push(theme.logo.url)
+  for (const url of themeImageUrls) {
+    if (!imageCache.get(url)) {
+      ensureImage(url, imageCache, imageRequests, onImageReady)
     }
   }
 
@@ -483,7 +482,7 @@ function ensureImage(
       return img
     })
     .catch((error) => {
-      console.warn("[theme-designer] failed to load background image", { url: url.slice(0, 100), error })
+      console.warn("[theme-designer] failed to load theme image", { url: url.slice(0, 100), error })
       throw error
     })
     .finally(() => {

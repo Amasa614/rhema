@@ -4,4 +4,7 @@ pub mod broadcast;
 pub mod detection;
 pub mod postproduction;
 pub mod remote;
+pub mod stream;
 pub mod stt;
+pub mod video_edit;
+pub mod video_project;

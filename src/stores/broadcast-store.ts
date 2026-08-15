@@ -164,6 +164,7 @@ export const useBroadcastStore = create<BroadcastState>((set, get) => ({
         gradient: null,
         image: null,
       },
+      logo: undefined,
     }
     set((s) => ({ themes: [...s.themes, newTheme] }))
     get().startEditing(newTheme.id)

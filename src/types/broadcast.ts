@@ -16,6 +16,10 @@ export interface RenderOptions {
   offsetY?: number
   scale?: number               // Scale factor for rendering at display size (e.g., 0.42 for 400px panel)
   imageCache?: Map<string, HTMLImageElement>
+  /** Skip theme background so a camera (or other underlay) already on the canvas stays visible. */
+  skipBackground?: boolean
+  /** Skip the theme logo (e.g. mix layout draws it in the slide pane instead). */
+  skipLogo?: boolean
 }
 
 export type TextHorizontalAlign = "left" | "center" | "right" | "justify"
@@ -46,6 +50,24 @@ export interface BroadcastTheme {
       brightness: number
       tint: string | null
     } | null
+  }
+  logo?: {
+    enabled: boolean
+    /** Data URL (recommended) or https URL. */
+    url: string
+    position:
+      | "top-left"
+      | "top-center"
+      | "top-right"
+      | "bottom-left"
+      | "bottom-center"
+      | "bottom-right"
+    /** Logo width as % of canvas width. */
+    sizePercent: number
+    /** 0..1 */
+    opacity: number
+    /** Margin in pixels (at the theme resolution). */
+    margin: number
   }
   textBox: {
     enabled: boolean

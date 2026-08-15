@@ -57,7 +57,7 @@ manifest-src 'self';
 ## Notes for contributors
 
 - Do **not** add `'unsafe-eval'` or `'unsafe-inline'` to `script-src` to unblock a dev tool. Fix the tool or bundle it locally.
-- If we ever render local files in `<img>` or `<video>` via `@tauri-apps/api/core.convertFileSrc`, add `asset:` (Linux/macOS) and `http://asset.localhost` (Windows) to the relevant `*-src` directive.
+- Local video playback uses `convertFileSrc`. Keep `asset:`, `http://asset.localhost`, and `https://asset.localhost` in `media-src`, and keep `app.security.assetProtocol` scoped to `$APPDATA/**`.
 - If a future feature requires the webview to talk to an external API, add only the specific origin to `connect-src`. Avoid scheme-wildcards like `https:`.
 - On Windows, if `invoke()` starts failing with CSP errors after a Tauri upgrade, try adding `ipc: http://ipc.localhost` to `connect-src` — Tauri v2 routes Windows IPC through that custom host.
 
