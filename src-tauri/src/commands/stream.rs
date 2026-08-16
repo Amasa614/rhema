@@ -727,7 +727,8 @@ pub fn video_recording_append(chunk_base64: String) -> Result<(), String> {
         .writer
         .as_mut()
         .ok_or_else(|| "No video recording is active".to_string())?;
-    writer.write_all(&bytes).map_err(|error| error.to_string())
+    writer.write_all(&bytes).map_err(|error| error.to_string())?;
+    writer.flush().map_err(|error| error.to_string())
 }
 
 #[tauri::command]

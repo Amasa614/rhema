@@ -135,6 +135,7 @@ function BroadcastCanvas() {
   const lastPreviewRef = useRef(0)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const recordingRef = useRef(false)
+  const pendingAppendsRef = useRef<Promise<unknown>[]>([])
   const cameraRef = useRef<{
     look: ProgramLook
     generation: number
@@ -394,7 +395,9 @@ function BroadcastCanvas() {
   }, [])
 
   const stopCameraTracks = useCallback(() => {
-    stopCameraLoop()
+    if (!recordingRef.current) {
+      stopCameraLoop()
+    }
     const video = cameraRef.current.video
     if (video) {
       video.pause()
@@ -407,7 +410,12 @@ function BroadcastCanvas() {
 
   const startCameraLoop = useCallback(() => {
     const tick = () => {
-      if (!programLookUsesCamera(cameraRef.current.look)) return
+      const keepGoing =
+        recordingRef.current || programLookUsesCamera(cameraRef.current.look)
+      if (!keepGoing) {
+        cameraRef.current.raf = 0
+        return
+      }
       draw()
       if (streamOverlayRef.current) {
         const now = Date.now()
@@ -514,9 +522,16 @@ function BroadcastCanvas() {
     if (recorder && recorder.state !== "inactive") {
       await new Promise<void>((resolve) => {
         recorder.addEventListener("stop", () => resolve(), { once: true })
+        try {
+          recorder.requestData()
+        } catch {
+          // Some WebView builds throw if no data is buffered yet.
+        }
         recorder.stop()
       })
     }
+    await Promise.all(pendingAppendsRef.current)
+    pendingAppendsRef.current = []
     await invoke("video_recording_stop").catch(() => {})
   }, [])
 
@@ -539,11 +554,17 @@ function BroadcastCanvas() {
           }
         } else {
           audioSource = extra
-          cameraRef.current.stream = extra
         }
       }
     }
+    recordingRef.current = true
+    startCameraLoop()
+    draw()
     const mixed = mixCanvasAndAudio(canvas, audioSource)
+    if (!mixed.getVideoTracks().some((track) => track.readyState === "live")) {
+      recordingRef.current = false
+      throw new Error("Could not capture program video from the projector")
+    }
     if (!streamHasLiveAudio(mixed)) {
       console.warn("[broadcast-output] recording without an audio track")
     }
@@ -555,17 +576,20 @@ function BroadcastCanvas() {
     )
     recorder.addEventListener("dataavailable", (event) => {
       if (event.data.size === 0) return
-      void event.data.arrayBuffer().then((buffer) => {
-        const chunkBase64 = uint8ToBase64(new Uint8Array(buffer))
-        void invoke("video_recording_append", { chunkBase64 }).catch((error) => {
+      const job = event.data
+        .arrayBuffer()
+        .then((buffer) => {
+          const chunkBase64 = uint8ToBase64(new Uint8Array(buffer))
+          return invoke("video_recording_append", { chunkBase64 })
+        })
+        .catch((error) => {
           console.warn("[broadcast-output] video_recording_append failed", error)
         })
-      })
+      pendingAppendsRef.current.push(job)
     })
     recorder.start(1000)
     recorderRef.current = recorder
-    recordingRef.current = true
-  }, [stopProgramRecorder])
+  }, [draw, startCameraLoop, stopProgramRecorder])
 
   useEffect(() => {
     // Set initial canvas size
