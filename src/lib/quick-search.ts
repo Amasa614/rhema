@@ -20,6 +20,11 @@ export interface AutocompleteResult {
   stage: "book" | "chapter" | "verse" | "complete" | "none"
 }
 
+const THIRD_PREFIX = /^(?:3rd|third|iii)(?=[\s.]|$)/i
+const SECOND_PREFIX = /^(?:2nd|second|ii)(?=[\s.]|$)/i
+const FIRST_PREFIX = /^(?:1st|first|i)(?=[\s.]|$)/i
+const DIGIT_PREFIX = /^(\d+)(?:st|nd|rd|th)?(?=[\s.]|$)/i
+
 /**
  * Convert number to Roman numeral for numbered books
  */
@@ -30,33 +35,56 @@ export function numberToRoman(num: number): string {
   return String(num)
 }
 
-/**
- * Normalize input: convert leading numbers to Roman numerals for matching
- * Examples: "1 S" -> "I S", "2 C" -> "II C", "3 J" -> "III J"
- */
-export function normalizeInput(input: string): string {
-  const trimmed = input.trim()
-  const leadingNumberMatch = trimmed.match(/^(\d+)\s*(.*)$/)
+function splitNumberedPrefix(text: string): { num: number | null; rest: string } {
+  const trimmed = text.trim()
+  const patterns: Array<[RegExp, number | "digit"]> = [
+    [THIRD_PREFIX, 3],
+    [SECOND_PREFIX, 2],
+    [FIRST_PREFIX, 1],
+    [DIGIT_PREFIX, "digit"],
+  ]
 
-  if (leadingNumberMatch) {
-    const num = parseInt(leadingNumberMatch[1])
-    const rest = leadingNumberMatch[2]
-    return numberToRoman(num) + (rest ? " " + rest : "")
+  for (const [pattern, value] of patterns) {
+    const match = trimmed.match(pattern)
+    if (!match) continue
+    const num = value === "digit" ? Number.parseInt(match[1], 10) : value
+    const rest = trimmed.slice(match[0].length).replace(/^[\s.]+/, "")
+    return { num, rest }
   }
 
-  return trimmed
+  return { num: null, rest: trimmed }
+}
+
+/** Canonical "1 kings" form so 1st/I/1 Kings all compare equal. */
+export function canonicalizeBookKey(text: string): string {
+  const { num, rest } = splitNumberedPrefix(text)
+  const body = rest.toLowerCase().replace(/\s+/g, " ").trim()
+  if (num === null) return body
+  return body ? `${num} ${body}` : String(num)
+}
+
+/**
+ * Normalize input: convert leading numbers/ordinals to Roman numerals for matching
+ * Examples: "1 S" -> "I S", "1st kings" -> "I kings", "2nd samuel" -> "II samuel"
+ */
+export function normalizeInput(input: string): string {
+  const { num, rest } = splitNumberedPrefix(input)
+  if (num === null) return input.trim()
+  const roman = numberToRoman(num)
+  return rest ? `${roman} ${rest}` : roman
 }
 
 /**
  * Find matching book by name or abbreviation (case insensitive)
  */
 export function findMatchingBook(bookInput: string, books: Book[]): Book | undefined {
-  const normalized = bookInput.toLowerCase()
-  return books.find(
-    b =>
-      b.name.toLowerCase().startsWith(normalized) ||
-      b.abbreviation.toLowerCase().startsWith(normalized)
-  )
+  const needle = canonicalizeBookKey(bookInput)
+  if (!needle) return undefined
+  return books.find((book) => {
+    const name = canonicalizeBookKey(book.name)
+    const abbreviation = canonicalizeBookKey(book.abbreviation)
+    return name.startsWith(needle) || abbreviation.startsWith(needle)
+  })
 }
 
 /**
@@ -76,12 +104,11 @@ export function getAutocompleteSuggestion(
 
   // Check if it's just a number (for numbered books like "1", "2", "3")
   if (/^\d+$/.test(trimmed)) {
-    const matchingBook = books.find(b => b.name.startsWith(normalizedInput + " "))
+    const matchingBook = findMatchingBook(trimmed, books)
 
     if (matchingBook) {
-      const remainder = matchingBook.name.slice(normalizedInput.length)
       return {
-        suggestion: normalizedInput + remainder + " 1:1",
+        suggestion: matchingBook.name + " 1:1",
         matchedBook: matchingBook,
         chapter: 1,
         verse: 1,

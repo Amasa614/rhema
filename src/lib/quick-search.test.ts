@@ -18,6 +18,9 @@ const mockBooks: Book[] = [
   { id: 45, translation_id: 1, book_number: 45, name: "Romans", abbreviation: "Rom", testament: "NT" },
   { id: 19, translation_id: 1, book_number: 19, name: "Psalms", abbreviation: "Ps", testament: "OT" },
   { id: 46, translation_id: 1, book_number: 46, name: "I Corinthians", abbreviation: "1Cor", testament: "NT" },
+  { id: 9, translation_id: 1, book_number: 9, name: "1 Samuel", abbreviation: "1Sam", testament: "OT" },
+  { id: 11, translation_id: 1, book_number: 11, name: "1 Kings", abbreviation: "1Kgs", testament: "OT" },
+  { id: 10, translation_id: 1, book_number: 10, name: "2 Samuel", abbreviation: "2Sam", testament: "OT" },
 ]
 
 describe("numberToRoman", () => {
@@ -61,6 +64,17 @@ describe("normalizeInput", () => {
     expect(normalizeInput("1")).toBe("I")
   })
 
+  it("strips ordinal suffixes before converting", () => {
+    expect(normalizeInput("1st kings")).toBe("I kings")
+    expect(normalizeInput("2nd samuel")).toBe("II samuel")
+    expect(normalizeInput("3rd john")).toBe("III john")
+  })
+
+  it("converts first/second/third to Roman numerals", () => {
+    expect(normalizeInput("first kings")).toBe("I kings")
+    expect(normalizeInput("second samuel")).toBe("II samuel")
+  })
+
   it("trims whitespace", () => {
     expect(normalizeInput("  john  ")).toBe("john")
   })
@@ -85,6 +99,12 @@ describe("findMatchingBook", () => {
   it("finds numbered book with Roman numeral", () => {
     const result = findMatchingBook("i john", mockBooks)
     expect(result?.name).toBe("I John")
+  })
+
+  it("finds arabic numbered books from 1st/2nd input", () => {
+    expect(findMatchingBook("1st kings", mockBooks)?.name).toBe("1 Kings")
+    expect(findMatchingBook("2nd samuel", mockBooks)?.name).toBe("2 Samuel")
+    expect(findMatchingBook("I Kings", mockBooks)?.name).toBe("1 Kings")
   })
 
   it("returns undefined for no match", () => {
@@ -224,6 +244,20 @@ describe("getAutocompleteSuggestion", () => {
     expect(result.matchedBook?.name).toBe("Psalms")
     expect(result.chapter).toBe(23)
     expect(result.stage).toBe("chapter")
+  })
+
+  it("suggests '1 Kings 1:1' when input is '1st kings'", () => {
+    const result = getAutocompleteSuggestion("1st kings", mockBooks)
+    expect(result.matchedBook?.name).toBe("1 Kings")
+    expect(result.suggestion).toBe("1 Kings 1:1")
+    expect(result.stage).toBe("book")
+  })
+
+  it("suggests '2 Samuel 1:1' when input is '2nd samuel'", () => {
+    const result = getAutocompleteSuggestion("2nd samuel", mockBooks)
+    expect(result.matchedBook?.name).toBe("2 Samuel")
+    expect(result.suggestion).toBe("2 Samuel 1:1")
+    expect(result.stage).toBe("book")
   })
 })
 
