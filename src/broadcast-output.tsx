@@ -129,6 +129,7 @@ function BroadcastCanvas() {
   const ndiBurstTimersRef = useRef<number[]>([])
   const streamOverlayRef = useRef(false)
   const overlayPushingRef = useRef(false)
+  const lastOverlayPushRef = useRef(0)
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const previewPushingRef = useRef(false)
   const lastPreviewRef = useRef(0)
@@ -362,7 +363,7 @@ function BroadcastCanvas() {
     if (!canvas) return
     overlayPushingRef.current = true
     try {
-      const pngBase64 = canvas.toDataURL("image/png")
+      const pngBase64 = canvas.toDataURL("image/jpeg", 0.8)
       await invoke("push_stream_overlay", { pngBase64 })
     } catch (error) {
       const now = Date.now()
@@ -408,12 +409,19 @@ function BroadcastCanvas() {
     const tick = () => {
       if (!programLookUsesCamera(cameraRef.current.look)) return
       draw()
+      if (streamOverlayRef.current) {
+        const now = Date.now()
+        if (now - lastOverlayPushRef.current >= 100) {
+          lastOverlayPushRef.current = now
+          void pushStreamOverlay()
+        }
+      }
       cameraRef.current.raf = requestAnimationFrame(tick)
     }
     if (!cameraRef.current.raf) {
       cameraRef.current.raf = requestAnimationFrame(tick)
     }
-  }, [draw])
+  }, [draw, pushStreamOverlay])
 
   const applyProgramLook = useCallback(
     async (payload: ProgramLookPayload) => {
@@ -427,6 +435,7 @@ function BroadcastCanvas() {
         stopCameraTracks()
         draw()
         emitProgramPreview(null)
+        if (streamOverlayRef.current) void pushStreamOverlay()
         return
       }
 
@@ -436,6 +445,7 @@ function BroadcastCanvas() {
         stopCameraTracks()
         draw()
         emitProgramPreview(null)
+        if (streamOverlayRef.current) void pushStreamOverlay()
         return
       }
 
@@ -445,6 +455,7 @@ function BroadcastCanvas() {
       ) {
         startCameraLoop()
         draw()
+        if (streamOverlayRef.current) void pushStreamOverlay()
         return
       }
 
@@ -493,7 +504,7 @@ function BroadcastCanvas() {
         logDebug("camera underlay failed", message)
       }
     },
-    [draw, emitProgramPreview, logDebug, startCameraLoop, stopCameraTracks],
+    [draw, emitProgramPreview, logDebug, pushStreamOverlay, startCameraLoop, stopCameraTracks],
   )
 
   const stopProgramRecorder = useCallback(async () => {
@@ -602,7 +613,13 @@ function BroadcastCanvas() {
         }),
         currentWindow.listen<ProgramLookPayload>("broadcast:program-look", (event) => {
           logDebug("Received broadcast:program-look", event.payload)
-          void applyProgramLook(event.payload)
+          void applyProgramLook(event.payload).then(() => {
+            if (event.payload.releaseCamera) {
+              void currentWindow.emitTo("main", "broadcast:camera-released", {
+                outputId: OUTPUT_ID,
+              })
+            }
+          })
         }),
         currentWindow.listen<CameraUnderlayPayload>("broadcast:camera-underlay", (event) => {
           logDebug("Received broadcast:camera-underlay", event.payload)
@@ -705,7 +722,7 @@ function BroadcastCanvas() {
         if (elapsed > 2000) void pushNdiFrame()
       }
       if (streamOverlayRef.current) void pushStreamOverlay()
-    }, 2000)
+    }, 500)
     return () => clearInterval(timer)
   }, [pushNdiFrame, pushStreamOverlay])
 

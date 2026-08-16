@@ -33,7 +33,6 @@ export function ProgramLookSwitch({
   compact?: boolean
 }) {
   const look = useSettingsStore((state) => state.streamProgramLook)
-  const live = useStreamSessionStore((state) => state.live)
 
   return (
     <div
@@ -47,17 +46,11 @@ export function ProgramLookSwitch({
     >
       {LOOKS.map((option) => {
         const selected = look === option.id
-        const blocked = live && option.id !== "slides"
         return (
           <button
             key={option.id}
             type="button"
-            title={
-              blocked
-                ? "Stop the live stream to put the camera back on program"
-                : option.title
-            }
-            disabled={blocked}
+            title={option.title}
             aria-pressed={selected}
             className={cn(
               "flex h-full min-h-0 min-w-0 flex-1 items-center justify-center rounded-[4px] px-2 leading-none font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50",
@@ -67,7 +60,6 @@ export function ProgramLookSwitch({
               selected
                 ? "bg-sky-500/20 text-sky-100 ring-1 ring-inset ring-sky-400/35"
                 : "text-muted-foreground hover:bg-muted/40 hover:text-foreground",
-              blocked && "opacity-50",
             )}
             onClick={() => {
               if (option.id === look) return

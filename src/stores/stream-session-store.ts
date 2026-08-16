@@ -106,10 +106,6 @@ export const useStreamSessionStore = create<StreamSessionState>((set, get) => ({
   setPendingRecord: (pendingRecord) => set({ pendingRecord }),
 
   setProgramLook: async (look) => {
-    if (get().live && programLookUsesCamera(look)) {
-      toast.error("Stop the live stream to put the camera back on program")
-      return
-    }
     try {
       let device = useSettingsStore.getState().streamVideoDevice
       if (programLookUsesCamera(look)) {

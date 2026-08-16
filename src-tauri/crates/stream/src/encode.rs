@@ -18,6 +18,8 @@ pub struct StreamEncodeRequest {
     pub encoder: VideoEncoder,
     pub destination: Option<String>,
     pub record_path: Option<PathBuf>,
+    /// OBS-style: program frames arrive on ffmpeg stdin as MJPEG.
+    pub video_from_stdin: bool,
 }
 
 /// Combine ingest URL and stream key without logging the key.
@@ -48,25 +50,50 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
     let bitrate = request.video_bitrate_kbps.clamp(1500, 12_000);
     let gop = fps * 2;
     let size = format!("{}x{}", request.width, request.height);
+    // pad/scale take width:height. pad=1920x1080 is parsed as an expression and fails
+    // with "Invalid chars 'x1080'".
+    let filter_size = format!("{}:{}", request.width, request.height);
 
     let mut args: Vec<String> = vec!["-hide_banner".into(), "-loglevel".into(), "warning".into()];
     let mut next_input: u32 = 0;
     let video_input: u32;
-    let mut audio_on_video_input = false;
 
-    if let Some(video) = request.video_device.as_deref() {
+    if request.video_from_stdin {
+        args.extend([
+            "-f".into(),
+            "mjpeg".into(),
+            "-framerate".into(),
+            fps.to_string(),
+            "-i".into(),
+            "pipe:0".into(),
+        ]);
+        video_input = next_input;
+        next_input += 1;
+    } else if let Some(overlay) = &request.overlay_path {
+        args.extend([
+            "-f".into(),
+            "image2".into(),
+            "-loop".into(),
+            "1".into(),
+            "-framerate".into(),
+            fps.to_string(),
+            "-i".into(),
+            overlay.to_string_lossy().into_owned(),
+        ]);
+        video_input = next_input;
+        next_input += 1;
+    } else if let Some(video) = request.video_device.as_deref() {
         args.extend([
             "-f".into(),
             "dshow".into(),
             "-rtbufsize".into(),
             "256M".into(),
-            "-framerate".into(),
-            fps.to_string(),
+            "-thread_queue_size".into(),
+            "512".into(),
             "-i".into(),
-            dshow_input(video, request.audio_device.as_deref()),
+            dshow_input(video, None),
         ]);
         video_input = next_input;
-        audio_on_video_input = request.audio_device.is_some();
         next_input += 1;
     } else {
         args.extend([
@@ -79,30 +106,16 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
         next_input += 1;
     }
 
-    let overlay_input = if let Some(overlay) = &request.overlay_path {
-        args.extend([
-            "-f".into(),
-            "image2".into(),
-            "-loop".into(),
-            "1".into(),
-            "-framerate".into(),
-            "5".into(),
-            "-i".into(),
-            overlay.to_string_lossy().into_owned(),
-        ]);
-        let index = next_input;
-        next_input += 1;
-        Some(index)
-    } else {
-        None
-    };
-
-    let audio_input = if audio_on_video_input {
-        Some(video_input)
-    } else if let Some(audio) = request.audio_device.as_deref() {
+    let audio_input = if let Some(audio) = request
+        .audio_device
+        .as_deref()
+        .filter(|name| !is_phone_virtual_device(name))
+    {
         args.extend([
             "-f".into(),
             "dshow".into(),
+            "-thread_queue_size".into(),
+            "512".into(),
             "-i".into(),
             format!("audio={audio}"),
         ]);
@@ -114,29 +127,22 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
             "-f".into(),
             "lavfi".into(),
             "-i".into(),
-            "anullsrc=channel_layout=stereo:sample_rate=48000".into(),
+            "anullsrc=channel_layout=stereo:sample_rate=44100".into(),
         ]);
         let index = next_input;
         Some(index)
     };
     let _ = next_input;
 
-    let mut filter = format!(
-        "[{video_input}:v]scale={size}:force_original_aspect_ratio=decrease,pad={size}:(ow-iw)/2:(oh-ih)/2,fps={fps},format=yuv420p[base]"
+    let filter = format!(
+        "[{video_input}:v]scale={filter_size}:force_original_aspect_ratio=decrease,pad={filter_size}:(ow-iw)/2:(oh-ih)/2,fps={fps},format=yuv420p[base]"
     );
-    let mut video_map = "[base]".to_string();
-    if let Some(overlay_index) = overlay_input {
-        filter.push_str(&format!(
-            ";[{overlay_index}:v]format=rgba,scale={size}[ov];[base][ov]overlay=0:0:format=auto[v]"
-        ));
-        video_map = "[v]".into();
-    }
 
     args.extend(["-filter_complex".into(), filter]);
-    args.extend(["-map".into(), video_map]);
+    args.extend(["-map".into(), "[base]".into()]);
     args.extend([
         "-map".into(),
-        format!("{}:a?", audio_input.unwrap_or(0)),
+        format!("{}:a", audio_input.unwrap_or(0)),
     ]);
 
     match request.encoder {
@@ -148,6 +154,10 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
                 "p4".into(),
                 "-tune".into(),
                 "ll".into(),
+                "-rc".into(),
+                "cbr".into(),
+                "-profile:v".into(),
+                "main".into(),
             ]);
         }
         VideoEncoder::X264 => {
@@ -158,6 +168,12 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
                 "veryfast".into(),
                 "-tune".into(),
                 "zerolatency".into(),
+                "-profile:v".into(),
+                "main".into(),
+                "-level".into(),
+                "4.1".into(),
+                "-sc_threshold".into(),
+                "0".into(),
             ]);
         }
     }
@@ -180,10 +196,16 @@ pub fn build_ffmpeg_args(request: &StreamEncodeRequest) -> Result<Vec<String>, S
         "-b:a".into(),
         "128k".into(),
         "-ar".into(),
-        "48000".into(),
+        "44100".into(),
         "-ac".into(),
         "2".into(),
     ]);
+    // FLV/RTMP (Facebook, YouTube) needs global headers. Direct `-f flv` sets
+    // this automatically; `-f tee` does not, so Facebook ingest gets no packets.
+    // https://stackoverflow.com/questions/43968879
+    if request.destination.is_some() && request.record_path.is_some() {
+        args.extend(["-flags".into(), "+global_header".into()]);
+    }
     push_outputs(&mut args, request)?;
 
     Ok(args)
@@ -196,7 +218,13 @@ fn push_outputs(args: &mut Vec<String>, request: &StreamEncodeRequest) -> Result
     ) {
         (None, None) => Err("A stream destination or a local recording path is required".into()),
         (Some(rtmp), None) => {
-            args.extend(["-f".into(), "flv".into(), rtmp.to_string()]);
+            args.extend([
+                "-flvflags".into(),
+                "no_duration_filesize".into(),
+                "-f".into(),
+                "flv".into(),
+                rtmp.to_string(),
+            ]);
             Ok(())
         }
         (None, Some(path)) => {
@@ -228,6 +256,11 @@ fn tee_outputs(rtmp: &str, path: &Path) -> String {
     format!(
         "[f=flv:onfail=ignore]{rtmp}|[f=mp4:onfail=ignore:movflags=+frag_keyframe+empty_moov]{file}"
     )
+}
+
+fn is_phone_virtual_device(name: &str) -> bool {
+    let lower = name.to_ascii_lowercase();
+    lower.contains("iriun") || lower.contains("camo")
 }
 
 fn dshow_input(video: &str, audio: Option<&str>) -> String {
@@ -263,7 +296,7 @@ mod tests {
     }
 
     #[test]
-    fn build_ffmpeg_args_should_use_dshow_for_camo() {
+    fn build_ffmpeg_args_should_use_program_png_when_overlay_present() {
         let args = build_ffmpeg_args(&StreamEncodeRequest {
             video_device: Some("Camo Camera".into()),
             audio_device: Some("Microphone (USB)".into()),
@@ -275,15 +308,20 @@ mod tests {
             encoder: VideoEncoder::X264,
             destination: Some("rtmps://a.rtmps.youtube.com/live2/key".into()),
             record_path: None,
+            video_from_stdin: true,
         })
         .unwrap();
 
-        assert!(args.windows(2).any(|pair| pair == ["-f", "dshow"]));
-        assert!(args
-            .iter()
-            .any(|arg| arg.contains("video=Camo Camera:audio=Microphone (USB)")));
+        assert!(args.windows(2).any(|pair| pair == ["-f", "mjpeg"]));
+        assert!(args.iter().any(|arg| arg == "pipe:0"));
+        assert!(args.windows(2).any(|pair| pair == ["-flvflags", "no_duration_filesize"]));
+        assert!(args.windows(2).any(|pair| pair == ["-profile:v", "main"]));
+        assert!(!args.iter().any(|arg| arg.contains("video=Camo Camera")));
+        assert!(args.iter().any(|arg| arg == "audio=Microphone (USB)"));
         assert!(args.contains(&"libx264".to_string()));
-        assert!(args.contains(&"aac".to_string()));
+        assert!(args.iter().any(|arg| arg.contains("scale=1920:1080")));
+        assert!(args.iter().any(|arg| arg.contains("pad=1920:1080")));
+        assert!(!args.iter().any(|arg| arg.contains("pad=1920x1080")));
         assert_eq!(
             args.last().unwrap(),
             "rtmps://a.rtmps.youtube.com/live2/key"
@@ -303,6 +341,7 @@ mod tests {
             encoder: VideoEncoder::X264,
             destination: None,
             record_path: Some(PathBuf::from("C:/Rhema/videos/service/program.mp4")),
+            video_from_stdin: false,
         })
         .unwrap();
 
@@ -311,5 +350,31 @@ mod tests {
             .iter()
             .any(|arg| arg.ends_with("program.mp4")));
         assert!(!args.iter().any(|arg| arg.contains("rtmp")));
+        assert!(args.iter().any(|arg| arg == "video=Iriun Webcam"));
+        assert!(!args
+            .iter()
+            .any(|arg| arg.contains("audio=Microphone (Iriun Webcam)")));
+        assert!(args.iter().any(|arg| arg.contains("anullsrc")));
+    }
+
+    #[test]
+    fn build_ffmpeg_args_should_set_global_header_for_tee() {
+        let args = build_ffmpeg_args(&StreamEncodeRequest {
+            video_device: Some("Iriun Webcam".into()),
+            audio_device: None,
+            overlay_path: None,
+            width: 1920,
+            height: 1080,
+            fps: 30,
+            video_bitrate_kbps: 4500,
+            encoder: VideoEncoder::X264,
+            destination: Some("rtmps://live-api-s.facebook.com:443/rtmp/key".into()),
+            record_path: Some(PathBuf::from("C:/Rhema/videos/service/program.mp4")),
+            video_from_stdin: false,
+        })
+        .unwrap();
+
+        assert!(args.windows(2).any(|pair| pair == ["-flags", "+global_header"]));
+        assert!(args.windows(2).any(|pair| pair == ["-f", "tee"]));
     }
 }

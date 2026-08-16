@@ -16,8 +16,9 @@ use std::{
 use base64::Engine;
 use chrono::{DateTime, Utc};
 use rhema_stream::{
-    build_ffmpeg_args, join_rtmp_url, parse_dshow_devices, sanitize_ffmpeg_error_with_key,
-    sanitize_ffmpeg_error_with_redactions, DshowDevices, StreamEncodeRequest, VideoEncoder,
+    build_ffmpeg_args, join_rtmp_url, parse_dshow_devices, redact_stream_text,
+    sanitize_ffmpeg_error_with_key, sanitize_ffmpeg_error_with_redactions, DshowDevices,
+    StreamEncodeRequest, VideoEncoder,
 };
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter, Manager, State};
@@ -29,6 +30,7 @@ const OVERLAY_NAME: &str = "stream-overlay.png";
 #[derive(Debug, Default)]
 pub struct StreamRuntime {
     child: Option<Child>,
+    stdin: Option<std::process::ChildStdin>,
     overlay_path: Option<PathBuf>,
     last_error: Option<String>,
     stderr_log: Option<Arc<Mutex<String>>>,
@@ -45,6 +47,7 @@ impl StreamRuntime {
 
     fn stop(&mut self) {
         self.invalidate_watchers();
+        self.stdin = None;
         if let Some(mut child) = self.child.take() {
             let _ = child.kill();
             let deadline = Instant::now() + Duration::from_millis(2000);
@@ -102,6 +105,11 @@ pub struct StreamStartPayload {
 
 fn default_record_local() -> bool {
     true
+}
+
+fn is_phone_capture_device(name: &str) -> bool {
+    let lower = name.to_ascii_lowercase();
+    lower.contains("iriun") || lower.contains("camo")
 }
 
 fn overlay_file(app: &AppHandle) -> Result<PathBuf, String> {
@@ -180,15 +188,16 @@ pub(crate) fn run_ffmpeg(ffmpeg: &Path, args: &[String]) -> Result<std::process:
     command.output().map_err(|error| error.to_string())
 }
 
-fn attach_stderr_drain(child: &mut Child) -> Arc<Mutex<String>> {
+fn attach_stderr_drain(child: &mut Child, redactions: Vec<String>) -> Arc<Mutex<String>> {
     let log = Arc::new(Mutex::new(String::new()));
     if let Some(stderr) = child.stderr.take() {
         let log_clone = Arc::clone(&log);
         thread::spawn(move || {
             let reader = BufReader::new(stderr);
             for line in reader.lines().map_while(Result::ok) {
+                let redacted = redact_stream_text(&line, &redactions);
                 if let Ok(mut buffer) = log_clone.lock() {
-                    buffer.push_str(&line);
+                    buffer.push_str(&redacted);
                     buffer.push('\n');
                     if buffer.len() > 4000 {
                         let drain = buffer.len().saturating_sub(2000);
@@ -201,17 +210,60 @@ fn attach_stderr_drain(child: &mut Child) -> Arc<Mutex<String>> {
     log
 }
 
-fn spawn_ffmpeg(ffmpeg: &Path, args: &[String]) -> Result<Child, String> {
+fn spawn_ffmpeg(ffmpeg: &Path, args: &[String], pipe_stdin: bool) -> Result<Child, String> {
     let mut command = Command::new(ffmpeg);
     command
         .args(args)
-        .stdin(Stdio::null())
+        .stdin(if pipe_stdin {
+            Stdio::piped()
+        } else {
+            Stdio::null()
+        })
         .stdout(Stdio::null())
         .stderr(Stdio::piped());
     hide_window(&mut command);
     command.spawn().map_err(|error| error.to_string())
 }
 
+const KICKSTART_JPEG: &[u8] = include_bytes!("kickstart.jpg");
+
+fn prime_ffmpeg_stdin(child: &mut Child) -> Result<std::process::ChildStdin, String> {
+    let mut stdin = child
+        .stdin
+        .take()
+        .ok_or_else(|| "FFmpeg stdin is not available".to_string())?;
+    stdin
+        .write_all(KICKSTART_JPEG)
+        .map_err(|error| format!("Could not send the first stream frame: {error}"))?;
+    stdin
+        .flush()
+        .map_err(|error| format!("Could not send the first stream frame: {error}"))?;
+    Ok(stdin)
+}
+
+fn spawn_primed_ffmpeg(
+    ffmpeg: &Path,
+    request: &StreamEncodeRequest,
+    stream_key: &str,
+) -> Result<(Child, std::process::ChildStdin, Arc<Mutex<String>>), String> {
+    let args = build_ffmpeg_args(request)?;
+    let mut child = spawn_ffmpeg(ffmpeg, &args, true)?;
+    let redactions = if stream_key.is_empty() {
+        Vec::new()
+    } else {
+        vec![stream_key.to_string()]
+    };
+    let stderr_log = attach_stderr_drain(&mut child, redactions);
+    let stdin = prime_ffmpeg_stdin(&mut child)?;
+    Ok((child, stdin, stderr_log))
+}
+
+fn stderr_snapshot(log: &Arc<Mutex<String>>) -> String {
+    thread::sleep(Duration::from_millis(150));
+    log.lock().ok().map(|guard| guard.clone()).unwrap_or_default()
+}
+
+#[expect(dead_code, reason = "kept for local recording overlays")]
 fn write_placeholder_overlay(path: &Path, width: u32, height: u32) -> Result<(), String> {
     if path.exists() {
         return Ok(());
@@ -318,13 +370,7 @@ pub fn stream_start(
         if !going_live && !payload.record_local {
             return Err("Choose Go live or Record".into());
         }
-        let overlay_path = if payload.include_overlay {
-            let path = overlay_file(&app)?;
-            write_placeholder_overlay(&path, width, height)?;
-            Some(path)
-        } else {
-            None
-        };
+        let overlay_path = None::<PathBuf>;
         let local_recording = if payload.record_local {
             Some(create_video_recording(&app, "mp4")?)
         } else {
@@ -335,12 +381,10 @@ pub fn stream_start(
             .map(|recording| PathBuf::from(&recording.video_path));
 
         let request = StreamEncodeRequest {
-            video_device: payload
-                .video_device
-                .filter(|name| !name.is_empty() && name != "none"),
-            audio_device: payload
-                .audio_device
-                .filter(|name| !name.is_empty() && name != "none"),
+            video_device: None,
+            audio_device: payload.audio_device.filter(|name| {
+                !name.is_empty() && name != "none" && !is_phone_capture_device(name)
+            }),
             overlay_path: overlay_path.clone(),
             width,
             height,
@@ -349,6 +393,7 @@ pub fn stream_start(
             encoder: VideoEncoder::Nvenc,
             destination,
             record_path,
+            video_from_stdin: true,
         };
 
         {
@@ -360,49 +405,45 @@ pub fn stream_start(
         }
 
         let mut request = request;
-        let mut child = spawn_ffmpeg(&ffmpeg, &build_ffmpeg_args(&request)?)?;
-        if let Some(_status) = wait_for_early_exit(&mut child, Duration::from_millis(700)) {
-            let mut stderr = String::new();
-            if let Some(mut pipe) = child.stderr.take() {
-                let _ = pipe.read_to_string(&mut stderr);
-            }
+        let stream_key = payload.stream_key.trim();
+        let (mut child, mut stdin, mut stderr_log) =
+            spawn_primed_ffmpeg(&ffmpeg, &request, stream_key)?;
+        if let Some(_status) = wait_for_early_exit(&mut child, Duration::from_millis(2500)) {
+            drop(stdin);
+            let stderr = stderr_snapshot(&stderr_log);
+            let diagnostic = sanitize_ffmpeg_error_with_key(&stderr, stream_key);
             if request.encoder == VideoEncoder::Nvenc {
                 request.encoder = VideoEncoder::X264;
-                child = spawn_ffmpeg(&ffmpeg, &build_ffmpeg_args(&request)?)?;
-                if let Some(_status) = wait_for_early_exit(&mut child, Duration::from_millis(700)) {
-                    let mut fallback_err = String::new();
-                    if let Some(mut pipe) = child.stderr.take() {
-                        let _ = pipe.read_to_string(&mut fallback_err);
-                    }
-                    return Err(sanitize_ffmpeg_error_with_key(
-                        &fallback_err,
-                        payload.stream_key.trim(),
-                    ));
+                let primed = spawn_primed_ffmpeg(&ffmpeg, &request, stream_key)?;
+                child = primed.0;
+                stdin = primed.1;
+                stderr_log = primed.2;
+                if let Some(_status) = wait_for_early_exit(&mut child, Duration::from_millis(2500)) {
+                    drop(stdin);
+                    let fallback_err = stderr_snapshot(&stderr_log);
+                    return Err(sanitize_ffmpeg_error_with_key(&fallback_err, stream_key));
                 }
             } else {
-                return Err(sanitize_ffmpeg_error_with_key(
-                    &stderr,
-                    payload.stream_key.trim(),
-                ));
+                return Err(diagnostic);
             }
         }
 
-        let stderr_log = attach_stderr_drain(&mut child);
         if let Some(recording) = local_recording.as_ref() {
             let _ = app.emit("video_recording_started", recording);
         }
+        let key = stream_key.to_string();
         let watch_generation = {
             let mut runtime = runtime.lock().map_err(|error| error.to_string())?;
             runtime.child = Some(child);
+            runtime.stdin = Some(stdin);
             runtime.overlay_path = overlay_path;
             runtime.stderr_log = Some(stderr_log);
             runtime.last_error = None;
             runtime.active = true;
             runtime.local_recording_id = local_recording.map(|recording| recording.id);
             runtime.redactions.clear();
-            let key = payload.stream_key.trim();
             if !key.is_empty() {
-                runtime.redactions.push(key.to_string());
+                runtime.redactions.push(key);
             }
             runtime.invalidate_watchers();
             runtime.watch_generation
@@ -444,9 +485,12 @@ fn watch_child(app: AppHandle, generation: u64) {
                 runtime.child = None;
                 runtime.stderr_log = None;
                 runtime.active = false;
-                if !status.success() {
-                    runtime.last_error =
-                        Some(sanitize_ffmpeg_error_with_redactions(&stderr, &runtime.redactions));
+                let empty_output = stderr.to_ascii_lowercase().contains("received no packets");
+                if !status.success() || empty_output {
+                    runtime.last_error = Some(sanitize_ffmpeg_error_with_redactions(
+                        &stderr,
+                        &runtime.redactions,
+                    ));
                 }
                 let last_error = runtime.last_error.clone();
                 drop(runtime);
@@ -509,24 +553,26 @@ pub fn stream_stop(
 
 #[tauri::command]
 pub fn push_stream_overlay(
-    app: AppHandle,
     runtime: State<'_, Mutex<StreamRuntime>>,
     png_base64: String,
 ) -> Result<(), String> {
-    let active = runtime
-        .lock()
-        .map_err(|error| error.to_string())?
-        .active;
-    if !active {
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(
+            png_base64
+                .trim_start_matches("data:image/png;base64,")
+                .trim_start_matches("data:image/jpeg;base64,"),
+        )
+        .map_err(|error| format!("overlay decode: {error}"))?;
+    let mut runtime = runtime.lock().map_err(|error| error.to_string())?;
+    if !runtime.active {
         return Ok(());
     }
-    let bytes = base64::engine::general_purpose::STANDARD
-        .decode(png_base64.trim_start_matches("data:image/png;base64,"))
-        .map_err(|error| format!("overlay decode: {error}"))?;
-    let path = overlay_file(&app)?;
-    let tmp = path.with_extension("png.tmp");
-    std::fs::write(&tmp, bytes).map_err(|error| error.to_string())?;
-    std::fs::rename(&tmp, &path).map_err(|error| error.to_string())?;
+    if let Some(stdin) = runtime.stdin.as_mut() {
+        stdin
+            .write_all(&bytes)
+            .map_err(|error| format!("stream frame: {error}"))?;
+        let _ = stdin.flush();
+    }
     Ok(())
 }
 

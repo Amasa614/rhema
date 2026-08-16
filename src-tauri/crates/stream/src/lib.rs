@@ -12,5 +12,6 @@ pub use encode::{
     build_ffmpeg_args, join_rtmp_url, StreamEncodeRequest, VideoEncoder,
 };
 pub use sanitize::{
-    sanitize_ffmpeg_error, sanitize_ffmpeg_error_with_key, sanitize_ffmpeg_error_with_redactions,
+    redact_stream_text, sanitize_ffmpeg_error, sanitize_ffmpeg_error_with_key,
+    sanitize_ffmpeg_error_with_redactions,
 };

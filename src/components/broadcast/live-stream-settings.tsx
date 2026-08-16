@@ -49,7 +49,7 @@ const PRESETS: Record<
   },
   facebook: {
     label: "Facebook Live",
-    url: "rtmps://live-api-s.facebook.com:443/rtmp",
+    url: "rtmps://rtmp-api.facebook.com:443/rtmp/",
   },
   custom: { label: "Custom RTMP / Restream", url: "" },
 }
@@ -219,39 +219,41 @@ export function LiveStreamSettings({ className }: { className?: string }) {
         await emitTo("broadcast", "broadcast:record", { active: false })
         useStreamSessionStore.getState().setPendingRecord(false)
       }
-      if (videoDevice) {
-        emitProjectorCamera(false, "")
-      }
-      if (includeOverlay) {
-        await invoke("ensure_broadcast_window", { outputId: "main" })
-        await waitForBroadcastOutputReady("main")
-        await emitTo("broadcast", "broadcast:stream-overlay", { active: true })
-        // Best-effort: continue even if the overlay is slow to ack.
-        await waitForOverlayReady("main", true).catch(() => {})
-      }
+      await invoke("ensure_broadcast_window", { outputId: "main" })
+      await waitForBroadcastOutputReady("main")
+      await useStreamSessionStore.getState().setProgramLook(programLook)
+      await emitTo("broadcast", "broadcast:stream-overlay", { active: true })
+      await waitForOverlayReady("main", true).catch(() => {})
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 400))
+      const ingestUrl =
+        preset === "custom" ? serverUrl : PRESETS[preset].url
       const payload: StreamStartPayload = {
-        serverUrl,
+        serverUrl: ingestUrl,
         streamKey,
         videoDevice: videoDevice || null,
         audioDevice: audioDevice || null,
-        includeOverlay,
+        includeOverlay: true,
         width: 1920,
         height: 1080,
         fps: 30,
         videoBitrateKbps: 4500,
-        recordLocal: true,
+        recordLocal: false,
       }
       const next = await invoke<StreamStatus>("stream_start", { payload })
       useStreamSessionStore.getState().applyStatus(next)
       toast.success("Live stream started")
       void invoke<VideoRecording[]>("list_video_recordings").then(setRecordings).catch(() => {})
     } catch (error) {
-      toast.error("Could not start live stream", {
-        description: redactRtmpSecrets(String(error), streamKey),
+      const message = redactRtmpSecrets(String(error), streamKey)
+      useStreamSessionStore.getState().applyStatus({
+        active: false,
+        ffmpegPath: useStreamSessionStore.getState().ffmpegPath,
+        lastError: message,
       })
-      if (includeOverlay) {
-        void emitTo("broadcast", "broadcast:stream-overlay", { active: false })
-      }
+      toast.error("Could not start live stream", {
+        description: message,
+      })
+      void emitTo("broadcast", "broadcast:stream-overlay", { active: false })
       if (videoDevice && (programLookUsesCamera(programLook) || showOnProjector)) {
         emitProjectorCamera(true, videoDevice)
       }
@@ -333,7 +335,7 @@ export function LiveStreamSettings({ className }: { className?: string }) {
           >
             {live ? "On air" : "Not streaming"}
           </span>
-          {programLook !== "slides" && !live ? (
+          {programLook !== "slides" ? (
             <span className="text-xs text-sky-400">
               {programLook === "camera" ? "Camera" : "Mix"}
             </span>
@@ -343,7 +345,7 @@ export function LiveStreamSettings({ className }: { className?: string }) {
           ) : null}
         </div>
         <p className="hidden sm:block text-[0.65rem] text-muted-foreground truncate">
-          No stream key needed for the projector. Go live still needs YouTube or Facebook.
+          Camera, Slides, and Mix all go out on the livestream.
         </p>
       </div>
 

@@ -159,6 +159,12 @@ export function hydrateSettings(): Promise<void> {
         patch.streamProgramLook = patch.streamShowOnProjector ? "mix" : "slides"
       }
       patch.streamShowOnProjector = patch.streamProgramLook !== "slides"
+      if (
+        typeof patch.streamServerUrl === "string" &&
+        patch.streamServerUrl.includes("live-api-s.facebook.com")
+      ) {
+        patch.streamServerUrl = "rtmps://rtmp-api.facebook.com:443/rtmp/"
+      }
       if (Object.keys(patch).length > 0) {
         useSettingsStore.setState(patch)
       }
