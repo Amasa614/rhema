@@ -11,11 +11,13 @@ import { existsSync } from "node:fs"
 
 export const PROJECT_ROOT = join(import.meta.dir, "..", "..")
 export const VENV_DIR = join(PROJECT_ROOT, ".venv")
+export const REQUIREMENTS_FILE = join(PROJECT_ROOT, "requirements.txt")
 export const MIN_PYTHON_VERSION: [number, number, number] = [3, 9, 0]
 
 /** Pin below 5.5 — optimum-cli ONNX export breaks on read-only SentenceTransformer.config (see huggingface/sentence-transformers#3830). */
 export const SENTENCE_TRANSFORMERS_PIP = "sentence-transformers==5.4.1"
 
+/** Kept for callers that need the package list; source of truth is requirements.txt. */
 export const SETUP_PIP_PACKAGES = [
   "optimum-onnx[onnxruntime]",
   SENTENCE_TRANSFORMERS_PIP,
@@ -150,8 +152,15 @@ export async function ensureVenv(pythonCmd: string): Promise<void> {
 
 export async function installPipDeps(packages: string[]): Promise<void> {
   const pip = getVenvBin("pip")
-  console.log(`  Installing ${packages.join(", ")}...`)
-  const proc = Bun.spawn([pip, "install", ...packages], {
+  const installArgs = existsSync(REQUIREMENTS_FILE)
+    ? (["install", "-r", REQUIREMENTS_FILE] as const)
+    : (["install", ...packages] as const)
+  console.log(
+    existsSync(REQUIREMENTS_FILE)
+      ? `  Installing from ${REQUIREMENTS_FILE}...`
+      : `  Installing ${packages.join(", ")}...`,
+  )
+  const proc = Bun.spawn([pip, ...installArgs], {
     stdout: "inherit",
     stderr: "inherit",
   })
