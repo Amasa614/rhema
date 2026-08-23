@@ -95,7 +95,7 @@ fn classify_ffmpeg_message(line: &str) -> String {
     }
     if lower.contains("received no packets") || lower.contains("nothing was written into output file")
     {
-        return "The encoder started but Facebook closed it before video arrived. Keep Iriun open, click Camera, then Go live again.".into();
+        return "The encoder started but the stream server closed before video arrived. Keep the projector output open, wait a moment after Go live, then try again. In Facebook Live Producer, choose Streaming software.".into();
     }
     if lower.contains("busy") || lower.contains("in use") || lower.contains("already used") {
         return "Camera or microphone is already in use. Close other apps using it.".into();
@@ -161,7 +161,7 @@ mod tests {
         let cleaned = sanitize_ffmpeg_error(
             "[out#0/tee @ 000002ed15f94440] Nothing was written into output file, because at least one of its streams received no packets.",
         );
-        assert!(cleaned.contains("Click Camera") || cleaned.contains("encoder started"));
+        assert!(cleaned.contains("projector output") || cleaned.contains("encoder started"));
         assert!(!cleaned.contains("000002ed"));
     }
 

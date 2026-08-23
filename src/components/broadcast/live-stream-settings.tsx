@@ -223,8 +223,8 @@ export function LiveStreamSettings({ className }: { className?: string }) {
       await waitForBroadcastOutputReady("main")
       await useStreamSessionStore.getState().setProgramLook(programLook)
       await emitTo("broadcast", "broadcast:stream-overlay", { active: true })
-      await waitForOverlayReady("main", true).catch(() => {})
-      await new Promise((resolve) => globalThis.setTimeout(resolve, 400))
+      await waitForOverlayReady("main", true)
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 200))
       const ingestUrl =
         preset === "custom" ? serverUrl : PRESETS[preset].url
       const payload: StreamStartPayload = {
@@ -241,6 +241,8 @@ export function LiveStreamSettings({ className }: { className?: string }) {
       }
       const next = await invoke<StreamStatus>("stream_start", { payload })
       useStreamSessionStore.getState().applyStatus(next)
+      await emitTo("broadcast", "broadcast:stream-overlay", { active: true })
+      await new Promise((resolve) => globalThis.setTimeout(resolve, 150))
       toast.success("Live stream started")
       void invoke<VideoRecording[]>("list_video_recordings").then(setRecordings).catch(() => {})
     } catch (error) {
