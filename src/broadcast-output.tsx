@@ -411,7 +411,9 @@ function BroadcastCanvas() {
   const startCameraLoop = useCallback(() => {
     const tick = () => {
       const keepGoing =
-        recordingRef.current || programLookUsesCamera(cameraRef.current.look)
+        recordingRef.current ||
+        programLookUsesCamera(cameraRef.current.look) ||
+        streamOverlayRef.current
       if (!keepGoing) {
         cameraRef.current.raf = 0
         return
@@ -430,6 +432,17 @@ function BroadcastCanvas() {
       cameraRef.current.raf = requestAnimationFrame(tick)
     }
   }, [draw, pushStreamOverlay])
+
+  const stopStreamOverlayLoopIfIdle = useCallback(() => {
+    if (
+      recordingRef.current ||
+      programLookUsesCamera(cameraRef.current.look) ||
+      streamOverlayRef.current
+    ) {
+      return
+    }
+    stopCameraLoop()
+  }, [stopCameraLoop])
 
   const applyProgramLook = useCallback(
     async (payload: ProgramLookPayload) => {
@@ -629,7 +642,12 @@ function BroadcastCanvas() {
         }),
         currentWindow.listen<{ active?: boolean }>("broadcast:stream-overlay", (event) => {
           streamOverlayRef.current = Boolean(event.payload.active)
-          if (streamOverlayRef.current) void pushStreamOverlay()
+          if (streamOverlayRef.current) {
+            startCameraLoop()
+            void pushStreamOverlay()
+          } else {
+            stopStreamOverlayLoopIfIdle()
+          }
           void currentWindow.emitTo("main", "broadcast:stream-overlay-ready", {
             outputId: OUTPUT_ID,
             active: streamOverlayRef.current,
@@ -736,7 +754,7 @@ function BroadcastCanvas() {
       stopCameraTracks()
       void stopProgramRecorder()
     }
-  }, [applySnapshot, applyProgramLook, startProgramRecorder, stopProgramRecorder, stopCameraTracks, draw, logDebug, pushNdiFrame, pushNdiBurst, pushStreamOverlay])
+  }, [applySnapshot, applyProgramLook, startProgramRecorder, stopProgramRecorder, stopCameraTracks, startCameraLoop, stopStreamOverlayLoopIfIdle, draw, logDebug, pushNdiFrame, pushNdiBurst, pushStreamOverlay])
 
   // Slow keepalive: push one frame every 2s if idle (prevents NDI receivers from dropping the source)
   useEffect(() => {

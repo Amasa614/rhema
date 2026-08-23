@@ -232,9 +232,11 @@ fn prime_ffmpeg_stdin(child: &mut Child) -> Result<std::process::ChildStdin, Str
         .stdin
         .take()
         .ok_or_else(|| "FFmpeg stdin is not available".to_string())?;
-    stdin
-        .write_all(KICKSTART_JPEG)
-        .map_err(|error| format!("Could not send the first stream frame: {error}"))?;
+    for _ in 0..3 {
+        stdin
+            .write_all(KICKSTART_JPEG)
+            .map_err(|error| format!("Could not send the first stream frame: {error}"))?;
+    }
     stdin
         .flush()
         .map_err(|error| format!("Could not send the first stream frame: {error}"))?;
