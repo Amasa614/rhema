@@ -1,0 +1,23 @@
+# Rhema Python dependencies (setup scripts + embedding export)
+#
+# Requires Python >= 3.9
+#
+# Quick install (from repo root):
+#   python -m venv .venv
+#   .venv/Scripts/pip install -r requirements.txt    # Windows
+#   .venv/bin/pip install -r requirements.txt        # macOS / Linux
+#
+# Or let the project bootstrap everything:
+#   bun install
+#   bun run setup:all
+#
+# Note: running the desktop app also needs Bun, Rust, and Tauri prerequisites.
+# See README.md#prerequisites
+
+optimum-onnx[onnxruntime]
+sentence-transformers==5.4.1
+accelerate
+tokenizers
+numpy
+torch
+meaningless
